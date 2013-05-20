@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="Robotics.Mathematics.MathUtil">
+	<Position X="0.5" Y="7" Width="3.75" />
+	<TypeIdentifier>
+	  <FileName>Mathematics\MathUtil.cs</FileName>
+	  <HashCode>AAgADAABABEgAAJQlAAGAAABAAUAAABAgAkAAgBAAAA=</HashCode>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Robotics.Mathematics.Matrix">
+	<Position X="4.5" Y="0.5" Width="4" />
+	<TypeIdentifier>
+	  <FileName>Mathematics\Matrix.cs</FileName>
+	  <HashCode>gAIQxBAACYAAAkAE6BdhAGAIAQCAIKAAAuIAAAgABqA=</HashCode>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Robotics.Mathematics.Vector">
+	<Position X="9" Y="0.5" Width="3.5" />
+	<TypeIdentifier>
+	  <FileName>Mathematics\Vector.cs</FileName>
+	  <HashCode>gAIABAAAAUAAgAIE+DUBAABACYKAQIAAABAEAAEAAqA=</HashCode>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Robotics.Mathematics.Vector2">
+	<Position X="16.5" Y="9.5" Width="3.5" />
+	<TypeIdentifier>
+	  <FileName>Mathematics\Vector2.cs</FileName>
+	  <HashCode>gAIAJAAAAQAAAgIE4BUBQAAACQIAAJAAAECEACAAYqA=</HashCode>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Robotics.Mathematics.Vector4">
+	<Position X="9" Y="9.5" Width="3.5" />
+	<TypeIdentifier>
+	  <FileName>Mathematics\Vector4.cs</FileName>
+	  <HashCode>gAIAJgAAAQAAAgIE4BUBQAAACQAAAIAAAAAEAAAIYqE=</HashCode>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Robotics.Mathematics.Vector3">
+	<Position X="12.75" Y="9.5" Width="3.5" />
+	<TypeIdentifier>
+	  <FileName>Mathematics\Vector3.cs</FileName>
+	  <HashCode>gAYgJgAAAQAAAgKE4BUBQAAACQIAAIAAAAKEAAgQYqE=</HashCode>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Robotics.Mathematics.StateSpaceModel">
+	<Position X="13" Y="0.5" Width="3" />
+	<TypeIdentifier>
+	  <FileName>Mathematics\StateSpaceModel.cs</FileName>
+	  <HashCode>AAAAAAAAEAAAAAAAAAAIAAAAAAAAQAAEAEAABAAAAAA=</HashCode>
+	</TypeIdentifier>
+	<Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Robotics.Mathematics.IStateSpaceModel">
+	<Position X="0.5" Y="0.5" Width="3" />
+	<TypeIdentifier>
+	  <FileName>Mathematics\IStateSpaceModel.cs</FileName>
+	  <HashCode>AAAAAAAAEAAAAAAAAAAIAAAAAAAAQAAAAEAABAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Interface>
+</ClassDiagram>

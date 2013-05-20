@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="System.Net.Sockets.SocketTcpClient">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IQQAAIABABABQAJQAEIAAIAQAAIAESAACAEgAgAABAo=</HashCode>
+      <FileName>Sockets\SocketTcpClient.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Net.Sockets.UdpPacket" Collapsed="true">
+    <Position X="7.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAgAAAQCAAQABAAAAEQAAAAAAA=</HashCode>
+      <FileName>Sockets\UdpPacket.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Net.Sockets.SocketTcpServer">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAQCAAECBAECAAAAAgAIIAAQAALgAAIAAAAAA=</HashCode>
+      <FileName>Sockets\SocketTcpServer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Net.Sockets.SocketUdp" Collapsed="true">
+    <Position X="6" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IQCIAAAAQgAJIAAACEAAQIAACAAIAggAAAECACSAEAg=</HashCode>
+      <FileName>Sockets\SocketUDP.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Net.Sockets.SocketUdpClient" Collapsed="true">
+    <Position X="7.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAQAAIQAAADEAAAIAQCAIIAAgACAEAACAAFAA=</HashCode>
+      <FileName>Sockets\SocketUdpClient.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Net.Sockets.TcpPacket" Collapsed="true">
+    <Position X="9.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAABAAAAAABECAQgACAQKAAwEBAAAAEQAAAEAAA=</HashCode>
+      <FileName>Sockets\TcpPacket.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Net.Sockets.UdpDataReceivedEventArgs" Collapsed="true">
+    <Position X="11.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAABEAAAgAAEAAAABABAAAAAQEAAAAAA=</HashCode>
+      <FileName>Sockets\UdpDataReceivedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Delegate Name="System.Net.Sockets.TcpClientConnectedEventHandler" Collapsed="true">
+    <Position X="7.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Sockets\Sockets.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="System.Net.Sockets.TcpDataReceivedEventHandler" Collapsed="true">
+    <Position X="9.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Sockets\Sockets.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="System.Net.Sockets.UdpDataReceivedEventHandler" Collapsed="true">
+    <Position X="11.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Sockets\Sockets.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="System.Net.Sockets.UdpErrorReceivedEventHandler" Collapsed="true">
+    <Position X="7.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Sockets\Sockets.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Font Name="Tahoma" Size="8.25" />
+</ClassDiagram>

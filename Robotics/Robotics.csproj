@@ -1,0 +1,261 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0E93A9B5-520D-4FD5-B73F-C2457F49B14E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Robotics</RootNamespace>
+    <AssemblyName>Robotics</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>Robotics.xml</DocumentationFile>
+    <RegisterForComInterop>false</RegisterForComInterop>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>Robotics.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>Robotics.xml</DocumentationFile>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>Robotics.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="API\BaseMessage.cs" />
+    <Compile Include="API\BinaryCommand.cs" />
+    <Compile Include="API\BinaryCommandResponseBase.cs" />
+    <Compile Include="API\BinaryMessage.cs" />
+    <Compile Include="API\BinaryResponse.cs" />
+    <Compile Include="API\IConnectionManager.cs" />
+    <Compile Include="API\ISharedVariableSubscriptionInfo.cs" />
+    <Compile Include="API\ISharedVariableInfo.cs" />
+    <Compile Include="API\COMInterfaces.cs" />
+    <Compile Include="API\Command.cs" />
+    <Compile Include="API\CommandExecuter.cs" />
+    <Compile Include="API\CommandExecuterCollection.cs" />
+    <Compile Include="API\CommandManager.cs" />
+    <Compile Include="API\CommandResponsePair.cs" />
+    <Compile Include="API\ConnectionManager.cs" />
+    <Compile Include="API\API.cs" />
+    <Compile Include="API\AsyncFunctionCE.cs" />
+    <Compile Include="API\ICommandManager.cs" />
+    <Compile Include="API\MiscSharedVariables\KnownHumanFaces.cs" />
+    <Compile Include="API\SharedVariableGeneric.cs" />
+    <Compile Include="API\SharedVariableInfo.cs" />
+    <Compile Include="API\SyncFunctionCE.cs" />
+    <Compile Include="API\IMessageSource.cs" />
+    <Compile Include="API\AsyncCommandExecuter.cs" />
+    <Compile Include="API\IModule.cs" />
+    <Compile Include="API\MiscSharedVariables\DetectedHumanFaces.cs" />
+    <Compile Include="API\MiscSharedVariables\RecognizedSpeechSharedVariable.cs" />
+    <Compile Include="API\Module.cs" />
+    <Compile Include="API\MultipleCommandExecuter.cs" />
+    <Compile Include="API\PrimitiveSharedVariables\ByteArraySharedVariable.cs" />
+    <Compile Include="API\PrimitiveSharedVariables\DoubleArraySharedVariable.cs" />
+    <Compile Include="API\PrimitiveSharedVariables\DoubleSharedVariable.cs" />
+    <Compile Include="API\PrimitiveSharedVariables\IntArraySharedVariable.cs" />
+    <Compile Include="API\PrimitiveSharedVariables\IntSharedVariable.cs" />
+    <Compile Include="API\PrimitiveSharedVariables\LongArraySharedVariable.cs" />
+    <Compile Include="API\PrimitiveSharedVariables\MatrixSharedVariable.cs" />
+    <Compile Include="API\PrimitiveSharedVariables\StringSharedVariable.cs" />
+    <Compile Include="API\PrimitiveSharedVariables\VarSharedVariable.cs" />
+    <Compile Include="API\PrimitiveSharedVariables\VectorSharedVariable.cs" />
+    <Compile Include="API\SharedVariable.cs" />
+    <Compile Include="API\SharedVariableList.cs" />
+    <Compile Include="API\SharedVariableSubscriptionReport.cs" />
+    <Compile Include="Controls\IdBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\TextBoxStreamWriter.cs" />
+    <Compile Include="Controls\TextBoxStreamWriterBase.cs" />
+    <Compile Include="Controls\XmlTextBoxStreamWriter.cs" />
+    <Compile Include="Foo.cs" />
+    <Compile Include="HAL\IIntersectable.cs" />
+    <Compile Include="HAL\Intersectable.cs" />
+    <Compile Include="HAL\IPolarDevice.cs" />
+    <Compile Include="HAL\Sensors\KnownHumanFace.cs" />
+    <Compile Include="HAL\LinearDevice.cs" />
+    <Compile Include="HAL\Sensors\HumanFace.cs" />
+    <Compile Include="HAL\Sensors\ISensor.cs" />
+    <Compile Include="HAL\Sensors\ISensorReading.cs" />
+    <Compile Include="HAL\MobileBase.cs" />
+    <Compile Include="HAL\OrientedBoundingBox.cs" />
+    <Compile Include="HAL\Sensors\ISensorError.cs" />
+    <Compile Include="HAL\Ray.cs" />
+    <Compile Include="HAL\RectSegment.cs" />
+    <Compile Include="HAL\Sensors\Telemetric\HokuyoLaser.cs" />
+    <Compile Include="HAL\Sensors\Telemetric\HokuyoLaserError.cs" />
+    <Compile Include="HAL\Sensors\Telemetric\HokuyoLaserException.cs" />
+    <Compile Include="HAL\Sensors\Telemetric\ITelemetricSensor.cs" />
+    <Compile Include="HAL\Sensors\Telemetric\Laser.cs" />
+    <Compile Include="HAL\Sensors\Telemetric\ITelemetricReading.cs" />
+    <Compile Include="HAL\DeviceInfo.cs" />
+    <Compile Include="HAL\Sensors\Telemetric\LaserError.cs" />
+    <Compile Include="HAL\Sensors\Telemetric\LaserReading.cs" />
+    <Compile Include="API\MiscSharedVariables\LaserReadingASV.cs" />
+    <Compile Include="HAL\Sensors\RecognizedSpeech.cs" />
+    <Compile Include="HAL\Sensors\Telemetric\TelemetricSensor.cs" />
+    <Compile Include="API\PrimitiveSharedVariables\LongSharedVariable.cs" />
+    <Compile Include="IRunnable.cs" />
+    <Compile Include="IService.cs" />
+    <Compile Include="API\SharedVariableReport.cs" />
+    <Compile Include="API\ParameterList.cs" />
+    <Compile Include="Plugins\IPlugin.cs" />
+    <Compile Include="Plugins\DllInfo.cs" />
+    <Compile Include="Plugins\IPluginManager.cs" />
+    <Compile Include="Plugins\Kernell32.cs" />
+    <Compile Include="Plugins\PluginManager.cs" />
+    <Compile Include="Plugins\Plugins.cs" />
+    <Compile Include="StateMachines\EnumeratedFunctionState.cs" />
+    <Compile Include="StateMachines\EnumeratedFunctionStateMachine.cs" />
+    <Compile Include="StateMachines\FunctionBasedStateMachine.cs" />
+    <Compile Include="StateMachines\FunctionState.cs" />
+    <Compile Include="StateMachines\IState.cs" />
+    <Compile Include="StateMachines\IStateMachine.cs" />
+    <Compile Include="StateMachines\SimpleStateMachine.cs" />
+    <Compile Include="StateMachines\StateMachineBase.cs" />
+    <Compile Include="StateMachines\StateMachines.cs" />
+    <Compile Include="API\SubscriptionInfo.cs" />
+    <Compile Include="Utilities\Clamper.cs" />
+    <Compile Include="Utilities\ILogWriter.cs" />
+    <Compile Include="Utilities\LogWriter.cs" />
+    <Compile Include="Mathematics\Complex.cs" />
+    <Compile Include="Mathematics\IStateSpaceModel.cs" />
+    <Compile Include="Mathematics\StateSpaceModel.cs" />
+    <Compile Include="Mathematics\Vector.cs" />
+    <Compile Include="PacIto\PacItoArmManager.cs" />
+    <Compile Include="PacIto\PacItoBaseManager.cs" />
+    <Compile Include="PacIto\PacItoCommandManager.cs" />
+    <Compile Include="PacIto\PacItoKinectTrackerManager.cs" />
+    <Compile Include="PacIto\PacItoManipulatorManager.cs" />
+    <Compile Include="PacIto\PacItoPersonFinderManager.cs" />
+    <Compile Include="PacIto\PacItoObjectFinderManager.cs" />
+    <Compile Include="PacIto\PacItoSpeechGenerator.cs" />
+    <Compile Include="PacIto\PacItoSpeechRecognizer.cs" />
+    <Compile Include="Paralelism\AsynchronousPipe.cs" />
+    <Compile Include="Paralelism\Filter.cs" />
+    <Compile Include="Paralelism\IFilter.cs" />
+    <Compile Include="Paralelism\ManagerWorkers.cs" />
+    <Compile Include="Paralelism\Paralelism.cs" />
+    <Compile Include="Paralelism\ParallelPipesAndFilters.cs" />
+    <Compile Include="Paralelism\IPipe.cs" />
+    <Compile Include="Paralelism\SynchronousPipe.cs" />
+    <Compile Include="Paralelism\Worker.cs" />
+    <Compile Include="Paralelism\WorkerTaskObject.cs" />
+    <Compile Include="ProducerConsumer.cs" />
+    <Compile Include="Paralelism\SharedResource.cs" />
+    <Compile Include="API\SignatureAnalysisResult.cs" />
+    <Compile Include="API\Response.cs" />
+    <Compile Include="API\Signature.cs" />
+    <Compile Include="API\SignatureBuilder.cs" />
+    <Compile Include="API\SyncCommandExecuter.cs" />
+    <Compile Include="DataStructures\BinarySearchTree.cs" />
+    <Compile Include="DataStructures\BinarySearchTreeNode.cs" />
+    <Compile Include="DataStructures\BinaryTreeNode.cs" />
+    <Compile Include="Controls\VideoControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="HAL\IAnthropomorphicArm.cs" />
+    <Compile Include="HAL\IManipulator.cs" />
+    <Compile Include="HAL\IPositionable.cs" />
+    <Compile Include="HAL\IArm.cs" />
+    <Compile Include="DataStructures\ITree.cs" />
+    <Compile Include="Mathematics\MathUtil.cs" />
+    <Compile Include="Mathematics\MathUtil.Tables.cs" />
+    <Compile Include="Mathematics\Matrix.cs" />
+    <Compile Include="Mathematics\Matrix4.cs" />
+    <Compile Include="CircularBuffer.cs" />
+    <Compile Include="PacIto\PacItoHeadManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="HAL\DiferentialPairMobileBase.cs" />
+    <Compile Include="Robotics.cs" />
+    <Compile Include="Mathematics\Vector2.cs" />
+    <Compile Include="Mathematics\Vector3.cs" />
+    <Compile Include="Mathematics\Vector4.cs" />
+    <Compile Include="DataStructures\SelfBalancedBST.cs" />
+    <Compile Include="Runnable.cs" />
+    <Compile Include="ServiceBase.cs" />
+    <Compile Include="Sockets\AsyncStateObject.cs" />
+    <Compile Include="Sockets\Sockets.cs" />
+    <Compile Include="Sockets\SocketTcpClient.cs" />
+    <Compile Include="Sockets\SocketTcpServer.cs" />
+    <Compile Include="Sockets\SocketTcpServerClientBase.cs" />
+    <Compile Include="Sockets\SocketUDP.cs" />
+    <Compile Include="Sockets\SocketUdpClient.cs" />
+    <Compile Include="Sockets\TcpPacket.cs" />
+    <Compile Include="Sockets\UdpDataReceivedEventArgs.cs" />
+    <Compile Include="Sockets\UdpPacket.cs" />
+    <Compile Include="Trash.cs" />
+    <Compile Include="API\Parser.cs" />
+    <Compile Include="Utilities\Scanner.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Regions.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="API\ApiClassDiagram.cd" />
+    <None Include="ClassDiagram.cd" />
+    <None Include="HAL\HALClassDiagram.cd" />
+    <None Include="HAL\Sensors\Sensors.cd" />
+    <None Include="Mathematics\MathematicsClassDiagram.cd" />
+    <None Include="PacIto\PacIto.cd" />
+    <None Include="Sockets\SocketClassDiagram.cd" />
+    <None Include="StateMachines\StateMachines.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Types\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

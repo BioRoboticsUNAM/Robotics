@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="Robotics.HAL.Sensors.Telemetric.TelemetricSensor&lt;TSensor, TReading&gt;">
+	<Position X="2.75" Y="0.75" Width="4.75" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\Telemetric\TelemetricSensor.cs</FileName>
+	  <HashCode>MAwgAAAAIDCAAQAIAAAAAIAgAAIAAAAAICAAQgAAACA=</HashCode>
+	</TypeIdentifier>
+	<Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Robotics.HAL.Sensors.Telemetric.HokuyoLaser">
+	<Position X="1.25" Y="13.25" Width="8" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\Telemetric\HokuyoLaser.cs</FileName>
+	  <HashCode>IA0AABAASqQAkGBYgEgCCKyki4JgBCIEgiAAAAkAgEA=</HashCode>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Robotics.HAL.Sensors.Telemetric.HokuyoLaserError">
+	<Position X="12.5" Y="16.25" Width="2.75" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\Telemetric\HokuyoLaserError.cs</FileName>
+	  <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAIAAAACAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Robotics.HAL.Sensors.Telemetric.HokuyoLaserException">
+	<Position X="10" Y="19" Width="4" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\Telemetric\HokuyoLaserException.cs</FileName>
+	  <HashCode>AAQAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Robotics.HAL.Sensors.Telemetric.Laser">
+	<Position X="3.5" Y="6" Width="3.25" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\Telemetric\Laser.cs</FileName>
+	  <HashCode>EAQAEAAQALSAgAAAgAgDAACkgYggAQAA4AAAQoAAAGA=</HashCode>
+	</TypeIdentifier>
+	<Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Robotics.HAL.Sensors.Telemetric.LaserError">
+	<Position X="12.5" Y="13" Width="2.75" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\Telemetric\LaserError.cs</FileName>
+	  <HashCode>AAAAAAAAAQAAAAAAAAAAAAAAAAgAAAEIAAAAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+	<Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Robotics.HAL.Sensors.Telemetric.LaserReading" BaseTypeListCollapsed="true">
+	<Position X="16.75" Y="6" Width="4.75" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\Telemetric\LaserReading.cs</FileName>
+	  <HashCode>AABACAAAEYBAAAAkAAAAEAAACEAiAABIAEFgBAAAYAA=</HashCode>
+	</TypeIdentifier>
+	<Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Interface Name="Robotics.HAL.Sensors.ISensorReading&lt;TSensor&gt;">
+	<Position X="9" Y="0.75" Width="2" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\ISensorReading.cs</FileName>
+	  <HashCode>AAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Interface>
+  <Interface Name="Robotics.HAL.Sensors.ISensor">
+	<Position X="12.25" Y="5.75" Width="1.75" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\ISensor.cs</FileName>
+	  <HashCode>IAQAAAAAACAAAAAAAAAAAIAAAAIAAAAAIAAAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Interface>
+  <Interface Name="Robotics.HAL.Sensors.ISensor&lt;TSensor, TReading&gt;">
+	<Position X="8.25" Y="8.5" Width="4.75" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\ISensor.cs</FileName>
+	  <HashCode>AAAAAAAAAAAAAQAIAAAAAAAgAAAAAAAAAAAAQAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Interface>
+  <Interface Name="Robotics.HAL.ISensorError">
+	<Position X="12.5" Y="0.75" Width="2.25" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\ISensorError.cs</FileName>
+	  <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAgAAAEAAAAAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Interface>
+  <Interface Name="Robotics.HAL.Sensors.Telemetric.ITelemetricReading">
+	<Position X="9" Y="2.75" Width="2.25" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\Telemetric\ITelemetricReading.cs</FileName>
+	  <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAA=</HashCode>
+	</TypeIdentifier>
+  </Interface>
+  <Interface Name="Robotics.HAL.Sensors.Telemetric.ITelemetricSensor">
+	<Position X="13.75" Y="8.5" Width="2.5" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\Telemetric\ITelemetricSensor.cs</FileName>
+	  <HashCode>AAgAAAAAIBAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Interface>
+  <Enum Name="Robotics.HAL.Sensors.Telemetric.HokuyoLaserSensitivity">
+	<Position X="10" Y="15.25" Width="1.5" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\Telemetric\HokuyoLaser.cs</FileName>
+	  <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+	</TypeIdentifier>
+  </Enum>
+  <Enum Name="Robotics.HAL.Sensors.Telemetric.HokuyoLaserComSpeed">
+	<Position X="10" Y="13.25" Width="1.5" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\Telemetric\HokuyoLaser.cs</FileName>
+	  <HashCode>AAAAAAAAAAAAAAAAACAAAAAAAABMEBAAAAAAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Enum>
+  <Enum Name="Robotics.HAL.Sensors.Telemetric.LaserStatus">
+	<Position X="10" Y="16.75" Width="1.5" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\Telemetric\Laser.cs</FileName>
+	  <HashCode>AAAAAABAAAAAAQAAAAAAAAAAAAAAAAAIAABAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Enum>
+  <Delegate Name="Robotics.HAL.Sensors.SensorErrorEventHandler&lt;TSensor&gt;">
+	<Position X="12.5" Y="2.25" Width="2.75" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\ISensor.cs</FileName>
+	  <HashCode>QAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Delegate>
+  <Delegate Name="Robotics.HAL.Sensors.SensorReadingCompletedEventHandler&lt;TSensor, TReading&gt;">
+	<Position X="12.5" Y="4.5" Width="4.25" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\ISensor.cs</FileName>
+	  <HashCode>QAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Delegate>
+  <Delegate Name="Robotics.HAL.Sensors.Telemetric.TelemetricSensorThresholdExceededEventHandler&lt;TSensor&gt;">
+	<Position X="12.5" Y="3.5" Width="4.25" />
+	<TypeIdentifier>
+	  <FileName>HAL\Sensors\Telemetric\ITelemetricSensor.cs</FileName>
+	  <HashCode>QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Delegate>
+</ClassDiagram>

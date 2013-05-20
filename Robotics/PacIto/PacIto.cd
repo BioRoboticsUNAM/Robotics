@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="Robotics.PacIto.PacItoCommandManager">
+	<Position X="1.5" Y="1" Width="5.25" />
+	<TypeIdentifier>
+	  <FileName>PacIto\PacItoArmManager.cs</FileName>
+	  <HashCode>gACABgIAAAEAAAABAAIAAAACAAAIABEAQAAQAECAAIA=</HashCode>
+	</TypeIdentifier>
+	<Compartments>
+	  <Compartment Name="Nested Types" Collapsed="false" />
+	</Compartments>
+	<NestedTypes>
+	  <Class Name="Robotics.PacIto.PacItoCommandManager.PacItoArmManager">
+		<TypeIdentifier>
+		  <NewMemberFileName>PacIto\PacItoArmManager.cs</NewMemberFileName>
+		</TypeIdentifier>
+		<Lollipop Position="0.2" />
+	  </Class>
+	  <Class Name="Robotics.PacIto.PacItoCommandManager.PacItoBaseManager">
+		<TypeIdentifier>
+		  <NewMemberFileName>PacIto\PacItoBaseManager.cs</NewMemberFileName>
+		</TypeIdentifier>
+	  </Class>
+	  <Class Name="Robotics.PacIto.PacItoCommandManager.PacItoHeadManager">
+		<TypeIdentifier>
+		  <NewMemberFileName>PacIto\PacItoHeadManager.cs</NewMemberFileName>
+		</TypeIdentifier>
+	  </Class>
+	  <Class Name="Robotics.PacIto.PacItoCommandManager.PacItoObjectFinderManager">
+		<TypeIdentifier>
+		  <NewMemberFileName>PacIto\PacItoObjectFinderManager.cs</NewMemberFileName>
+		</TypeIdentifier>
+	  </Class>
+	  <Class Name="Robotics.PacIto.PacItoCommandManager.PacItoPersonFinderManager">
+		<TypeIdentifier>
+		  <NewMemberFileName>PacIto\PacItoPersonFinderManager.cs</NewMemberFileName>
+		</TypeIdentifier>
+	  </Class>
+	  <Class Name="Robotics.PacIto.PacItoCommandManager.PacItoSpeechGenerator">
+		<TypeIdentifier>
+		  <NewMemberFileName>PacIto\PacItoSpeechGenerator.cs</NewMemberFileName>
+		</TypeIdentifier>
+	  </Class>
+	  <Class Name="Robotics.PacIto.PacItoCommandManager.PacItoSpeechRecognizer">
+		<TypeIdentifier>
+		  <NewMemberFileName>PacIto\PacItoSpeechRecognizer.cs</NewMemberFileName>
+		</TypeIdentifier>
+	  </Class>
+	</NestedTypes>
+  </Class>
+</ClassDiagram>

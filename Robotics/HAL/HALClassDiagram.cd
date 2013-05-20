@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="Robotics.HAL.MobileBase">
+	<Position X="4.25" Y="5.5" Width="4.75" />
+	<TypeIdentifier>
+	  <FileName>HAL\MobileBase.cs</FileName>
+	  <HashCode>GAADABgAAQQAAAAgAAAEIAAAAAAAAAIAIAAAAEAAAAA=</HashCode>
+	</TypeIdentifier>
+	<Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Robotics.HAL.Intersectable">
+	<Position X="0.5" Y="5.5" Width="3.25" />
+	<TypeIdentifier>
+	  <FileName>HAL\Intersectable.cs</FileName>
+	  <HashCode>AAAAAAAAAAAAAAAgAQAAAAAAACAACABgAAAAAAAQAIA=</HashCode>
+	</TypeIdentifier>
+	<Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Robotics.HAL.BoundingBox">
+	<Position X="0.5" Y="10.25" Width="3.5" />
+	<TypeIdentifier>
+	  <FileName>HAL\BoundingBox.cs</FileName>
+	  <HashCode>AAAAAAAABAAAAAQAQAAAAEAAAAAAAAAgAAAAIAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Robotics.HAL.OrientedBoundingBox">
+	<Position X="4.25" Y="10.25" Width="6" />
+	<TypeIdentifier>
+	  <FileName>HAL\OrientedBoundingBox.cs</FileName>
+	  <HashCode>AAAAAAABASAAAAEAACEAAAAgAAAAAEEAAABAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Robotics.HAL.DiferentialPairMobileBase">
+	<Position X="9.5" Y="5.5" Width="4.75" />
+	<TypeIdentifier>
+	  <FileName>HAL\DiferentialPairMobileBase.cs</FileName>
+	  <HashCode>AgQCAAAAAAAAAAAAAgAAAAAAAAAAAAAAIAACAAAgAAA=</HashCode>
+	</TypeIdentifier>
+  </Class>
+  <Interface Name="Robotics.HAL.IPositionable">
+	<Position X="0.5" Y="0.5" Width="2.5" />
+	<TypeIdentifier>
+	  <FileName>HAL\IPositionable.cs</FileName>
+	  <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAABAAAAAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Interface>
+  <Interface Name="Robotics.HAL.IAnthropomorphicArm">
+	<Position X="6.75" Y="2.5" Width="7.75" />
+	<TypeIdentifier>
+	  <FileName>HAL\IAnthropomorphicArm.cs</FileName>
+	  <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAQAAEAAAAAAARAEAA=</HashCode>
+	</TypeIdentifier>
+  </Interface>
+  <Interface Name="Robotics.HAL.IArm">
+	<Position X="6.75" Y="0.5" Width="4.25" />
+	<TypeIdentifier>
+	  <FileName>HAL\IArm.cs</FileName>
+	  <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAEIA=</HashCode>
+	</TypeIdentifier>
+  </Interface>
+  <Interface Name="Robotics.HAL.IManipulator">
+	<Position X="12.25" Y="0.5" Width="2.25" />
+	<TypeIdentifier>
+	  <FileName>HAL\IManipulator.cs</FileName>
+	  <HashCode>AAAAAAEAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Interface>
+  <Interface Name="Robotics.HAL.ISensor">
+	<Position X="0.5" Y="2" Width="3.25" />
+	<TypeIdentifier>
+	  <FileName>HAL\ISensor.cs</FileName>
+	  <HashCode>IAQAAAAAACAAAQAABAAAAIAAAAIAAAAAIAAAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Interface>
+  <Interface Name="Robotics.HAL.ISensorRead">
+	<Position X="4" Y="0.5" Width="2" />
+	<TypeIdentifier>
+	  <FileName>HAL\ISensorRead.cs</FileName>
+	  <HashCode>AAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Interface>
+  <Interface Name="Robotics.HAL.ISensorError">
+	<Position X="4" Y="2" Width="2.25" />
+	<TypeIdentifier>
+	  <FileName>HAL\ISensorError.cs</FileName>
+	  <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAgAAAEAAAAAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Interface>
+  <Delegate Name="Robotics.HAL.SensorErrorEventHandler">
+	<Position X="15" Y="1.75" Width="2" />
+	<TypeIdentifier>
+	  <FileName>HAL\ISensor.cs</FileName>
+	  <HashCode>AAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Delegate>
+  <Delegate Name="Robotics.HAL.SensorReadCompleteEventHandler">
+	<Position X="15" Y="0.5" Width="2.5" />
+	<TypeIdentifier>
+	  <FileName>HAL\ISensor.cs</FileName>
+	  <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Delegate>
+</ClassDiagram>

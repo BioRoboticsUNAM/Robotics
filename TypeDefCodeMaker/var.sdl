@@ -1,0 +1,6 @@
+typedef var
+{
+	double miDouble;
+	int miEntero;
+	int16[] shortArray;
+}

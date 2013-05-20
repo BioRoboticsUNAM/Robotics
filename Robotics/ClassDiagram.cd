@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="Robotics.Mathematics.MathUtil" Collapsed="true">
+	<Position X="8.75" Y="2" Width="1.5" />
+	<TypeIdentifier>
+	  <FileName>Math\MathUtil.cs</FileName>
+	  <HashCode>AAAABAABABAAAAIQlAACAAAAAAQAAABAgAEAAgAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Robotics.Mathematics.Matrix" Collapsed="true">
+	<Position X="8.75" Y="1.25" Width="1.5" />
+	<TypeIdentifier>
+	  <FileName>Math\Matrix.cs</FileName>
+	  <HashCode>AAAAAAAACAAAAkAEaBdAAEAIAQCAICAAAkIAAAgAAIA=</HashCode>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Robotics.Mathematics.Matrix4" Collapsed="true">
+	<Position X="8.75" Y="0.5" Width="1.5" />
+	<TypeIdentifier>
+	  <FileName>Math\Matrix4.cs</FileName>
+	  <HashCode>AABAAAAAAAAAAgAEaBcAAGAAAQAAIDAAAkAAAAgAAIA=</HashCode>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Robotics.HAL.Robot" BaseTypeListCollapsed="true">
+	<Position X="2.5" Y="0.5" Width="1.5" />
+	<TypeIdentifier>
+	  <FileName>HAL\Robot.cs</FileName>
+	  <HashCode>GgQDABgAAQQAAAAgAgAEIAAAAAAAAAJAIAACBEAgAAA=</HashCode>
+	</TypeIdentifier>
+	<Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Robotics.Mathematics.Vector4" Collapsed="true">
+	<Position X="7" Y="2" Width="1.5" />
+	<TypeIdentifier>
+	  <FileName>Math\Vector4.cs</FileName>
+	  <HashCode>gAIAJgAAAQAAAgIE+BUBQABACQAAAIAAAAAEAAAIYqE=</HashCode>
+	</TypeIdentifier>
+  </Class>
+  <Struct Name="Robotics.Mathematics.Vector3" Collapsed="true">
+	<Position X="7" Y="1.25" Width="1.5" />
+	<TypeIdentifier>
+	  <FileName>Math\Vector3.cs</FileName>
+	  <HashCode>gAYgJgAAAQAAAgKE+BUBQABACQIAAIAAAAKEAAgQYqE=</HashCode>
+	</TypeIdentifier>
+  </Struct>
+  <Struct Name="Robotics.Mathematics.Vector2" Collapsed="true">
+	<Position X="7" Y="0.5" Width="1.5" />
+	<TypeIdentifier>
+	  <FileName>Math\Vector2.cs</FileName>
+	  <HashCode>gAIAJAAAAQAAAgIE+BUBQABACQIAAJAAAECEACAAYqA=</HashCode>
+	</TypeIdentifier>
+  </Struct>
+  <Interface Name="Robotics.HAL.IPositionable">
+	<Position X="0.5" Y="0.5" Width="1.5" />
+	<TypeIdentifier>
+	  <FileName>HAL\IPositionable.cs</FileName>
+	  <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAABAAAAAAAAAAAA=</HashCode>
+	</TypeIdentifier>
+  </Interface>
+  <Interface Name="Robotics.HAL.IBody">
+	<Position X="0.5" Y="2" Width="1.5" />
+	<TypeIdentifier>
+	  <FileName>HAL\IBody.cs</FileName>
+	  <HashCode>AAAAAAAABQAAAAAAAAAAAEAAAAAAAAAAAAAAAAAQAIA=</HashCode>
+	</TypeIdentifier>
+  </Interface>
+</ClassDiagram>
