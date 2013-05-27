@@ -9,7 +9,7 @@ namespace Robotics.API
 	[ComVisible(true)]
 	[Guid("316D90CA-C1BC-4cf1-B8A5-B18294E0DE5C")]
 	[InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-	interface ICommandManager : IMessageSource
+	public interface ICommandManager : IMessageSource
 	{
 		#region Events
 
@@ -77,10 +77,10 @@ namespace Robotics.API
 		/// <summary>
 		/// Gets or sets the ConnectionManager object asociated to this CommandManager object
 		/// </summary>
-		ConnectionManager ConnectionManager
+		IConnectionManager ConnectionManager
 		{
 			get;
-			set;
+			//set;
 		}
 
 		/// <summary>
@@ -232,10 +232,6 @@ namespace Robotics.API
 		void BeginCommandExecution(string commandName, string parameters, IMessageSource source, object metaData);
 
 		#endregion
-
-		#endregion
-
-		#region IMessageSource Members
 
 		#endregion
 	}

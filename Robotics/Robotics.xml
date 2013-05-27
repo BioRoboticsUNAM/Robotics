@@ -2038,7 +2038,194 @@
             <summary>
             Manages TCP connections.
             </summary>
-            <remarks>This class is incomplete and should not be used</remarks>
+        </member>
+        <member name="T:Robotics.API.IConnectionManager">
+            <summary>
+            Represents an object that manages TCP connections.
+            </summary>
+        </member>
+        <member name="M:Robotics.API.IConnectionManager.Start">
+            <summary>
+            Starts the Connection Manager
+            </summary>
+        </member>
+        <member name="M:Robotics.API.IConnectionManager.Stop">
+            <summary>
+            Stops the Connection Manager
+            </summary>
+        </member>
+        <member name="M:Robotics.API.IConnectionManager.Send(Robotics.API.Command)">
+            <summary>
+            Sends a Command
+            </summary>
+            <param name="command">Command to be sent</param>
+            <returns>true if command was sent successfully, false otherwise</returns>
+        </member>
+        <member name="M:Robotics.API.IConnectionManager.Send(Robotics.API.Response)">
+            <summary>
+            Sends a Response
+            </summary>
+            <param name="response">Response to be sent</param>
+            <returns>true if response was sent successfully, false otherwise</returns>
+        </member>
+        <member name="M:Robotics.API.IConnectionManager.SendToAllClients(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Sends data to all clients connected to the server
+            </summary>
+            <param name="buffer">The byte array to send</param>
+            <param name="count">The offset in the byte array to begin sending</param>
+            <param name="offset">The number of bytes to send</param>
+            <returns>The number of clients to which the data was sent</returns>
+        </member>
+        <member name="M:Robotics.API.IConnectionManager.SendToAllClients(System.String)">
+            <summary>
+            Sends data to all clients connected to the server
+            </summary>
+            <param name="s">The string to send</param>
+            <returns>The number of clients to which the string was sent</returns>
+        </member>
+        <member name="M:Robotics.API.IConnectionManager.SendTroughClient(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Sends data through the tcp client
+            </summary>
+            <param name="buffer">The byte array to send</param>
+            <param name="count">The offset in the byte array to begin sending</param>
+            <param name="offset">The number of bytes to send</param>
+            <returns>true if data was sent successfully, false otherwise</returns>
+        </member>
+        <member name="M:Robotics.API.IConnectionManager.SendTroughClient(System.String)">
+            <summary>
+            Sends data through the tcp client
+            </summary>
+            <param name="s">The string to send</param>
+            <returns>true if data was sent successfully, false otherwise</returns>
+        </member>
+        <member name="M:Robotics.API.IConnectionManager.SendTo(System.Net.IPEndPoint,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Sends data to the specified remote endpoint
+            </summary>
+            <param name="remoteEndPoint">The destination endpoint</param>
+            <param name="buffer">The byte array to send</param>
+            <param name="count">The offset in the byte array to begin sending</param>
+            <param name="offset">The number of bytes to send</param>
+            <returns>true if data was sent successfully, false otherwise</returns>
+        </member>
+        <member name="M:Robotics.API.IConnectionManager.SendTo(System.Net.IPEndPoint,System.String)">
+            <summary>
+            Sends data to the specified remote endpoint
+            </summary>
+            <param name="remoteEndPoint">The destination endpoint</param>
+            <param name="s">The string to send</param>
+            <returns>true if data was sent successfully, false otherwise</returns>
+        </member>
+        <member name="P:Robotics.API.IConnectionManager.Bidirectional">
+            <summary>
+            Gets a value indicating if the IConnectionManager is woking in bidirectional mode
+            </summary>
+        </member>
+        <member name="P:Robotics.API.IConnectionManager.ConnectedClientsCount">
+            <summary>
+            Gets the number of clients connected to the local TCP Server
+            </summary>
+        </member>
+        <member name="P:Robotics.API.IConnectionManager.CommandManager">
+            <summary>
+            Gets or sets the CommandManager object which will manage incoming data.
+            The IConnectionManager must not be running when the CommandManager is set.
+            </summary>
+        </member>
+        <member name="P:Robotics.API.IConnectionManager.OutputSocketReceptionEnabled">
+            <summary>
+            Enables or disables the reception of data from the output socket
+            </summary>
+        </member>
+        <member name="P:Robotics.API.IConnectionManager.IsConnected">
+            <summary>
+            Gets a value indicating if local TCP client has connected to remote server
+            </summary>
+            <remarks>When working on bidirectional mode always return false</remarks>
+        </member>
+        <member name="P:Robotics.API.IConnectionManager.IsServerStarted">
+            <summary>
+            Gets a value indicating if TCP Server has been started and is running
+            </summary>
+        </member>
+        <member name="P:Robotics.API.IConnectionManager.IsRunning">
+            <summary>
+            Gets a value indicating if this instance of IConnectionManager has been started
+            </summary>
+        </member>
+        <member name="P:Robotics.API.IConnectionManager.Mode">
+            <summary>
+            Gets a value indicating the mode of the current IConnectionManager instance
+            </summary>
+        </member>
+        <member name="P:Robotics.API.IConnectionManager.PortIn">
+            <summary>
+            Gets or sets the Tcp port for incoming data used by Tcp Server.
+            </summary>
+        </member>
+        <member name="P:Robotics.API.IConnectionManager.PortOut">
+            <summary>
+            Gets or sets the Tcp port for outgoing data used by Tcp Client.
+            </summary>
+        </member>
+        <member name="P:Robotics.API.IConnectionManager.TcpServerAddress">
+            <summary>
+            Gets or sets the IP Address of the remote computer to connect using the socket client.
+            </summary>
+        </member>
+        <member name="E:Robotics.API.IConnectionManager.ClientConnected">
+            <summary>
+            Occurs when a remote client gets connected to local TCP Server
+            </summary>
+        </member>
+        <member name="E:Robotics.API.IConnectionManager.ClientDisconnected">
+            <summary>
+            Occurs when a remote client disconnects from local TCP Server
+            </summary>
+        </member>
+        <member name="E:Robotics.API.IConnectionManager.Connected">
+            <summary>
+            Occurs when the local client connects to remote server.
+            This event is rised only when the IConnectionManager works in Unidirectional mode.
+            </summary>
+        </member>
+        <member name="E:Robotics.API.IConnectionManager.Disconnected">
+            <summary>
+            Occurs when the local client connects to remote server.
+            This event is rised only when the IConnectionManager works in Unidirectional mode.
+            </summary>
+        </member>
+        <member name="E:Robotics.API.IConnectionManager.DataReceived">
+            <summary>
+            Occurs when data is received
+            </summary>
+        </member>
+        <member name="E:Robotics.API.IConnectionManager.StatusChanged">
+            <summary>
+            Occurs when the status of the IConnectionManager changes
+            </summary>
+        </member>
+        <member name="E:Robotics.API.IConnectionManager.Started">
+            <summary>
+            Occurs when the IConnectionManager is started
+            </summary>
+        </member>
+        <member name="E:Robotics.API.IConnectionManager.Stopped">
+            <summary>
+            Occurs when the IConnectionManager is stopped
+            </summary>
+        </member>
+        <member name="E:Robotics.API.IConnectionManager.CommandSent">
+            <summary>
+            Occurs when a command is sent
+            </summary>
+        </member>
+        <member name="E:Robotics.API.IConnectionManager.ResponseSent">
+            <summary>
+            Occurs when a response is sent
+            </summary>
         </member>
         <member name="F:Robotics.API.ConnectionManager.DEFAULT_BUFFER_SIZE">
             <summary>
@@ -2930,7 +3117,7 @@
             Manages disconnections
             </summary>
         </member>
-        <member name="M:Robotics.API.CommandManager.DataReceived(Robotics.API.ConnectionManager,System.Net.Sockets.TcpPacket)">
+        <member name="M:Robotics.API.CommandManager.DataReceived(Robotics.API.IConnectionManager,System.Net.Sockets.TcpPacket)">
             <summary>
             Manages all received data
             </summary>
@@ -3091,6 +3278,11 @@
             </summary>
         </member>
         <member name="P:Robotics.API.CommandManager.ConnectionManager">
+            <summary>
+            Gets or sets the ConnectionManager object asociated to this CommandManager object
+            </summary>
+        </member>
+        <member name="P:Robotics.API.CommandManager.Robotics#API#ICommandManager#ConnectionManager">
             <summary>
             Gets or sets the ConnectionManager object asociated to this CommandManager object
             </summary>
@@ -10224,7 +10416,7 @@
             When overriden in a derived class, opens a stream for the log file
             </summary>
             <param name="filePath">The path to the log file to create/open</param>
-            <param name="streamWriter">When this method returns contains a StreamWriter which allows to write in the specified file,
+            <param name="stream">When this method returns contains a StreamWriter which allows to write in the specified file,
             or null if the file could not be created o could not be oppened</param>
         </member>
         <member name="M:Robotics.Controls.TextBoxStreamWriterBase.SetupThread">
@@ -16546,6 +16738,35 @@
             </summary>
             <param name="runnableObject">The object that raises the event</param>
         </member>
+        <member name="T:Robotics.API.IConnector">
+            <summary>
+            Represents an object which allows asynchronous communication with other objects via message passing
+            </summary>
+        </member>
+        <member name="M:Robotics.API.IConnector.Send(Robotics.API.Command)">
+            <summary>
+            Sends a Command
+            </summary>
+            <param name="command">Command to be sent</param>
+            <returns>true if command was sent successfully, false otherwise</returns>
+        </member>
+        <member name="M:Robotics.API.IConnector.Send(Robotics.API.Response)">
+            <summary>
+            Sends a Response
+            </summary>
+            <param name="response">Response to be sent</param>
+            <returns>true if response was sent successfully, false otherwise</returns>
+        </member>
+        <member name="E:Robotics.API.IConnector.CommandReceived">
+            <summary>
+            Occurs when a command is received
+            </summary>
+        </member>
+        <member name="E:Robotics.API.IConnector.ResponseReceived">
+            <summary>
+            Occurs when a response is received
+            </summary>
+        </member>
         <member name="T:Robotics.API.CommandExecutionResult">
             <summary>
             Accomplishment status of a command execution
@@ -17927,6 +18148,26 @@
             Gets a value indicating if the executer requires parameters
             </summary>
         </member>
+        <member name="T:Robotics.API.StatusChangedEventHandler`1">
+            <summary>
+            Represents methods that handle the change of status of an object
+            </summary>
+            <param name="sender">The object which rises the event</param>
+        </member>
+        <member name="T:Robotics.API.CommandReceivedEventHandler`1">
+            <summary>
+            Represents the method that will handle a command reception event
+            </summary>
+            <param name="sender">The object which rises the event</param>
+            <param name="command">The command received</param>
+        </member>
+        <member name="T:Robotics.API.ResponseReceivedEventHandler`1">
+            <summary>
+            Represents the method that will handle a response reception event
+            </summary>
+            <param name="sender">The object which rises the event</param>
+            <param name="response">The response received</param>
+        </member>
         <member name="T:Robotics.API.CommandExecuterMethod">
             <summary>
             Represents a methot that receives a command, executes it and generates a response
@@ -17959,13 +18200,13 @@
         </member>
         <member name="T:Robotics.API.CommandReceivedEventHandler">
             <summary>
-            Represents the method that will handle the CommandReceived event of a CommandManager object
+            Represents the method that will handle a CommandReceived event
             </summary>
             <param name="command">The Command object received</param>
         </member>
         <member name="T:Robotics.API.ResponseReceivedEventHandler">
             <summary>
-            Represents the method that will handle the ResponseReceived event of a CommandManager object
+            Represents the method that will handle a ResponseReceived event
             </summary>
             <param name="response">The Response object received</param>
         </member>
@@ -17986,14 +18227,14 @@
             <summary>
             Represents the method that will handle the DataReceived event of a SocketTcpServer object
             </summary>
-            <param name="connectionManager">The ConnectionManager object which rises the event</param>
+            <param name="connectionManager">The IConnectionManager object which rises the event</param>
             <param name="packet">The Tcp Packet with the data received</param>
         </member>
         <member name="T:Robotics.API.ConnectionManagerStatusChangedEventHandler">
             <summary>
             Represents the method that will handle the StatusChanged, Started and Stopped events of a ConnectionManager
             </summary>
-            <param name="connectionManager">The ConnectionManager object which rises the event</param>
+            <param name="connectionManager">The IConnectionManager object which rises the event</param>
         </member>
         <member name="T:Robotics.API.ExecutionStatusEventHandler">
             <summary>
@@ -18090,6 +18331,21 @@
         <member name="F:Robotics.API.SharedVariableReportType.SendContent">
             <summary>
             Sends a report that notifies the change of the content of a shared variable sending it's content
+            </summary>
+        </member>
+        <member name="T:Robotics.API.ConnectionManagerMode">
+            <summary>
+            Specifies how a IConnectionManager will manage connections
+            </summary>
+        </member>
+        <member name="F:Robotics.API.ConnectionManagerMode.Bidireactional">
+            <summary>
+            Works in bidirectional mode. Only one socket is used, same port for incomming an outgoing transmissions
+            </summary>
+        </member>
+        <member name="F:Robotics.API.ConnectionManagerMode.Unidirectional">
+            <summary>
+            Works in unirectional mode. Two sockets are used, one port for incomming transmissions and another for outgoing transmissions
             </summary>
         </member>
         <member name="T:Robotics.DataStructures.BinarySearchTreeNode`1">
@@ -20244,209 +20500,6 @@
         <member name="P:Robotics.API.CommandExecuterCollection.IsReadOnly">
             <summary>
             This property always returns false
-            </summary>
-        </member>
-        <member name="T:Robotics.API.ConnectionManagerMode">
-            <summary>
-            Specifies how a IConnectionManager will manage connections
-            </summary>
-        </member>
-        <member name="F:Robotics.API.ConnectionManagerMode.Bidireactional">
-            <summary>
-            Works in bidirectional mode. Only one socket is used, same port for incomming an outgoing transmissions
-            </summary>
-        </member>
-        <member name="F:Robotics.API.ConnectionManagerMode.Unidirectional">
-            <summary>
-            Works in unirectional mode. Two sockets are used, one port for incomming transmissions and another for outgoing transmissions
-            </summary>
-        </member>
-        <member name="T:Robotics.API.IConnectionManager">
-            <summary>
-            Represents an object that manages TCP connections.
-            </summary>
-        </member>
-        <member name="M:Robotics.API.IConnectionManager.Start">
-            <summary>
-            Starts the Connection Manager
-            </summary>
-        </member>
-        <member name="M:Robotics.API.IConnectionManager.Stop">
-            <summary>
-            Stops the Connection Manager
-            </summary>
-        </member>
-        <member name="M:Robotics.API.IConnectionManager.Send(Robotics.API.Command)">
-            <summary>
-            Sends a Command
-            </summary>
-            <param name="command">Command to be sent</param>
-            <returns>true if command was sent successfully, false otherwise</returns>
-        </member>
-        <member name="M:Robotics.API.IConnectionManager.Send(Robotics.API.Response)">
-            <summary>
-            Sends a Response
-            </summary>
-            <param name="response">Response to be sent</param>
-            <returns>true if response was sent successfully, false otherwise</returns>
-        </member>
-        <member name="M:Robotics.API.IConnectionManager.SendToAllClients(System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            Sends data to all clients connected to the server
-            </summary>
-            <param name="buffer">The byte array to send</param>
-            <param name="count">The offset in the byte array to begin sending</param>
-            <param name="offset">The number of bytes to send</param>
-            <returns>The number of clients to which the data was sent</returns>
-        </member>
-        <member name="M:Robotics.API.IConnectionManager.SendToAllClients(System.String)">
-            <summary>
-            Sends data to all clients connected to the server
-            </summary>
-            <param name="s">The string to send</param>
-            <returns>The number of clients to which the string was sent</returns>
-        </member>
-        <member name="M:Robotics.API.IConnectionManager.SendTroughClient(System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            Sends data through the tcp client
-            </summary>
-            <param name="buffer">The byte array to send</param>
-            <param name="count">The offset in the byte array to begin sending</param>
-            <param name="offset">The number of bytes to send</param>
-            <returns>true if data was sent successfully, false otherwise</returns>
-        </member>
-        <member name="M:Robotics.API.IConnectionManager.SendTroughClient(System.String)">
-            <summary>
-            Sends data through the tcp client
-            </summary>
-            <param name="s">The string to send</param>
-            <returns>true if data was sent successfully, false otherwise</returns>
-        </member>
-        <member name="M:Robotics.API.IConnectionManager.SendTo(System.Net.IPEndPoint,System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            Sends data to the specified remote endpoint
-            </summary>
-            <param name="remoteEndPoint">The destination endpoint</param>
-            <param name="buffer">The byte array to send</param>
-            <param name="count">The offset in the byte array to begin sending</param>
-            <param name="offset">The number of bytes to send</param>
-            <returns>true if data was sent successfully, false otherwise</returns>
-        </member>
-        <member name="M:Robotics.API.IConnectionManager.SendTo(System.Net.IPEndPoint,System.String)">
-            <summary>
-            Sends data to the specified remote endpoint
-            </summary>
-            <param name="remoteEndPoint">The destination endpoint</param>
-            <param name="s">The string to send</param>
-            <returns>true if data was sent successfully, false otherwise</returns>
-        </member>
-        <member name="P:Robotics.API.IConnectionManager.Bidirectional">
-            <summary>
-            Gets a value indicating if the IConnectionManager is woking in bidirectional mode
-            </summary>
-        </member>
-        <member name="P:Robotics.API.IConnectionManager.ConnectedClientsCount">
-            <summary>
-            Gets the number of clients connected to the local TCP Server
-            </summary>
-        </member>
-        <member name="P:Robotics.API.IConnectionManager.CommandManager">
-            <summary>
-            Gets or sets the CommandManager object which will manage incoming data.
-            The IConnectionManager must not be running when the CommandManager is set.
-            </summary>
-        </member>
-        <member name="P:Robotics.API.IConnectionManager.OutputSocketReceptionEnabled">
-            <summary>
-            Enables or disables the reception of data from the output socket
-            </summary>
-        </member>
-        <member name="P:Robotics.API.IConnectionManager.IsConnected">
-            <summary>
-            Gets a value indicating if local TCP client has connected to remote server
-            </summary>
-            <remarks>When working on bidirectional mode always return false</remarks>
-        </member>
-        <member name="P:Robotics.API.IConnectionManager.IsServerStarted">
-            <summary>
-            Gets a value indicating if TCP Server has been started and is running
-            </summary>
-        </member>
-        <member name="P:Robotics.API.IConnectionManager.IsRunning">
-            <summary>
-            Gets a value indicating if this instance of IConnectionManager has been started
-            </summary>
-        </member>
-        <member name="P:Robotics.API.IConnectionManager.Mode">
-            <summary>
-            Gets a value indicating the mode of the current IConnectionManager instance
-            </summary>
-        </member>
-        <member name="P:Robotics.API.IConnectionManager.PortIn">
-            <summary>
-            Gets or sets the Tcp port for incoming data used by Tcp Server.
-            </summary>
-        </member>
-        <member name="P:Robotics.API.IConnectionManager.PortOut">
-            <summary>
-            Gets or sets the Tcp port for outgoing data used by Tcp Client.
-            </summary>
-        </member>
-        <member name="P:Robotics.API.IConnectionManager.TcpServerAddress">
-            <summary>
-            Gets or sets the IP Address of the remote computer to connect using the socket client.
-            </summary>
-        </member>
-        <member name="E:Robotics.API.IConnectionManager.ClientConnected">
-            <summary>
-            Occurs when a remote client gets connected to local TCP Server
-            </summary>
-        </member>
-        <member name="E:Robotics.API.IConnectionManager.ClientDisconnected">
-            <summary>
-            Occurs when a remote client disconnects from local TCP Server
-            </summary>
-        </member>
-        <member name="E:Robotics.API.IConnectionManager.Connected">
-            <summary>
-            Occurs when the local client connects to remote server.
-            This event is rised only when the IConnectionManager works in Unidirectional mode.
-            </summary>
-        </member>
-        <member name="E:Robotics.API.IConnectionManager.Disconnected">
-            <summary>
-            Occurs when the local client connects to remote server.
-            This event is rised only when the IConnectionManager works in Unidirectional mode.
-            </summary>
-        </member>
-        <member name="E:Robotics.API.IConnectionManager.DataReceived">
-            <summary>
-            Occurs when data is received
-            </summary>
-        </member>
-        <member name="E:Robotics.API.IConnectionManager.StatusChanged">
-            <summary>
-            Occurs when the status of the IConnectionManager changes
-            </summary>
-        </member>
-        <member name="E:Robotics.API.IConnectionManager.Started">
-            <summary>
-            Occurs when the IConnectionManager is started
-            </summary>
-        </member>
-        <member name="E:Robotics.API.IConnectionManager.Stopped">
-            <summary>
-            Occurs when the IConnectionManager is stopped
-            </summary>
-        </member>
-        <member name="E:Robotics.API.IConnectionManager.CommandSent">
-            <summary>
-            Occurs when a command is sent
-            </summary>
-        </member>
-        <member name="E:Robotics.API.IConnectionManager.ResponseSent">
-            <summary>
-            Occurs when a response is sent
             </summary>
         </member>
     </members>

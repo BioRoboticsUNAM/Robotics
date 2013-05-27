@@ -67,6 +67,7 @@
     <Compile Include="API\BinaryCommandResponseBase.cs" />
     <Compile Include="API\BinaryMessage.cs" />
     <Compile Include="API\BinaryResponse.cs" />
+    <Compile Include="API\IConnector.cs" />
     <Compile Include="API\IConnectionManager.cs" />
     <Compile Include="API\ISharedVariableSubscriptionInfo.cs" />
     <Compile Include="API\ISharedVariableInfo.cs" />

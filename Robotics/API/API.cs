@@ -4,6 +4,30 @@ using Robotics;
 
 namespace Robotics.API
 {
+	#region Generis Delegates
+
+	/// <summary>
+	/// Represents methods that handle the change of status of an object
+	/// </summary>
+	/// <param name="sender">The object which rises the event</param>
+	public delegate void StatusChangedEventHandler<T>(T commandManager);
+
+	/// <summary>
+	/// Represents the method that will handle a command reception event
+	/// </summary>
+	/// <param name="sender">The object which rises the event</param>
+	/// <param name="command">The command received</param>
+	public delegate void CommandReceivedEventHandler<T>(T sender, Command command);
+
+	/// <summary>
+	/// Represents the method that will handle a response reception event
+	/// </summary>
+	/// <param name="sender">The object which rises the event</param>
+	/// <param name="response">The response received</param>
+	public delegate void ResponseReceivedEventHandler<T>(T sender, Response response);
+
+	#endregion
+
 	#region Delegates
 
 	/// <summary>
@@ -37,13 +61,13 @@ namespace Robotics.API
 	public delegate void CnnManResponseSentEventHandler(ConnectionManager sender, Response response);
 
 	/// <summary>
-	/// Represents the method that will handle the CommandReceived event of a CommandManager object
+	/// Represents the method that will handle a CommandReceived event
 	/// </summary>
 	/// <param name="command">The Command object received</param>
 	public delegate void CommandReceivedEventHandler(Command command);
 
 	/// <summary>
-	/// Represents the method that will handle the ResponseReceived event of a CommandManager object
+	/// Represents the method that will handle a ResponseReceived event
 	/// </summary>
 	/// <param name="response">The Response object received</param>
 	public delegate void ResponseReceivedEventHandler(Response response);
@@ -64,14 +88,14 @@ namespace Robotics.API
 	/// <summary>
 	/// Represents the method that will handle the DataReceived event of a SocketTcpServer object
 	/// </summary>
-	/// <param name="connectionManager">The ConnectionManager object which rises the event</param>
+	/// <param name="connectionManager">The IConnectionManager object which rises the event</param>
 	/// <param name="packet">The Tcp Packet with the data received</param>
 	public delegate void ConnectionManagerDataReceivedEH(ConnectionManager connectionManager, System.Net.Sockets.TcpPacket packet);
 
 	/// <summary>
 	/// Represents the method that will handle the StatusChanged, Started and Stopped events of a ConnectionManager
 	/// </summary>
-	/// <param name="connectionManager">The ConnectionManager object which rises the event</param>
+	/// <param name="connectionManager">The IConnectionManager object which rises the event</param>
 	public delegate void ConnectionManagerStatusChangedEventHandler(ConnectionManager connectionManager);
 
 	/// <summary>

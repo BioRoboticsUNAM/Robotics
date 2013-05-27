@@ -133,7 +133,7 @@ namespace Robotics.Plugins
 					this.rwPluginsLock.ReleaseReaderLock();
 					throw new ArgumentOutOfRangeException("Index was outside the boundaries of the collection.");
 				}
-				return this.plugins.Values[index];
+				p = this.plugins.Values[index];
 				this.rwPluginsLock.ReleaseReaderLock();
 				return p;
 			}

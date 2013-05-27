@@ -86,8 +86,6 @@ namespace Robotics.API
 		/// </summary>
 		private bool shvLoaded;
 
-		
-
 		#region Control Variables
 
 		/// <summary>
@@ -301,6 +299,14 @@ namespace Robotics.API
 				cnnMan.Disconnected += dlgClientDisconnected;
 				cnnMan.ClientDisconnected += dlgClientDisconnected;
 			}
+		}
+
+		/// <summary>
+		/// Gets or sets the ConnectionManager object asociated to this CommandManager object
+		/// </summary>
+		IConnectionManager ICommandManager.ConnectionManager
+		{
+			get { return this.cnnMan; }
 		}
 
 		/// <summary>
@@ -956,7 +962,7 @@ namespace Robotics.API
 		/// </summary>
 		/// <param name="cnnMan">The ConnectionManager object which provides the TcpPacket</param>
 		/// <param name="packet">Tcp packet received</param>
-		protected virtual void DataReceived(ConnectionManager cnnMan, TcpPacket packet)
+		protected virtual void DataReceived(IConnectionManager cnnMan, TcpPacket packet)
 		{
 			if((packet == null) || (packet.Data.Length < 1)) return;
 			if (cnnMan != this.cnnMan) return;

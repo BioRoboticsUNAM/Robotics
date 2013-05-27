@@ -837,7 +837,7 @@ namespace Robotics.Controls
 		/// When overriden in a derived class, opens a stream for the log file
 		/// </summary>
 		/// <param name="filePath">The path to the log file to create/open</param>
-		/// <param name="streamWriter">When this method returns contains a StreamWriter which allows to write in the specified file,
+		/// <param name="stream">When this method returns contains a StreamWriter which allows to write in the specified file,
 		/// or null if the file could not be created o could not be oppened</param>
 		protected abstract void OpenLogFileStream(string filePath, out StreamWriter stream);
 
