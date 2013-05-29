@@ -81,6 +81,7 @@
     <Compile Include="API\API.cs" />
     <Compile Include="API\AsyncFunctionCE.cs" />
     <Compile Include="API\ICommandManager.cs" />
+    <Compile Include="API\MessageParser.cs" />
     <Compile Include="API\MiscSharedVariables\KnownHumanFaces.cs" />
     <Compile Include="API\SharedVariableGeneric.cs" />
     <Compile Include="API\SharedVariableInfo.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="API\SharedVariable.cs" />
     <Compile Include="API\SharedVariableList.cs" />
     <Compile Include="API\SharedVariableSubscriptionReport.cs" />
+    <Compile Include="API\TcpPacketParser.cs" />
     <Compile Include="Controls\IdBox.cs">
       <SubType>Component</SubType>
     </Compile>

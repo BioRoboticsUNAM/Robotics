@@ -7,9 +7,14 @@ namespace Robotics.API
 	/// <summary>
 	/// Represents an object which allows asynchronous communication with other objects via message passing
 	/// </summary>
-	public interface IConnector : IService
+	public interface IConnector : IService, IMessageSource
 	{
 		#region Properties
+
+		/// <summary>
+		/// Gets a value indicating if the connector is connected to the message source
+		/// </summary>
+		bool IsConnected { get; }
 
 		#endregion
 
@@ -19,6 +24,16 @@ namespace Robotics.API
 		/// Occurs when a command is received
 		/// </summary>
 		event CommandReceivedEventHandler<IConnector> CommandReceived;
+
+		/// <summary>
+		/// Occurs when the connector gets connected to the message source
+		/// </summary>
+		event StatusChangedEventHandler<IConnector> Connected;
+
+		/// <summary>
+		/// Occurs when the connector gets disconnected from the message source
+		/// </summary>
+		event StatusChangedEventHandler<IConnector> Disconnected;
 
 		/// <summary>
 		/// Occurs when a response is received

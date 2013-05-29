@@ -93,8 +93,8 @@ namespace Robotics.HAL.Sensors.Telemetric
 			if(laser != null)
 				this.obstacleDetected = distance < laser.MaximumDistance;
 			this.step = -1;
-			this.x = distance * Math.Cos(angleRad);
-			this.y = distance * Math.Sin(angleRad);
+			this.x = distance * Robotics.Mathematics.MathUtil.Cos(angleRad);
+			this.y = distance * Robotics.Mathematics.MathUtil.Sin(angleRad);
 		}
 
 		/// <summary>

@@ -36,25 +36,29 @@ namespace Robotics.API
 
 		#region Variables
 		/// <summary>
-		/// Represents the DataReceived method
+		/// Represents the Connector_CommandReceived method
 		/// </summary>
-		private readonly ConnectionManagerDataReceivedEH dlgDataReceived;
+		private readonly CommandReceivedEventHandler<IConnector> dlgCommandReceived;
 		/// <summary>
-		/// Represents the ClientConnected method
+		/// Represents the Connector_ResponseReceived method
 		/// </summary>
-		private readonly TcpClientConnectedEventHandler dlgClientConnected;
+		private readonly ResponseReceivedEventHandler<IConnector> dlgResponseReceived;
 		/// <summary>
-		/// Represents the ClientDisconnected method
+		/// Represents the Connector_Connected method
 		/// </summary>
-		private readonly TcpClientDisconnectedEventHandler dlgClientDisconnected;
+		private readonly StatusChangedEventHandler<IConnector> dlgConnectorConnected;
+		/// <summary>
+		/// Represents the Connector_Disconnected method
+		/// </summary>
+		private readonly StatusChangedEventHandler<IConnector> dlgConnectorDisconnected;
 		/// <summary>
 		/// Stores the reference to the ConnectionManager object
 		/// </summary>
 		private ConnectionManager cnnMan;
 		/// <summary>
-		/// Stores data received trough Connection Manager
+		/// The default connector object used to send and receive messages
 		/// </summary>
-		private readonly ProducerConsumer<TcpPacket> dataReceived;
+		private IConnector connector;
 		/// <summary>
 		/// Queue of received commands.
 		/// </summary>
@@ -80,7 +84,10 @@ namespace Robotics.API
 		/// Stores an autoId for commands
 		/// </summary>
 		private int autoId = 0;
-
+		/// <summary>
+		/// Indicates that the Connector has just connected
+		/// </summary>
+		private bool firstConnected;
 		/// <summary>
 		/// Flag that indicates if the shared variable list has been retrieved
 		/// </summary>
@@ -97,11 +104,6 @@ namespace Robotics.API
 		/// ResetEvent used to initialization sync tasks
 		/// </summary>
 		private AutoResetEvent initializationSyncEvent;
-
-		/// <summary>
-		/// The endpoint where blackboard is connected
-		/// </summary>
-		private System.Net.IPEndPoint blackboardEndpoint;
 
 		/// <summary>
 		/// Stores the ready state of the module that controls the command manager
@@ -140,10 +142,6 @@ namespace Robotics.API
 		/// </summary>
 		protected Thread mainThread;
 		/// <summary>
-		/// Thread used to parse messages
-		/// </summary>
-		protected Thread parserThread;
-		/// <summary>
 		/// Thread used to update the shared variable list
 		/// </summary>
 		protected Thread sharedVariableListUpdaterThread;
@@ -151,10 +149,6 @@ namespace Robotics.API
 		/// Represents the MainThreadTask method
 		/// </summary>
 		private readonly ThreadStart dlgMainThreadTask;
-		/// <summary>
-		/// Represents the ParserThreadTask method
-		/// </summary>
-		private readonly ThreadStart dlgParserThreadTask;
 		/// <summary>
 		/// Represents the UpdateSharedVariableListTask method
 		/// </summary>
@@ -171,7 +165,7 @@ namespace Robotics.API
 		/// </summary>
 		public CommandManager()
 		{
-			dataReceived = new ProducerConsumer<TcpPacket>(100);
+			
 			commandsReceived = new ProducerConsumer<Command>();
 			responsesReceived = new ProducerConsumer<Response>();
 			unpairedResponses = new List<Response>();
@@ -179,11 +173,11 @@ namespace Robotics.API
 			sharedVariables = new SharedVariableList(this);
 			executers = new CommandExecuterCollection(this);
 
-			dlgDataReceived = new ConnectionManagerDataReceivedEH(DataReceived);
-			dlgClientConnected = new TcpClientConnectedEventHandler(ClientConnected);
-			dlgClientDisconnected = new TcpClientDisconnectedEventHandler(ClientDisconnected);
+			dlgCommandReceived = new CommandReceivedEventHandler<IConnector>(Connector_CommandReceived);
+			dlgResponseReceived = new ResponseReceivedEventHandler<IConnector>(Connector_ResponseReceived);
+			dlgConnectorConnected = new StatusChangedEventHandler<IConnector>(Connector_Connected);
+			dlgConnectorDisconnected = new StatusChangedEventHandler<IConnector>(Connector_Disconnected);
 			dlgMainThreadTask = new ThreadStart(MainThreadTask);
-			dlgParserThreadTask = new ThreadStart(ParserThreadTask);
 			dlgUpdateSharedVariableListTask = new ThreadStart(UpdateSharedVariableListTask);
 			initializationSyncEvent = new AutoResetEvent(false);
 		}
@@ -257,14 +251,8 @@ namespace Robotics.API
 
 				busy = value;
 
-				if ((cnnMan != null) && cnnMan.IsRunning)
-				{
-					try
-					{
-						cnnMan.Send(new Response(this, "busy", "", busy));
-					}
-					catch { }
-				}
+				if ((connector != null) && connector.IsRunning)
+					Send(new Response(this, "busy", "", busy));
 				OnStatusChanged();
 			}
 		}
@@ -282,31 +270,48 @@ namespace Robotics.API
 				if (cnnMan == value) return;
 				// Free asociated ConnectionManager (if any)
 				if ((cnnMan != null) && (cnnMan.CommandManager != this))
-				{
-					cnnMan.DataReceived -= dlgDataReceived;
-					cnnMan.Connected -= dlgClientConnected;
-					cnnMan.ClientConnected -= dlgClientConnected;
-					cnnMan.Disconnected -= dlgClientDisconnected;
-					cnnMan.ClientDisconnected -= dlgClientDisconnected;
 					cnnMan.CommandManager = null;
-				}
 				// Set new ConnectionManager
 				cnnMan = value;
 				cnnMan.CommandManager = this;
-				cnnMan.DataReceived += dlgDataReceived;
-				cnnMan.Connected += dlgClientConnected;
-				cnnMan.ClientConnected += dlgClientConnected;
-				cnnMan.Disconnected += dlgClientDisconnected;
-				cnnMan.ClientDisconnected += dlgClientDisconnected;
+				Connector = new TcpPacketParser(cnnMan);
 			}
 		}
 
 		/// <summary>
-		/// Gets or sets the ConnectionManager object asociated to this CommandManager object
+		/// Gets or sets the IConnectionManager object asociated to this CommandManager object
 		/// </summary>
 		IConnectionManager ICommandManager.ConnectionManager
 		{
 			get { return this.cnnMan; }
+		}
+
+		/// <summary>
+		/// Gets or sets the default IConnector object used to send and receive messages
+		/// </summary>
+		private IConnector Connector
+		{
+			get { return this.connector; }
+			set
+			{
+				if (value == null) throw new ArgumentNullException();
+				// If asociated IConnector and new IConnector are the same, do nothing
+				if (connector == value) return;
+				// Free asociated IConnector (if any)
+				if (connector != null)
+				{
+					connector.Connected -= dlgConnectorConnected;
+					connector.Disconnected -= dlgConnectorDisconnected;
+					connector.CommandReceived -= dlgCommandReceived;
+					connector.ResponseReceived -= dlgResponseReceived;
+				}
+				// Set new ConnectionManager
+				connector = value;
+				connector.Connected += dlgConnectorConnected;
+				connector.Disconnected += dlgConnectorDisconnected;
+				connector.CommandReceived += dlgCommandReceived;
+				connector.ResponseReceived += dlgResponseReceived;
+			}
 		}
 
 		/// <summary>
@@ -324,8 +329,8 @@ namespace Robotics.API
 		{
 			get
 			{
-				if (cnnMan == null) return "CommandManager";
-				return cnnMan.ModuleName;
+				if (connector == null) return "CommandManager";
+				return connector.ModuleName;
 			}
 		}
 
@@ -358,14 +363,8 @@ namespace Robotics.API
 
 				ready = value;
 
-				if ((cnnMan != null) && cnnMan.IsRunning)
-				{
-					try
-					{
-						cnnMan.Send(new Response(this, "ready", "", ready));
-					}
-					catch { }
-				}
+				if ((connector != null) && connector.IsRunning)
+					Send(new Response(this, "ready", "", ready));
 			}
 		}
 
@@ -489,7 +488,6 @@ namespace Robotics.API
 		/// </summary>
 		protected void CleanBuffers()
 		{
-			dataReceived.Clear();
 			commandsReceived.Clear();
 			responsesReceived.Clear();
 			lock (unpairedResponses)
@@ -647,8 +645,6 @@ namespace Robotics.API
 			shvLoaded = false;
 			mainThread = new Thread(dlgMainThreadTask);
 			mainThread.IsBackground = true;
-			parserThread = new Thread(dlgParserThreadTask);
-			parserThread.IsBackground = true;
 			mainThread.Start();
 		}
 
@@ -671,8 +667,8 @@ namespace Robotics.API
 
 			running = true;
 			//int i = 0;
-			parserThread.Start();
-			if ((cnnMan != null) && (!cnnMan.IsRunning)) cnnMan.Start();
+			if ((connector != null) && (!connector.IsRunning))
+				connector.Start();
 
 			if (running)
 			{
@@ -683,7 +679,7 @@ namespace Robotics.API
 			{
 				//shvRetElapsed = DateTime.Now - lastShvRetTime;
 				//// Update shared variable list
-				//if (!shvlUpdateRequested && (cnnMan.ConnectedClientsCount > 0) && (!shvLoaded || ((shvRetInterval != -1) && (shvRetElapsed.TotalMilliseconds > shvRetInterval))))
+				//if (!shvlUpdateRequested && (connector.ConnectedClientsCount > 0) && (!shvLoaded || ((shvRetInterval != -1) && (shvRetElapsed.TotalMilliseconds > shvRetInterval))))
 				//{
 				//	//shvlUpdateRequested = true;
 				//	////shvLoaded = true;
@@ -698,50 +694,15 @@ namespace Robotics.API
 
 			OnStop();
 			OnStatusChanged();
-			if ((cnnMan != null) && (cnnMan.IsRunning)) cnnMan.Stop();
+			if ((connector != null) && (connector.IsRunning)) connector.Stop();
 			if ((sharedVariableListUpdaterThread != null) && sharedVariableListUpdaterThread.IsAlive)
 			{
 				sharedVariableListUpdaterThread.Join(10);
 				if (sharedVariableListUpdaterThread.IsAlive)
 					sharedVariableListUpdaterThread.Abort();
 			}
-			if ((parserThread != null) && parserThread.IsAlive)
-			{
-				parserThread.Join(10);
-				if (parserThread.IsAlive)
-					parserThread.Abort();
-			}
-		}
-
-		/// <summary>
-		/// Executes parsing of data received
-		/// </summary>
-		protected void ParserThreadTask()
-		{
-			TcpPacket packet;
-			while (running)
-			{
-				try
-				{
-					packet = dataReceived.Consume(100);
-					if (packet != null)
-						Parse(packet);
-				}
-				catch (ThreadInterruptedException)
-				{
-					dataReceived.Clear();
-					return;
-				}
-				catch (ThreadAbortException)
-				{
-					dataReceived.Clear();
-					return;
-				}
-				catch
-				{
-					continue;
-				}
-			}
+			if ((connector != null) && connector.IsRunning)
+				connector.Stop();
 		}
 
 		/// <summary>
@@ -756,7 +717,7 @@ namespace Robotics.API
 
 			// 1. Send the list_vars command
 			cmdListVars = new Command("list_vars", "");
-			this.ConnectionManager.Send(cmdListVars);
+			this.connector.Send(cmdListVars);
 			return;
 
 			//// 2. Wait up to 5 milliseconds for a response arrival
@@ -936,37 +897,56 @@ namespace Robotics.API
 		#region Incomming Data Management
 
 		/// <summary>
-		/// Manages connections
+		/// Manages incomming commands from a IConnector source
 		/// </summary>
-		protected void ClientConnected(Socket socket)
+		/// <param name="sender">The IConnector object which sends the command</param>
+		/// <param name="command">The command received</param>
+		protected void Connector_CommandReceived(IConnector sender, Command command)
 		{
-			if (blackboardEndpoint == null)
-				UpdateSharedVariableList();
+			if (command == null)
+				return;
+			if (command.MessageSource == null)
+				command.MessageSource = sender;
+			this.commandsReceived.Produce(command);
+			OnCommandReceived(command);
 		}
 
 		/// <summary>
-		/// Manages disconnections
+		/// Manages incomming responses from a IConnector source
 		/// </summary>
-		protected void ClientDisconnected(System.Net.EndPoint endpoint)
+		/// <param name="sender">The IConnector object which sends the command</param>
+		/// <param name="response">The response received</param>
+		protected void Connector_ResponseReceived(IConnector sender, Response response)
 		{
-			if ((blackboardEndpoint != null) && (blackboardEndpoint == endpoint))
+			if (response == null)
+				return;
+			if (response.MessageSource == null)
+				response.MessageSource = sender;
+			this.responsesReceived.Produce(response);
+			OnResponseReceived(response);
+		}
+
+		/// <summary>
+		/// Manages the Connected event of a IConnector source
+		/// </summary>
+		/// <param name="sender">The IConnector object which rises the event</param>
+		protected void Connector_Connected(IConnector sender)
+		{
+			if (!firstConnected)
 			{
-				initializationSyncEvent.Reset();
-				blackboardEndpoint = null;
-				shvLoaded = false;
+				firstConnected = true;
+				UpdateSharedVariableList();
 			}
 		}
 
 		/// <summary>
-		/// Manages all received data
+		/// Manages the Connected event of a IConnector source
 		/// </summary>
-		/// <param name="cnnMan">The ConnectionManager object which provides the TcpPacket</param>
-		/// <param name="packet">Tcp packet received</param>
-		protected virtual void DataReceived(IConnectionManager cnnMan, TcpPacket packet)
+		/// <param name="sender">The IConnector object which rises the event</param>
+		protected void Connector_Disconnected(IConnector sender) 
 		{
-			if((packet == null) || (packet.Data.Length < 1)) return;
-			if (cnnMan != this.cnnMan) return;
-			dataReceived.Produce(packet);
+			initializationSyncEvent.Reset();
+			shvLoaded = false;
 		}
 
 		/// <summary>
@@ -994,7 +974,7 @@ namespace Robotics.API
 				if (unknownVars.Count == 0)
 					return true;
 				Command cmdReadVars = new Command("read_vars", String.Join(" ", unknownVars.ToArray()));
-				this.ConnectionManager.Send(cmdReadVars);
+				this.connector.Send(cmdReadVars);
 				return true;
 			}
 			else if (response.CommandName == "read_vars")
@@ -1103,59 +1083,6 @@ namespace Robotics.API
 		}
 
 		/// <summary>
-		/// Parses a received string
-		/// </summary>
-		/// <param name="packet">String received</param>
-		protected virtual void Parse(TcpPacket packet)
-		{
-			Command command;
-			Response response;
-			if ((packet.Data.Length > 1) && (packet.Data[0] == 0x7E))
-				return;
-
-			string stringToParse;
-			for (int i = 0; i < packet.DataStrings.Length; ++i)
-			{
-				stringToParse = packet.DataStrings[i];
-
-				// Responses to manage
-				if (Response.TryParse(stringToParse, out response))
-				{
-					response.MessageSource = cnnMan;
-					response.MessageSourceMetadata = packet.RemoteEndPoint;
-					//responsesReceived.Produce(response);
-					ParseResponse(response);
-					try
-					{
-						OnResponseReceived(response);
-					}
-					catch { }
-					continue;
-				}
-
-				// Commands to parse
-				if (Command.TryParse(stringToParse, out command))
-				{
-					command.MessageSource = cnnMan;
-					command.MessageSourceMetadata = packet.RemoteEndPoint;
-
-					if (ParseSystemCommand(command))
-						continue;
-
-					commandsReceived.Produce(command);
-					try
-					{
-						OnCommandReceived(command);
-					}
-					catch { }
-					continue;
-				}
-			}
-
-			//UnknownCommand(text);
-		}
-
-		/// <summary>
 		/// Parses a received Command
 		/// </summary>
 		/// <param name="command">Command received</param>
@@ -1188,9 +1115,9 @@ namespace Robotics.API
 			{
 				case "alive":
 					if (Busy)
-						cnnMan.Send(new Response(this, "busy", "", Busy));
+						Send(new Response(this, "busy", "", Busy));
 					else if(!Ready)
-						cnnMan.Send(new Response(this, "ready", "", Ready));
+						Send(new Response(this, "ready", "", Ready));
 					else
 						SendResponse(true, command);
 					break;
@@ -1208,11 +1135,10 @@ namespace Robotics.API
 					break;
 			}
 
-			if ((blackboardEndpoint == null) && (command.MessageSourceMetadata is System.Net.IPEndPoint))
+			if (this.firstConnected)
 			{
-				blackboardEndpoint = (System.Net.IPEndPoint)command.MessageSourceMetadata;
+				this.firstConnected = false;
 				initializationSyncEvent.Set();
-
 			}
 			return true;
 		}
@@ -1228,6 +1154,11 @@ namespace Robotics.API
 				return;
 			lock(unpairedResponses)
 				unpairedResponses.Add(response);
+			try
+			{
+				OnResponseReceived(response);
+			}
+			catch { }
 		}
 
 		#endregion
@@ -1366,16 +1297,51 @@ namespace Robotics.API
 		}
 
 		/// <summary>
-		/// Sends a command through the ConnectionManager
+		/// Sends a command through the Connector
+		/// </summary>
+		/// <param name="command">Command to be sent</param>
+		/// <returns>true if command was sent, false otherwise</returns>
+		private bool Send(Command command)
+		{
+			if (command == null)
+				return false;
+			// 1. Set the origin of the command
+			command.MessageSource = connector;
+			// 2. Send the command. If command cannot be sent, return false
+			try
+			{
+				return connector.Send(command);
+			}
+			catch { return false; }
+		}
+
+		/// <summary>
+		/// Sends a response through the Connector
+		/// </summary>
+		/// <param name="response">Response to be sent</param>
+		/// <returns>true if response was sent, false otherwise</returns>
+		private bool Send(Response response)
+		{
+			if (response == null)
+				return false;
+			// 1. Set the origin of the command
+			response.MessageSource = connector;
+			// 2. Send the command. If command cannot be sent, return false
+			try
+			{
+				return connector.Send(response);
+			}
+			catch { return false; }
+		}
+
+		/// <summary>
+		/// Sends a command through the Connector
 		/// </summary>
 		/// <param name="command">Command to be sent</param>
 		/// <returns>true if command was sent and its response received. false otherwise</returns>
 		protected internal bool SendCommand(Command command)
 		{
-			// 1. Set the origin of the command
-			command.MessageSource = ConnectionManager;
-			// 2. Send the command. If command cannot be sent, return false
-			return ConnectionManager.Send(command);
+			return Send(command);
 		}
 
 		/// <summary>
@@ -1496,7 +1462,7 @@ namespace Robotics.API
 		}
 
 		/// <summary>
-		/// Creates a response and sends it through the asociated ConnectionManager
+		/// Creates a response and sends it through the asociated Connector
 		/// </summary>
 		/// <param name="success">Indicates if command succeded</param>
 		/// <param name="command">Command to respond</param>
@@ -1507,7 +1473,7 @@ namespace Robotics.API
 		}
 
 		/// <summary>
-		/// Creates a response and sends it through the asociated ConnectionManager
+		/// Creates a response and sends it through the asociated Connector
 		/// </summary>
 		/// <param name="success">Indicates if command succeded</param>
 		/// <param name="command">Command to respond</param>
@@ -1515,23 +1481,17 @@ namespace Robotics.API
 		protected internal virtual void SendResponse(bool success, Command command, out Response response)
 		{
 			response = Response.CreateFromCommand(command, success);
-
-			if ((command.MessageSource == null) || command.MessageSource == this)
-			{
-				response.MessageSource = cnnMan;
-				cnnMan.Send(response);
-			}
-			command.MessageSource.ReceiveResponse(response);
+			SendResponse(response);
 		}
 
 		/// <summary>
-		/// Sends a Response through the asociated ConnectionManager
+		/// Sends a Response through the asociated Connectonr
 		/// </summary>
 		/// <param name="response">Response object to be sent</param>
 		protected internal virtual void SendResponse(Response response)
 		{
 			if ((response.MessageSource == null) || response.MessageSource == this)
-				cnnMan.Send(response);
+				connector.Send(response);
 			response.MessageSource.ReceiveResponse(response);
 		}
 

@@ -10,7 +10,7 @@ namespace Robotics.API
 	/// Represents methods that handle the change of status of an object
 	/// </summary>
 	/// <param name="sender">The object which rises the event</param>
-	public delegate void StatusChangedEventHandler<T>(T commandManager);
+	public delegate void StatusChangedEventHandler<T>(T sender);
 
 	/// <summary>
 	/// Represents the method that will handle a command reception event

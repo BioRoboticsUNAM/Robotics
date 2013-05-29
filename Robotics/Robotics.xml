@@ -2789,19 +2789,24 @@
             </summary>
             <remarks>This class is incomplete and should not be used</remarks>
         </member>
-        <member name="F:Robotics.API.CommandManager.dlgDataReceived">
+        <member name="F:Robotics.API.CommandManager.dlgCommandReceived">
             <summary>
-            Represents the DataReceived method
+            Represents the Connector_CommandReceived method
             </summary>
         </member>
-        <member name="F:Robotics.API.CommandManager.dlgClientConnected">
+        <member name="F:Robotics.API.CommandManager.dlgResponseReceived">
             <summary>
-            Represents the ClientConnected method
+            Represents the Connector_ResponseReceived method
             </summary>
         </member>
-        <member name="F:Robotics.API.CommandManager.dlgClientDisconnected">
+        <member name="F:Robotics.API.CommandManager.dlgConnectorConnected">
             <summary>
-            Represents the ClientDisconnected method
+            Represents the Connector_Connected method
+            </summary>
+        </member>
+        <member name="F:Robotics.API.CommandManager.dlgConnectorDisconnected">
+            <summary>
+            Represents the Connector_Disconnected method
             </summary>
         </member>
         <member name="F:Robotics.API.CommandManager.cnnMan">
@@ -2809,9 +2814,9 @@
             Stores the reference to the ConnectionManager object
             </summary>
         </member>
-        <member name="F:Robotics.API.CommandManager.dataReceived">
+        <member name="F:Robotics.API.CommandManager.connector">
             <summary>
-            Stores data received trough Connection Manager
+            The default connector object used to send and receive messages
             </summary>
         </member>
         <member name="F:Robotics.API.CommandManager.commandsReceived">
@@ -2845,6 +2850,11 @@
             Stores an autoId for commands
             </summary>
         </member>
+        <member name="F:Robotics.API.CommandManager.firstConnected">
+            <summary>
+            Indicates that the Connector has just connected
+            </summary>
+        </member>
         <member name="F:Robotics.API.CommandManager.shvLoaded">
             <summary>
             Flag that indicates if the shared variable list has been retrieved
@@ -2858,11 +2868,6 @@
         <member name="F:Robotics.API.CommandManager.initializationSyncEvent">
             <summary>
             ResetEvent used to initialization sync tasks
-            </summary>
-        </member>
-        <member name="F:Robotics.API.CommandManager.blackboardEndpoint">
-            <summary>
-            The endpoint where blackboard is connected
             </summary>
         </member>
         <member name="F:Robotics.API.CommandManager.ready">
@@ -2895,11 +2900,6 @@
             The main thread
             </summary>
         </member>
-        <member name="F:Robotics.API.CommandManager.parserThread">
-            <summary>
-            Thread used to parse messages
-            </summary>
-        </member>
         <member name="F:Robotics.API.CommandManager.sharedVariableListUpdaterThread">
             <summary>
             Thread used to update the shared variable list
@@ -2908,11 +2908,6 @@
         <member name="F:Robotics.API.CommandManager.dlgMainThreadTask">
             <summary>
             Represents the MainThreadTask method
-            </summary>
-        </member>
-        <member name="F:Robotics.API.CommandManager.dlgParserThreadTask">
-            <summary>
-            Represents the ParserThreadTask method
             </summary>
         </member>
         <member name="F:Robotics.API.CommandManager.dlgUpdateSharedVariableListTask">
@@ -3041,11 +3036,6 @@
             Executes async tasks
             </summary>
         </member>
-        <member name="M:Robotics.API.CommandManager.ParserThreadTask">
-            <summary>
-            Executes parsing of data received
-            </summary>
-        </member>
         <member name="M:Robotics.API.CommandManager.SharedVariableListRequestUpdate">
             <summary>
             Request the list of all shared variables stored in bloackboard.
@@ -3107,22 +3097,31 @@
             <param name="source">The IMessageSource object which will receive the Response object generated after the command execution</param>
             <param name="metaData">The object which will be attached to the command and it's response as MetaData</param>
         </member>
-        <member name="M:Robotics.API.CommandManager.ClientConnected(System.Net.Sockets.Socket)">
+        <member name="M:Robotics.API.CommandManager.Connector_CommandReceived(Robotics.API.IConnector,Robotics.API.Command)">
             <summary>
-            Manages connections
+            Manages incomming commands from a IConnector source
             </summary>
+            <param name="sender">The IConnector object which sends the command</param>
+            <param name="command">The command received</param>
         </member>
-        <member name="M:Robotics.API.CommandManager.ClientDisconnected(System.Net.EndPoint)">
+        <member name="M:Robotics.API.CommandManager.Connector_ResponseReceived(Robotics.API.IConnector,Robotics.API.Response)">
             <summary>
-            Manages disconnections
+            Manages incomming responses from a IConnector source
             </summary>
+            <param name="sender">The IConnector object which sends the command</param>
+            <param name="response">The response received</param>
         </member>
-        <member name="M:Robotics.API.CommandManager.DataReceived(Robotics.API.IConnectionManager,System.Net.Sockets.TcpPacket)">
+        <member name="M:Robotics.API.CommandManager.Connector_Connected(Robotics.API.IConnector)">
             <summary>
-            Manages all received data
+            Manages the Connected event of a IConnector source
             </summary>
-            <param name="cnnMan">The ConnectionManager object which provides the TcpPacket</param>
-            <param name="packet">Tcp packet received</param>
+            <param name="sender">The IConnector object which rises the event</param>
+        </member>
+        <member name="M:Robotics.API.CommandManager.Connector_Disconnected(Robotics.API.IConnector)">
+            <summary>
+            Manages the Connected event of a IConnector source
+            </summary>
+            <param name="sender">The IConnector object which rises the event</param>
         </member>
         <member name="M:Robotics.API.CommandManager.ManageSharedVariableList(Robotics.API.Response)">
             <summary>
@@ -3135,12 +3134,6 @@
             Manages the events of the shared variables
             </summary>
             <param name="response">Response which contains a the shared vaiable data</param>
-        </member>
-        <member name="M:Robotics.API.CommandManager.Parse(System.Net.Sockets.TcpPacket)">
-            <summary>
-            Parses a received string
-            </summary>
-            <param name="packet">String received</param>
         </member>
         <member name="M:Robotics.API.CommandManager.ParseCommand(Robotics.API.Command)">
             <summary>
@@ -3171,9 +3164,23 @@
             <param name="results">Array of Response objects generated from responses received</param>
             <returns>true if at least one command was sent and its response received. false otherwise</returns>
         </member>
+        <member name="M:Robotics.API.CommandManager.Send(Robotics.API.Command)">
+            <summary>
+            Sends a command through the Connector
+            </summary>
+            <param name="command">Command to be sent</param>
+            <returns>true if command was sent, false otherwise</returns>
+        </member>
+        <member name="M:Robotics.API.CommandManager.Send(Robotics.API.Response)">
+            <summary>
+            Sends a response through the Connector
+            </summary>
+            <param name="response">Response to be sent</param>
+            <returns>true if response was sent, false otherwise</returns>
+        </member>
         <member name="M:Robotics.API.CommandManager.SendCommand(Robotics.API.Command)">
             <summary>
-            Sends a command through the ConnectionManager
+            Sends a command through the Connector
             </summary>
             <param name="command">Command to be sent</param>
             <returns>true if command was sent and its response received. false otherwise</returns>
@@ -3198,14 +3205,14 @@
         </member>
         <member name="M:Robotics.API.CommandManager.SendResponse(System.Boolean,Robotics.API.Command)">
             <summary>
-            Creates a response and sends it through the asociated ConnectionManager
+            Creates a response and sends it through the asociated Connector
             </summary>
             <param name="success">Indicates if command succeded</param>
             <param name="command">Command to respond</param>
         </member>
         <member name="M:Robotics.API.CommandManager.SendResponse(System.Boolean,Robotics.API.Command,Robotics.API.Response@)">
             <summary>
-            Creates a response and sends it through the asociated ConnectionManager
+            Creates a response and sends it through the asociated Connector
             </summary>
             <param name="success">Indicates if command succeded</param>
             <param name="command">Command to respond</param>
@@ -3213,7 +3220,7 @@
         </member>
         <member name="M:Robotics.API.CommandManager.SendResponse(Robotics.API.Response)">
             <summary>
-            Sends a Response through the asociated ConnectionManager
+            Sends a Response through the asociated Connectonr
             </summary>
             <param name="response">Response object to be sent</param>
         </member>
@@ -3284,7 +3291,12 @@
         </member>
         <member name="P:Robotics.API.CommandManager.Robotics#API#ICommandManager#ConnectionManager">
             <summary>
-            Gets or sets the ConnectionManager object asociated to this CommandManager object
+            Gets or sets the IConnectionManager object asociated to this CommandManager object
+            </summary>
+        </member>
+        <member name="P:Robotics.API.CommandManager.Connector">
+            <summary>
+            Gets or sets the default IConnector object used to send and receive messages
             </summary>
         </member>
         <member name="P:Robotics.API.CommandManager.CommandExecuters">
@@ -16757,9 +16769,24 @@
             <param name="response">Response to be sent</param>
             <returns>true if response was sent successfully, false otherwise</returns>
         </member>
+        <member name="P:Robotics.API.IConnector.IsConnected">
+            <summary>
+            Gets a value indicating if the connector is connected to the message source
+            </summary>
+        </member>
         <member name="E:Robotics.API.IConnector.CommandReceived">
             <summary>
             Occurs when a command is received
+            </summary>
+        </member>
+        <member name="E:Robotics.API.IConnector.Connected">
+            <summary>
+            Occurs when the connector gets connected to the message source
+            </summary>
+        </member>
+        <member name="E:Robotics.API.IConnector.Disconnected">
+            <summary>
+            Occurs when the connector gets disconnected from the message source
             </summary>
         </member>
         <member name="E:Robotics.API.IConnector.ResponseReceived">
@@ -20500,6 +20527,248 @@
         <member name="P:Robotics.API.CommandExecuterCollection.IsReadOnly">
             <summary>
             This property always returns false
+            </summary>
+        </member>
+        <member name="T:Robotics.API.TcpPacketParser">
+            <summary>
+            Implements a message parser for TCP packets received from a connection manager
+            </summary>
+        </member>
+        <member name="T:Robotics.API.MessageParser`1">
+            <summary>
+            Implements basic functionality for message parsing
+            </summary>
+            <typeparam name="T">The data type or structure from where the messages will be parsed</typeparam>
+        </member>
+        <member name="F:Robotics.API.MessageParser`1.dataReceived">
+            <summary>
+            Stores data received trough Connection Manager
+            </summary>
+        </member>
+        <member name="F:Robotics.API.MessageParser`1.dlgParserThreadTask">
+            <summary>
+            Represents the ParserThreadTask method
+            </summary>
+        </member>
+        <member name="F:Robotics.API.MessageParser`1.parserThread">
+            <summary>
+            Thread used to parse messages
+            </summary>
+        </member>
+        <member name="F:Robotics.API.MessageParser`1.running">
+            <summary>
+            Indicates if main thread is running
+            </summary>
+        </member>
+        <member name="M:Robotics.API.MessageParser`1.#ctor">
+            <summary>
+            Initializes a new instance of TcpPacketParser
+            </summary>
+        </member>
+        <member name="M:Robotics.API.MessageParser`1.CleanBuffers">
+            <summary>
+            Clears out all the contents of dataReceived, commandsReceived, responsesReceived and unpairedResponses Queues/Lists
+            </summary>
+        </member>
+        <member name="M:Robotics.API.MessageParser`1.OnCommandReceived(Robotics.API.Command)">
+            <summary>
+            Raises the CommandReceived event
+            </summary>
+            <param name="command">The received command</param>
+        </member>
+        <member name="M:Robotics.API.MessageParser`1.OnConnected">
+            <summary>
+            Raises the Connected event
+            </summary>
+        </member>
+        <member name="M:Robotics.API.MessageParser`1.OnDisconnected">
+            <summary>
+            Raises the Disconnected event
+            </summary>
+        </member>
+        <member name="M:Robotics.API.MessageParser`1.OnResponseReceived(Robotics.API.Response)">
+            <summary>
+            Raises the ResponseReceived event
+            </summary>
+            <param name="response">the received response</param>
+        </member>
+        <member name="M:Robotics.API.MessageParser`1.Parse(`0)">
+            <summary>
+            When overriden in a derived class, it parses received data to convert it
+            into a message. Be sure to call the OnCommandReceived and OnResponseReceived methods
+            to ensure communication. This method is for use within the parser thread only.
+            </summary>
+            <param name="data">The received data</param>
+        </member>
+        <member name="M:Robotics.API.MessageParser`1.ParserThreadTask">
+            <summary>
+            Executes parsing of data received
+            </summary>
+        </member>
+        <member name="M:Robotics.API.MessageParser`1.ProduceData(`0)">
+            <summary>
+            Enqueues data into the Producer-Consumer queue for the parser thread.
+            </summary>
+            <param name="data">The data to be enequeued</param>
+        </member>
+        <member name="M:Robotics.API.MessageParser`1.ReceiveResponse(Robotics.API.Response)">
+            <summary>
+            When overriden in a derived class, receives the response
+            generated due to a command sent by this instance.
+            </summary>
+            <param name="response">The response generated for the command received</param>
+        </member>
+        <member name="M:Robotics.API.MessageParser`1.Send(Robotics.API.Command)">
+            <summary>
+            When overriden in a derived class, sends a command through the IConnectionManager
+            </summary>
+            <param name="command">Command to be sent</param>
+            <returns>true if the command was sent, false otherwise</returns>
+        </member>
+        <member name="M:Robotics.API.MessageParser`1.Send(Robotics.API.Response)">
+            <summary>
+            When overriden in a derived class, sends a response through the IConnectionManager
+            </summary>
+            <param name="response">Response to be sent</param>
+            <returns>true if the response was sent, false otherwise</returns>
+        </member>
+        <member name="M:Robotics.API.MessageParser`1.Start">
+            <summary>
+            Starts the parser
+            </summary>
+        </member>
+        <member name="M:Robotics.API.MessageParser`1.Stop">
+            <summary>
+            Stops the parser
+            </summary>
+        </member>
+        <member name="E:Robotics.API.MessageParser`1.CommandReceived">
+            <summary>
+            Occurs when a command is received
+            </summary>
+        </member>
+        <member name="E:Robotics.API.MessageParser`1.Connected">
+            <summary>
+            Occurs when the connector gets connected to the message source
+            </summary>
+        </member>
+        <member name="E:Robotics.API.MessageParser`1.Disconnected">
+            <summary>
+            Occurs when the connector gets disconnected from the message source
+            </summary>
+        </member>
+        <member name="E:Robotics.API.MessageParser`1.ResponseReceived">
+            <summary>
+            Occurs when a response is received
+            </summary>
+        </member>
+        <member name="P:Robotics.API.MessageParser`1.IsConnected">
+            <summary>
+            Gets a value indicating if the connector is connected to the message source
+            </summary>
+        </member>
+        <member name="P:Robotics.API.MessageParser`1.IsRunning">
+            <summary>
+            Gets a value indicating if this instance of CommandManager has been started
+            </summary>
+        </member>
+        <member name="P:Robotics.API.MessageParser`1.ModuleName">
+            <summary>
+            Returns the ModuleName property of the asociated IConnectionManager object
+            </summary>
+        </member>
+        <member name="F:Robotics.API.TcpPacketParser.dlgClientConnected">
+            <summary>
+            Represents the ClientConnected method
+            </summary>
+        </member>
+        <member name="F:Robotics.API.TcpPacketParser.dlgClientDisconnected">
+            <summary>
+            Represents the ClientDisconnected method
+            </summary>
+        </member>
+        <member name="F:Robotics.API.TcpPacketParser.dlgDataReceived">
+            <summary>
+            Represents the DataReceived method
+            </summary>
+        </member>
+        <member name="F:Robotics.API.TcpPacketParser.cnnMan">
+            <summary>
+            Stores the reference to the ConnectionManager object
+            </summary>
+        </member>
+        <member name="M:Robotics.API.TcpPacketParser.#ctor(Robotics.API.IConnectionManager)">
+            <summary>
+            Initializes a new instance of TcpPacketParser
+            </summary>
+            <param name="cnnMan">The ConnectionManager object which incomming data will be parsed</param>
+        </member>
+        <member name="M:Robotics.API.TcpPacketParser.ClientConnected(System.Net.Sockets.Socket)">
+            <summary>
+            Manages connections
+            </summary>
+        </member>
+        <member name="M:Robotics.API.TcpPacketParser.ClientDisconnected(System.Net.EndPoint)">
+            <summary>
+            Manages disconnections
+            </summary>
+        </member>
+        <member name="M:Robotics.API.TcpPacketParser.DataReceived(Robotics.API.IConnectionManager,System.Net.Sockets.TcpPacket)">
+            <summary>
+            Manages all received data
+            </summary>
+            <param name="cnnMan">The ConnectionManager object which provides the TcpPacket</param>
+            <param name="packet">Tcp packet received</param>
+        </member>
+        <member name="M:Robotics.API.TcpPacketParser.Parse(System.Net.Sockets.TcpPacket)">
+            <summary>
+            Parses a received string
+            </summary>
+            <param name="packet">String received</param>
+        </member>
+        <member name="M:Robotics.API.TcpPacketParser.ReceiveResponse(Robotics.API.Response)">
+            <summary>
+            
+            </summary>
+            <param name="response"></param>
+        </member>
+        <member name="M:Robotics.API.TcpPacketParser.Send(Robotics.API.Command)">
+            <summary>
+            Sends a command through the IConnectionManager
+            </summary>
+            <param name="command">Command to be sent</param>
+            <returns>true if the command was sent, false otherwise</returns>
+        </member>
+        <member name="M:Robotics.API.TcpPacketParser.Send(Robotics.API.Response)">
+            <summary>
+            Sends a response through the IConnectionManager
+            </summary>
+            <param name="response">Response to be sent</param>
+            <returns>true if the response was sent, false otherwise</returns>
+        </member>
+        <member name="M:Robotics.API.TcpPacketParser.Start">
+            <summary>
+            Starts the parser
+            </summary>
+        </member>
+        <member name="M:Robotics.API.TcpPacketParser.Stop">
+            <summary>
+            Stops the parser
+            </summary>
+        </member>
+        <member name="P:Robotics.API.TcpPacketParser.ConnectionManager">
+            <summary>
+            Gets or sets the ConnectionManager object asociated to this CommandManager object
+            </summary>
+        </member>
+        <member name="P:Robotics.API.TcpPacketParser.IsConnected">
+            <summary>
+            Gets a value indicating if the connector is connected to the message source
+            </summary>
+        </member>
+        <member name="P:Robotics.API.TcpPacketParser.ModuleName">
+            <summary>
+            Returns the ModuleName property of the asociated IConnectionManager object
             </summary>
         </member>
     </members>
