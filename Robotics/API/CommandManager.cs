@@ -138,9 +138,13 @@ namespace Robotics.API
 		/// </summary>
 		protected bool running;
 		/// <summary>
-		/// The main thread
+		/// The main thread, it parses commands
 		/// </summary>
 		protected Thread mainThread;
+		/// <summary>
+		/// Used to asyncrhonously parse responses in order to improve performance.
+		/// </summary>
+		private Thread responseParserThread;
 		/// <summary>
 		/// Thread used to update the shared variable list
 		/// </summary>
@@ -149,6 +153,10 @@ namespace Robotics.API
 		/// Represents the MainThreadTask method
 		/// </summary>
 		private readonly ThreadStart dlgMainThreadTask;
+		/// <summary>
+		/// Represents the ResponseParserThreadTask method
+		/// </summary>
+		private readonly ThreadStart dlgResponseParserThreadTask;
 		/// <summary>
 		/// Represents the UpdateSharedVariableListTask method
 		/// </summary>
@@ -178,6 +186,7 @@ namespace Robotics.API
 			dlgConnectorConnected = new StatusChangedEventHandler<IConnector>(Connector_Connected);
 			dlgConnectorDisconnected = new StatusChangedEventHandler<IConnector>(Connector_Disconnected);
 			dlgMainThreadTask = new ThreadStart(MainThreadTask);
+			dlgResponseParserThreadTask = new ThreadStart(ResponseParserThreadTask);
 			dlgUpdateSharedVariableListTask = new ThreadStart(UpdateSharedVariableListTask);
 			initializationSyncEvent = new AutoResetEvent(false);
 		}
@@ -645,6 +654,8 @@ namespace Robotics.API
 			shvLoaded = false;
 			mainThread = new Thread(dlgMainThreadTask);
 			mainThread.IsBackground = true;
+			responseParserThread = new Thread(dlgResponseParserThreadTask);
+			responseParserThread.IsBackground = true;
 			mainThread.Start();
 		}
 
@@ -663,10 +674,11 @@ namespace Robotics.API
 		protected virtual void MainThreadTask()
 		{
 			Command cmd;
-			//Response rsp;
 
 			running = true;
 			//int i = 0;
+			if (responseParserThread != null)
+				responseParserThread.Start();
 			if ((connector != null) && (!connector.IsRunning))
 				connector.Start();
 
@@ -694,15 +706,54 @@ namespace Robotics.API
 
 			OnStop();
 			OnStatusChanged();
-			if ((connector != null) && (connector.IsRunning)) connector.Stop();
+			if ((connector != null) && connector.IsRunning)
+				connector.Stop();
+
+			JoinResponseParserThread();
+			JoinSharedVariableThread();
+		}
+
+		/// <summary>
+		/// Asyncrhonously manages the incomming responses.
+		/// It can be done by the MainThread but is implemented to
+		/// increase performance
+		/// </summary>
+		private void ResponseParserThreadTask()
+		{
+			Response rsp;
+
+			while (running)
+			{
+				rsp = responsesReceived.Consume(100);
+				if (rsp != null)
+					ParseResponse(rsp);
+			}
+		}
+
+		/// <summary>
+		/// Waits for the sharedVariableListUpdaterThread to finish and join
+		/// </summary>
+		private void JoinSharedVariableThread()
+		{
 			if ((sharedVariableListUpdaterThread != null) && sharedVariableListUpdaterThread.IsAlive)
 			{
 				sharedVariableListUpdaterThread.Join(10);
 				if (sharedVariableListUpdaterThread.IsAlive)
 					sharedVariableListUpdaterThread.Abort();
 			}
-			if ((connector != null) && connector.IsRunning)
-				connector.Stop();
+		}
+
+		/// <summary>
+		/// Waits for the responseParserThread to finish and join
+		/// </summary>
+		private void JoinResponseParserThread()
+		{
+			if ((responseParserThread != null) && responseParserThread.IsAlive)
+			{
+				responseParserThread.Join(100);
+				if (responseParserThread.IsAlive)
+					responseParserThread.Abort();
+			}
 		}
 
 		/// <summary>
@@ -1152,13 +1203,10 @@ namespace Robotics.API
 			//ManageSharedVariableList(response);
 			if (ManageSubscription(response))
 				return;
-			lock(unpairedResponses)
-				unpairedResponses.Add(response);
-			try
+			lock (unpairedResponses)
 			{
-				OnResponseReceived(response);
+				unpairedResponses.Add(response);
 			}
-			catch { }
 		}
 
 		#endregion

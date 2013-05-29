@@ -2897,7 +2897,12 @@
         </member>
         <member name="F:Robotics.API.CommandManager.mainThread">
             <summary>
-            The main thread
+            The main thread, it parses commands
+            </summary>
+        </member>
+        <member name="F:Robotics.API.CommandManager.responseParserThread">
+            <summary>
+            Used to asyncrhonously parse responses in order to improve performance.
             </summary>
         </member>
         <member name="F:Robotics.API.CommandManager.sharedVariableListUpdaterThread">
@@ -2908,6 +2913,11 @@
         <member name="F:Robotics.API.CommandManager.dlgMainThreadTask">
             <summary>
             Represents the MainThreadTask method
+            </summary>
+        </member>
+        <member name="F:Robotics.API.CommandManager.dlgResponseParserThreadTask">
+            <summary>
+            Represents the ResponseParserThreadTask method
             </summary>
         </member>
         <member name="F:Robotics.API.CommandManager.dlgUpdateSharedVariableListTask">
@@ -3034,6 +3044,23 @@
         <member name="M:Robotics.API.CommandManager.MainThreadTask">
             <summary>
             Executes async tasks
+            </summary>
+        </member>
+        <member name="M:Robotics.API.CommandManager.ResponseParserThreadTask">
+            <summary>
+            Asyncrhonously manages the incomming responses.
+            It can be done by the MainThread but is implemented to
+            increase performance
+            </summary>
+        </member>
+        <member name="M:Robotics.API.CommandManager.JoinSharedVariableThread">
+            <summary>
+            Waits for the sharedVariableListUpdaterThread to finish and join
+            </summary>
+        </member>
+        <member name="M:Robotics.API.CommandManager.JoinResponseParserThread">
+            <summary>
+            Waits for the responseParserThread to finish and join
             </summary>
         </member>
         <member name="M:Robotics.API.CommandManager.SharedVariableListRequestUpdate">

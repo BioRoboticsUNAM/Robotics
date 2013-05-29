@@ -15,12 +15,19 @@ namespace SampleModule
 			cmdMan.CommandExecuters.Add(new FactorialCommandExecuter(engine));
 			cmdMan.CommandExecuters.Add(new SayCommandExecuter());
 			cmdMan.CommandExecuters.Add(new StatusCommandExecuter(engine));
+			cmdMan.SharedVariablesLoaded += new SharedVariablesLoadedEventHandler(cmdMan_SharedVariablesLoaded);
 			cmdMan.Start();
+			
+			
 
-			cmdMan.Ready = true;
 
 			while (true)
 				System.Threading.Thread.Sleep(100);
+		}
+
+		static void cmdMan_SharedVariablesLoaded(CommandManager cmdMan)
+		{
+			cmdMan.Ready = true;
 		}
 	}
 }
