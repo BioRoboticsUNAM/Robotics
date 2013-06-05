@@ -298,7 +298,7 @@ namespace Robotics.API
 		/// <summary>
 		/// Gets or sets the default IConnector object used to send and receive messages
 		/// </summary>
-		private IConnector Connector
+		public IConnector Connector
 		{
 			get { return this.connector; }
 			set

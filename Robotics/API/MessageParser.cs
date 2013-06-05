@@ -8,7 +8,7 @@ namespace Robotics.API
 	/// Implements basic functionality for message parsing
 	/// </summary>
 	/// <typeparam name="T">The data type or structure from where the messages will be parsed</typeparam>
-	internal abstract class MessageParser<T> : IConnector, IMessageSource
+	public abstract class MessageParser<T> : IConnector, IMessageSource
 	{
 		#region Variables
 

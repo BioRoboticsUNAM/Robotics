@@ -11,7 +11,6 @@ namespace Robotics.API
 	{
 		#region Variables
 
-
 		/// <summary>
 		/// Represents the ClientConnected method
 		/// </summary>
