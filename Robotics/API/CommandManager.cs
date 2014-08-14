@@ -150,6 +150,10 @@ namespace Robotics.API
 		/// </summary>
 		protected Thread sharedVariableListUpdaterThread;
 		/// <summary>
+		/// Thread used to send prototypes
+		/// </summary>
+		protected Thread prototypeSenderThread;
+		/// <summary>
 		/// Represents the MainThreadTask method
 		/// </summary>
 		private readonly ThreadStart dlgMainThreadTask;
@@ -161,6 +165,10 @@ namespace Robotics.API
 		/// Represents the UpdateSharedVariableListTask method
 		/// </summary>
 		private readonly ThreadStart dlgUpdateSharedVariableListTask;
+		/// <summary>
+		/// Represents the SendPrototypesListTask method
+		/// </summary>
+		private readonly ThreadStart dlgSendPrototypesListTask;
 
 		#endregion
 
@@ -188,6 +196,7 @@ namespace Robotics.API
 			dlgMainThreadTask = new ThreadStart(MainThreadTask);
 			dlgResponseParserThreadTask = new ThreadStart(ResponseParserThreadTask);
 			dlgUpdateSharedVariableListTask = new ThreadStart(UpdateSharedVariableListTask);
+			dlgSendPrototypesListTask = new ThreadStart(SendPrototypesListTask);
 			initializationSyncEvent = new AutoResetEvent(false);
 		}
 
@@ -865,6 +874,49 @@ namespace Robotics.API
 			} while (running && !shvLoaded);
 		}
 
+		/// <summary>
+		/// Sends the list of supported commands to the blackboard
+		/// </summary>
+		private void SendPrototypesList()
+		{
+			if ((prototypeSenderThread != null) && prototypeSenderThread.IsAlive)
+				return;
+			prototypeSenderThread = new Thread(dlgSendPrototypesListTask);
+			prototypeSenderThread.IsBackground = true;
+			prototypeSenderThread.Start();
+		}
+
+		/// <summary>
+		/// Sends the list of supported commands to the blackboard
+		/// </summary>
+		private void SendPrototypesListTask()
+		{
+			ushort flags;
+			StringBuilder sb = new StringBuilder();
+			CommandExecuter[] acex = this.CommandExecuters.ToArray();
+			foreach (CommandExecuter ce in acex)
+			{
+				sb.Append(ce.CommandName);
+				sb.Append(' ');
+				flags = (ushort)(ce.Priority & 0xFF);
+				if (ce.ResponseRequired) flags |= 0x0100;
+				if (ce.ParametersRequired) flags |= 0x0200;
+				sb.Append(flags);
+				sb.Append(' ');
+				sb.Append(ce.Timeout);
+				sb.Append(' ');
+			}
+			if (sb.Length > 0)
+				--sb.Length;
+
+			Response rspReady = new Response("ready", String.Empty, Ready);
+			Send(rspReady);
+			Response rspBusy = new Response("busy", String.Empty, Busy);
+			Send(rspBusy);
+			Command cmdProto = new Command("prototypes", sb.ToString());
+			Send(cmdProto);
+		}
+
 		#region Command Injection
 
 		/// <summary>
@@ -987,7 +1039,9 @@ namespace Robotics.API
 			{
 				firstConnected = true;
 				UpdateSharedVariableList();
+				initializationSyncEvent.Set();
 			}
+			SendPrototypesList();
 		}
 
 		/// <summary>
@@ -1603,9 +1657,6 @@ namespace Robotics.API
 		#endregion
 
 		#region Static Methodos
-		#endregion
-
-		#region EventHandler Functions
 		#endregion
 
 		#region ICommandSource Members

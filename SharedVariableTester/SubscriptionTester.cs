@@ -31,7 +31,7 @@ namespace SharedVariableTester
 			cmdMan.Stopped += new CommandManagerStatusChangedEventHandler(cmdMan_Stopped);
 			cmdMan.SharedVariablesLoaded += new SharedVariablesLoadedEventHandler(cmdMan_SharedVariablesLoaded);
 			
-			cnnMan = new ConnectionManager(2070, cmdMan);
+			cnnMan = new ConnectionManager(2020, cmdMan);
 			cnnMan.DataReceived += new ConnectionManagerDataReceivedEH(cnnMan_DataReceived);
 			cnnMan.ClientConnected += new System.Net.Sockets.TcpClientConnectedEventHandler(cnnMan_ClientConnected);
 			cnnMan.Started += new ConnectionManagerStatusChangedEventHandler(cnnMan_Started);

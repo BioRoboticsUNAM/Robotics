@@ -83,6 +83,8 @@
     <Compile Include="API\ICommandManager.cs" />
     <Compile Include="API\MessageParser.cs" />
     <Compile Include="API\MiscSharedVariables\KnownHumanFaces.cs" />
+    <Compile Include="API\PrimitiveSharedVariables\SharedVariableBuilder.cs" />
+    <Compile Include="API\PrimitiveSharedVariables\PrimitiveSerializer.cs" />
     <Compile Include="API\SharedVariableGeneric.cs" />
     <Compile Include="API\SharedVariableInfo.cs" />
     <Compile Include="API\SyncFunctionCE.cs" />
@@ -194,7 +196,6 @@
     <Compile Include="API\SignatureBuilder.cs" />
     <Compile Include="API\SyncCommandExecuter.cs" />
     <Compile Include="DataStructures\BinarySearchTree.cs" />
-    <Compile Include="DataStructures\BinarySearchTreeNode.cs" />
     <Compile Include="DataStructures\BinaryTreeNode.cs" />
     <Compile Include="Controls\VideoControl.cs">
       <SubType>Component</SubType>

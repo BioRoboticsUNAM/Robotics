@@ -105,7 +105,7 @@ namespace Robotics.HAL.Sensors
 				if (value == null)
 					throw new ArgumentNullException();
 				if (!RxNameValidator.IsMatch(value))
-					throw new ArgumentException("Invalid input string");
+					throw new ArgumentException("Invalid input string (name)");
 				this.name = value;
 			}
 		}
@@ -118,7 +118,7 @@ namespace Robotics.HAL.Sensors
 			get { return this.pan; }
 			set
 			{
-				if ((value > 1) || (value < 1))
+				if ((value < -1.57) || (value > 1.57))
 					throw new ArgumentOutOfRangeException();
 				this.pan = value;
 			}
@@ -132,7 +132,7 @@ namespace Robotics.HAL.Sensors
 			get { return this.tilt; }
 			set
 			{
-				if ((value > 1) || (value < -1))
+				if ((value < -1.57) || (value > 1.57))
 					throw new ArgumentOutOfRangeException();
 				this.tilt = value;
 			}

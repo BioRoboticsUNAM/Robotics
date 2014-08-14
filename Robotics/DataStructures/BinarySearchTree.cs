@@ -7,7 +7,7 @@ namespace Robotics.DataStructures
 	/// <summary>
 	/// Implements a Binary Search Tree
 	/// </summary>
-	internal class BinarySearchTree<T> : IEnumerable<BinarySearchTreeNode<T>>, ICollection<T> where T : IComparable<T>
+	internal class BinarySearchTree<T> : IEnumerable<BinaryTreeNode<T>>, ICollection<T> where T : IComparable<T>
 	{
 		
 		#region Variables
@@ -15,7 +15,7 @@ namespace Robotics.DataStructures
 		/// <summary>
 		/// Root node of the Binary Search Tree
 		/// </summary>
-		protected BinarySearchTreeNode<T> root;
+		protected BinaryTreeNode<T> root;
 
 		/// <summary>
 		/// Indicates if the tree is balanced
@@ -47,16 +47,16 @@ namespace Robotics.DataStructures
 		#region Constructors
 
 		/// <summary>
-		/// Initializes a new instance of BinarySearchTreeNode
+		/// Initializes a new instance of BinaryTreeNode
 		/// </summary>
 		public BinarySearchTree() : this(null)
 		{  }
 
 		/// <summary>
-		/// Initializes a new instance of BinarySearchTreeNode
+		/// Initializes a new instance of BinaryTreeNode
 		/// </summary>
 		/// <param name="root">Root node of the Binary Search Tree</param>
-		public BinarySearchTree(BinarySearchTreeNode<T> root)
+		public BinarySearchTree(BinaryTreeNode<T> root)
 		{
 			balanced = false;
 			changed = true;
@@ -65,12 +65,12 @@ namespace Robotics.DataStructures
 		}
 
 		/// <summary>
-		/// Initializes a new instance of BinarySearchTreeNode
+		/// Initializes a new instance of BinaryTreeNode
 		/// </summary>
 		/// <param name="root">The value of the root node of the Binary Search Tree</param>
 		public BinarySearchTree(T root)
 		{
-			this.root = new BinarySearchTreeNode<T>(root);
+			this.root = new BinaryTreeNode<T>(root);
 			balanced = false;
 			changed = true;
 			count = 0;
@@ -125,8 +125,8 @@ namespace Robotics.DataStructures
 		{
 			get
 			{
-				BinarySearchTreeNode<T> node = this.root;
-				Stack<BinarySearchTreeNode<T>> nodes = new Stack<BinarySearchTreeNode<T>>();
+				BinaryTreeNode<T> node = this.root;
+				Stack<BinaryTreeNode<T>> nodes = new Stack<BinaryTreeNode<T>>();
 				while ((nodes.Count > 0) || (node != null))
 				{
 					if (node != null)
@@ -157,8 +157,8 @@ namespace Robotics.DataStructures
 		{
 			get
 			{
-				BinarySearchTreeNode<T> node = this.root;
-				Stack<BinarySearchTreeNode<T>> nodes = new Stack<BinarySearchTreeNode<T>>();
+				BinaryTreeNode<T> node = this.root;
+				Stack<BinaryTreeNode<T>> nodes = new Stack<BinaryTreeNode<T>>();
 				int depth = -1;
 
 				while ((nodes.Count > 0) || (node != null))
@@ -204,7 +204,7 @@ namespace Robotics.DataStructures
 			get
 			{
 				if (this.root == null) return default(T);
-				BinarySearchTreeNode<T> node = this.root;
+				BinaryTreeNode<T> node = this.root;
 				while (node.Right != null)
 					node = node.Right;
 				return node.Value;
@@ -219,7 +219,7 @@ namespace Robotics.DataStructures
 			get
 			{
 				if (this.root == null) return default(T);
-				BinarySearchTreeNode<T> node = this.root;
+				BinaryTreeNode<T> node = this.root;
 				while (node.Left != null)
 					node = node.Left;
 				return node.Value;
@@ -236,9 +236,9 @@ namespace Robotics.DataStructures
 		/// <param name="item">item to add</param>
 		public virtual void Add(T item)
 		{
-			BinarySearchTreeNode<T> parent = this.root;
-			BinarySearchTreeNode<T> next = this.root;
-			BinarySearchTreeNode<T> newNode = new BinarySearchTreeNode<T>(item);
+			BinaryTreeNode<T> parent = this.root;
+			BinaryTreeNode<T> next = this.root;
+			BinaryTreeNode<T> newNode = new BinaryTreeNode<T>(item);
 
 			while (next != null)
 			{
@@ -265,13 +265,13 @@ namespace Robotics.DataStructures
 		}
 
 		/// <summary>
-		/// Adds the specified BinarySearchTreeNode and all its childs to the BinarySearchTree
+		/// Adds the specified BinaryTreeNode and all its childs to the BinarySearchTree
 		/// The order is not preserved
 		/// </summary>
 		/// <param name="item">item to add</param>
-		public void Add(BinarySearchTreeNode<T> item)
+		public void Add(BinaryTreeNode<T> item)
 		{
-			BinarySearchTreeNode<T>[] nodes = InOrderTraversal(item);
+			BinaryTreeNode<T>[] nodes = InOrderTraversal(item);
 			for (int i = 0; i < nodes.Length; ++i)
 				Add(nodes[i].Value);
 		}
@@ -283,8 +283,8 @@ namespace Robotics.DataStructures
 		{
 			int count = 0;
 			int height = 0;
-			BinarySearchTreeNode<T> node = this.root;
-			Stack<BinarySearchTreeNode<T>> nodes = new Stack<BinarySearchTreeNode<T>>();
+			BinaryTreeNode<T> node = this.root;
+			Stack<BinaryTreeNode<T>> nodes = new Stack<BinaryTreeNode<T>>();
 			while ((nodes.Count > 0) || (node != null))
 			{
 				if (node != null)
@@ -311,16 +311,27 @@ namespace Robotics.DataStructures
 		public virtual void Balance()
 		{
 		}
+		
+		/// <summary>
+		/// Searches a value within the BinarySearchTree
+		/// </summary>
+		/// <param name="value">Value to search for</param>
+		/// <returns>true if value was found, false otherwise</returns>
+		public bool Contains(T value)
+		{
+			BinaryTreeNode<T> node;
+			return Find(value, out node);
+		}
 
 		/// <summary>
-		/// Returns a list of BinarySearchTreeNode as result of an in-order traverse of the the BinarySearchTree
+		/// Returns a list of BinaryTreeNode as result of an in-order traverse of the the BinarySearchTree
 		/// </summary>
-		/// <returns>List of BinarySearchTreeNode</returns>
-		protected BinarySearchTreeNode<T>[] InOrderTraversal()
+		/// <returns>List of BinaryTreeNode</returns>
+		protected BinaryTreeNode<T>[] InOrderTraversal()
 		{
-			BinarySearchTreeNode<T> node = this.root;
-			Stack<BinarySearchTreeNode<T>> parentNodes = new Stack<BinarySearchTreeNode<T>>();
-			List<BinarySearchTreeNode<T>> nodeList = new List<BinarySearchTreeNode<T>>();
+			BinaryTreeNode<T> node = this.root;
+			Stack<BinaryTreeNode<T>> parentNodes = new Stack<BinaryTreeNode<T>>();
+			List<BinaryTreeNode<T>> nodeList = new List<BinaryTreeNode<T>>();
 			while ((parentNodes.Count > 0) || (node != null))
 			{
 				if (node != null)
@@ -339,15 +350,15 @@ namespace Robotics.DataStructures
 		}
 
 		/// <summary>
-		/// Deletes a node from the BinarySearchTree, but not its childs
+		/// Deletes a node from the BinarySearchTree, but not its children
 		/// </summary>
 		/// <param name="value">true if node was found and deleted, false otherwise</param>
 		public bool Remove(T value)
 		{
 			bool found = false;
-			BinarySearchTreeNode<T> next = this.root;
-			BinarySearchTreeNode<T> node = null;
-			BinarySearchTreeNode<T> parent = null;
+			BinaryTreeNode<T> next = this.root;
+			BinaryTreeNode<T> node = null;
+			BinaryTreeNode<T> parent = null;
 
 			#region Find node to delete
 			// Find the node to delete and its parent
@@ -457,19 +468,68 @@ namespace Robotics.DataStructures
 		}
 
 		/// <summary>
-		/// Searchs a value within the BinarySearchTree
+		/// Deletes a node from the BinarySearchTree including its children
 		/// </summary>
-		/// <param name="value">Value to search for</param>
-		/// <returns>true if value was found, false otherwise</returns>
-		public bool Search(T value)
+		/// <param name="value">true if node was found and deleted, false otherwise</param>
+		public bool RemoveBranch(T value)
 		{
-			BinarySearchTreeNode<T> next = this.root;
+			bool found = false;
+			BinaryTreeNode<T> next = this.root;
+			BinaryTreeNode<T> node = null;
+			BinaryTreeNode<T> parent = null;
+
+			#region Find node to delete
+			// Find the node to delete and its parent
 			while (next != null)
 			{
-				if (value.CompareTo(next.Value) == 0) return true;
-				else if (value.CompareTo(next.Value) < 0) next = next.Left;
-				else next = next.Right;
+				if (value.CompareTo(next.Value) == 0)
+				{
+					node = next;
+					found = true;
+					break;
+				}
+				else if (value.CompareTo(next.Value) < 0)
+				{
+					parent = next;
+					next = next.Left;
+				}
+				else
+				{
+					parent = next;
+					next = next.Right;
+				}
 			}
+			if (!found) return false;
+			#endregion
+
+			#region Delete node
+			// If node has not childs, just delete it
+			if ((node.Left == null) && (node.Right == null))
+			{
+				// There is no parent, so the deleted node is the root node
+				if (parent == null)
+				{
+					this.root = null;
+					changed = true;
+					return true;
+				}
+				// Node to delete is a left node
+				else if (parent.Left == node)
+				{
+					parent.Left = null;
+					changed = true;
+					return true;
+				}
+				// Node to delete is a right node
+				else
+				{
+					parent.Right = null;
+					changed = true;
+					return true;
+				}
+			}
+			#endregion
+
 			return false;
 		}
 
@@ -477,11 +537,11 @@ namespace Robotics.DataStructures
 		/// Searchs a value within the BinarySearchTree
 		/// </summary>
 		/// <param name="value">Value to search for</param>
-		/// <param name="node">The BinarySearchTreeNode where the value was found, or null if value was not found.</param>
+		/// <param name="node">The BinaryTreeNode where the value was found, or null if value was not found.</param>
 		/// <returns>true if value was found, false otherwise</returns>
-		public bool Search(T value, out BinarySearchTreeNode<T> node)
+		public bool Find(T value, out BinaryTreeNode<T> node)
 		{
-			BinarySearchTreeNode<T> next = this.root;
+			BinaryTreeNode<T> next = this.root;
 			
 			node = null;
 			while (next != null)
@@ -501,7 +561,7 @@ namespace Robotics.DataStructures
 		/// Returns the ordered content of the BinarySearchTree as an array
 		/// </summary>
 		/// <returns>The ordered content of the BinarySearchTree as an array</returns>
-		public BinarySearchTreeNode<T>[] ToArray()
+		public BinaryTreeNode<T>[] ToArray()
 		{
 			return InOrderTraversal();
 		}
@@ -527,10 +587,10 @@ namespace Robotics.DataStructures
 		/// </summary>
 		/// <param name="item">The object to locate in the ICollection</param>
 		/// <returns>true if item is found in the ICollection; otherwise, false.</returns>
-		public bool Contains(T item)
-		{
-			return Search(item);
-		}
+		//public bool Contains(T item)
+		//{
+		//	return Find(item);
+		//}
 
 		/// <summary>
 		/// Copies the elements of the BinarySearchTree to an Array, starting at a particular Array index
@@ -540,7 +600,7 @@ namespace Robotics.DataStructures
 		/// <param name="arrayIndex">The zero-based index in array at which copying begins</param>
 		public void CopyTo(T[] array, int arrayIndex)
 		{
-			BinarySearchTreeNode<T>[] elements = InOrderTraversal();
+			BinaryTreeNode<T>[] elements = InOrderTraversal();
 			for (int i = 0; i < elements.Length; ++i)
 				array[arrayIndex + i] = elements[i].Value;
 		}
@@ -555,7 +615,7 @@ namespace Robotics.DataStructures
 		/// <returns>A IEnumerator that can be used to iterate through the collection.</returns>
 		IEnumerator<T> IEnumerable<T>.GetEnumerator()
 		{
-			BinarySearchTreeNode<T>[] nodes = InOrderTraversal();
+			BinaryTreeNode<T>[] nodes = InOrderTraversal();
 			List<T> elements = new List<T>(nodes.Length);
 			for (int i = 0; i < nodes.Length; ++i)
 				elements.Add(nodes[i].Value);
@@ -577,15 +637,15 @@ namespace Robotics.DataStructures
 
 		#endregion
 
-		#region IEnumerable<BinarySearchTreeNode<T>> Members
+		#region IEnumerable<BinaryTreeNode<T>> Members
 
 		/// <summary>
 		/// Returns an enumerator that iterates through the collection
 		/// </summary>
 		/// <returns>A IEnumerator that can be used to iterate through the collection.</returns>
-		public IEnumerator<BinarySearchTreeNode<T>> GetEnumerator()
+		public IEnumerator<BinaryTreeNode<T>> GetEnumerator()
 		{
-			return new List<BinarySearchTreeNode<T>>(InOrderTraversal()).GetEnumerator();
+			return new List<BinaryTreeNode<T>>(InOrderTraversal()).GetEnumerator();
 		}
 
 		#endregion
@@ -595,14 +655,14 @@ namespace Robotics.DataStructures
 		#region Static Methodos
 
 		/// <summary>
-		/// Returns a list of BinarySearchTreeNode as result of an in-order traverse of the the BinarySearchTree
+		/// Returns a list of BinaryTreeNode as result of an in-order traverse of the the BinarySearchTree
 		/// </summary>
-		/// <param name="node">BinarySearchTreeNode to start with</param>
-		/// <returns>List of BinarySearchTreeNode</returns>
-		protected static BinarySearchTreeNode<T>[] InOrderTraversal(BinarySearchTreeNode<T> node)
+		/// <param name="node">BinaryTreeNode to start with</param>
+		/// <returns>List of BinaryTreeNode</returns>
+		protected static BinaryTreeNode<T>[] InOrderTraversal(BinaryTreeNode<T> node)
 		{
-			Stack<BinarySearchTreeNode<T>> parentNodes = new Stack<BinarySearchTreeNode<T>>();
-			List<BinarySearchTreeNode<T>> nodeList = new List<BinarySearchTreeNode<T>>();
+			Stack<BinaryTreeNode<T>> parentNodes = new Stack<BinaryTreeNode<T>>();
+			List<BinaryTreeNode<T>> nodeList = new List<BinaryTreeNode<T>>();
 			while ((parentNodes.Count > 0) || (node != null))
 			{
 				if (node != null)

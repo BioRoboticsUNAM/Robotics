@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Robotics.API
 {
@@ -13,10 +14,12 @@ namespace Robotics.API
 
 		#region Variables
 
+		private ReaderWriterLock rwLock;
+
 		/// <summary>
 		/// Stores the list of CommandExecuter sorted by the command name
 		/// </summary>
-		private SortedList<string, CommandExecuter> commandExecuterList;
+		protected readonly Dictionary<string, CommandExecuter> commandExecuters;
 
 		/// <summary>
 		/// The CommandExecuter object to which this CommandExecuterCollection is bound to
@@ -33,13 +36,11 @@ namespace Robotics.API
 		/// </summary>
 		public CommandExecuterCollection(CommandManager commandManager)
 		{
-			commandExecuterList = new SortedList<string, CommandExecuter>();
+			commandExecuters = new Dictionary<string, CommandExecuter>();
 			this.commandManager = commandManager;
+			this.rwLock = new ReaderWriterLock();
 		}
 
-		#endregion
-
-		#region Events
 		#endregion
 
 		#region Properties and Indexers
@@ -53,8 +54,15 @@ namespace Robotics.API
 		{
 			get
 			{
-				if (!CommandExecuterList.ContainsKey(commandName)) return null;
-				return CommandExecuterList[commandName];
+				this.rwLock.AcquireReaderLock(-1);
+				if (!commandExecuters.ContainsKey(commandName))
+				{
+					this.rwLock.ReleaseReaderLock();
+					return null;
+				}
+				CommandExecuter cmdEx = commandExecuters[commandName];
+				this.rwLock.ReleaseReaderLock();
+				return cmdEx;
 			}
 		}
 
@@ -66,14 +74,6 @@ namespace Robotics.API
 			get { return commandManager; }
 		}
 
-		/// <summary>
-		/// Gets the list of CommandExecuter sorted by the command name
-		/// </summary>
-		protected SortedList<string, CommandExecuter> CommandExecuterList
-		{
-			get { return commandExecuterList; }
-		}
-
 		#region ICollection<CommandExecuter> Members
 
 		/// <summary>
@@ -81,7 +81,13 @@ namespace Robotics.API
 		/// </summary>
 		public int Count
 		{
-			get { return CommandExecuterList.Count; }
+			get
+			{
+				this.rwLock.AcquireReaderLock(-1);
+				int count = commandExecuters.Count;
+				this.rwLock.ReleaseReaderLock();
+				return count;
+			}
 		}
 
 		/// <summary>
@@ -105,8 +111,15 @@ namespace Robotics.API
 		/// <returns>true if the command asociated is found in the CommandExecuterCollection; otherwise, false</returns>
 		public bool Contains(string commandName)
 		{
-			if (commandName == null) throw new ArgumentNullException();
-			return CommandExecuterList.ContainsKey(commandName);
+			this.rwLock.AcquireReaderLock(-1);
+			if (commandName == null)
+			{
+				this.rwLock.ReleaseReaderLock();
+				throw new ArgumentNullException();
+			}
+			bool result = commandExecuters.ContainsKey(commandName);
+			this.rwLock.ReleaseReaderLock();
+			return result;
 		}
 
 		/// <summary>
@@ -116,7 +129,9 @@ namespace Robotics.API
 		/// <param name="arrayIndex">The zero-based index in array at which copying begins</param>
 		public void CopyTo(string[] array, int arrayIndex)
 		{
-			CommandExecuterList.Keys.CopyTo(array, arrayIndex);
+			this.rwLock.AcquireReaderLock(-1);
+			commandExecuters.Keys.CopyTo(array, arrayIndex);
+			this.rwLock.ReleaseReaderLock();
 		}
 
 		/// <summary>
@@ -126,10 +141,29 @@ namespace Robotics.API
 		/// <returns>true if item is successfully removed; otherwise, false. This method also returns false if item was not found in the List</returns>
 		public bool Remove(string commandName)
 		{
-			if (commandName == null) return false;
-			if(CommandExecuterList.ContainsKey(commandName))
-				CommandExecuterList[commandName].CommandManager = null;
-			return CommandExecuterList.Remove(commandName);
+			if (commandName == null)
+				return false;
+			this.rwLock.AcquireWriterLock(-1);
+			if(commandExecuters.ContainsKey(commandName))
+				commandExecuters[commandName].CommandManager = null;
+			bool result = commandExecuters.Remove(commandName);
+			this.rwLock.ReleaseWriterLock();
+			return result;
+		}
+
+		/// <summary>
+		/// Gets an array containing all the command executers
+		/// </summary>
+		/// <returns>An array containing all the command executers</returns>
+		public CommandExecuter[] ToArray()
+		{
+			this.rwLock.AcquireReaderLock(-1);
+			CommandExecuter[] acex = new CommandExecuter[commandExecuters.Count];
+			int i = 0;
+			foreach(CommandExecuter cex in commandExecuters.Values)
+				acex[i++] = cex;
+			this.rwLock.ReleaseReaderLock();
+			return acex;
 		}
 
 		#region ICollection<CommandExecuter> Members
@@ -141,10 +175,15 @@ namespace Robotics.API
 		public void Add(CommandExecuter commandExecuter)
 		{
 			if (commandExecuter == null) throw new ArgumentNullException();
-			if (CommandExecuterList.ContainsKey(commandExecuter.CommandName))
+			this.rwLock.AcquireWriterLock(-1);
+			if (commandExecuters.ContainsKey(commandExecuter.CommandName))
+			{
+				this.rwLock.ReleaseWriterLock();
 				throw new ArgumentException("The provided CommandExecuter already exists in the collection", "commandExecuter");
+			}
 			commandExecuter.CommandManager = this.CommandManager;
-			CommandExecuterList.Add(commandExecuter.CommandName, commandExecuter);
+			commandExecuters.Add(commandExecuter.CommandName, commandExecuter);
+			this.rwLock.ReleaseWriterLock();
 		}
 
 		/// <summary>
@@ -152,8 +191,9 @@ namespace Robotics.API
 		/// </summary>
 		public void Clear()
 		{
-			CommandExecuterList.Clear();
-			commandExecuterList.TrimExcess();
+			this.rwLock.AcquireWriterLock(-1);
+			commandExecuters.Clear();
+			this.rwLock.ReleaseWriterLock();
 		}
 
 		/// <summary>
@@ -164,7 +204,10 @@ namespace Robotics.API
 		public bool Contains(CommandExecuter item)
 		{
 			if (item == null) throw new ArgumentNullException();
-			return CommandExecuterList.ContainsValue(item);
+			this.rwLock.AcquireReaderLock(-1);
+			bool result = commandExecuters.ContainsValue(item);
+			this.rwLock.ReleaseReaderLock();
+			return result;
 		}
 
 		/// <summary>
@@ -174,7 +217,9 @@ namespace Robotics.API
 		/// <param name="arrayIndex">The zero-based index in array at which copying begins</param>
 		public void CopyTo(CommandExecuter[] array, int arrayIndex)
 		{
-			CommandExecuterList.Values.CopyTo(array, arrayIndex);
+			this.rwLock.AcquireReaderLock(-1);
+			commandExecuters.Values.CopyTo(array, arrayIndex);
+			this.rwLock.ReleaseReaderLock();
 		}
 
 		/// <summary>
@@ -185,7 +230,10 @@ namespace Robotics.API
 		public bool Remove(CommandExecuter commandExecuter)
 		{
 			if (commandExecuter == null) return false;
-			return Remove(commandExecuter.CommandName);
+			this.rwLock.AcquireWriterLock(-1);
+			bool result = Remove(commandExecuter.CommandName);
+			this.rwLock.ReleaseWriterLock();
+			return result;
 		}
 
 		#endregion
@@ -198,7 +246,10 @@ namespace Robotics.API
 		/// <returns>An IEnumerator&lt;T&gt; object that can be used to iterate through the collection</returns>
 		public IEnumerator<CommandExecuter> GetEnumerator()
 		{
-			return this.CommandExecuterList.Values.GetEnumerator();
+			this.rwLock.AcquireReaderLock(-1);
+			IEnumerator < CommandExecuter > e = this.commandExecuters.Values.GetEnumerator();
+			this.rwLock.ReleaseReaderLock();
+			return e;
 		}
 
 		#endregion
@@ -211,17 +262,14 @@ namespace Robotics.API
 		/// <returns>An IEnumerator object that can be used to iterate through the collection</returns>
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
-			return this.CommandExecuterList.Values.GetEnumerator();
+			this.rwLock.AcquireReaderLock(-1);
+			System.Collections.IEnumerator e = this.commandExecuters.Values.GetEnumerator();
+			this.rwLock.ReleaseReaderLock();
+			return e;
 		}
 
 		#endregion
 
-		#endregion
-
-		#region Inherited Methodos
-		#endregion
-
-		#region EventHandler Functions
 		#endregion
 	}
 }
