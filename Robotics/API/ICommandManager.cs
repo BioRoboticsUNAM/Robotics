@@ -9,7 +9,7 @@ namespace Robotics.API
 	[ComVisible(true)]
 	[Guid("316D90CA-C1BC-4cf1-B8A5-B18294E0DE5C")]
 	[InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-	public interface ICommandManager : IMessageSource
+	public interface ICommandManager : IService, IMessageSource
 	{
 		#region Events
 
@@ -92,14 +92,6 @@ namespace Robotics.API
 		}
 
 		/// <summary>
-		/// Gets a value indicating if this instance of CommandManager has been started
-		/// </summary>
-		bool IsRunning
-		{
-			get;
-		}
-
-		/// <summary>
 		/// Gets a value indicating if a parallel send-and-wait operation has been started
 		/// </summary>
 		bool ParallelSendAndWaitStarted
@@ -173,16 +165,6 @@ namespace Robotics.API
 		/// <param name="response">The response received during the asynchronous operation</param>
 		/// <returns>true if a response has been received, false otherwise.</returns>
 		bool EndSendCommand(IAsyncResult asyncResult, out Response response);
-
-		/// <summary>
-		/// Starts the Connection Manager
-		/// </summary>
-		void Start();
-
-		/// <summary>
-		/// Stops the Connection Manager
-		/// </summary>
-		void Stop();
 
 		#region Command Injection
 

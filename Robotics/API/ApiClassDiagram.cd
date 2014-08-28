@@ -33,37 +33,37 @@
       </Class>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>CAGkYZAAhSLAAUMbGUlAcSQSEVu0FCAGPE4hEOJAASI=</HashCode>
+      <HashCode>CAGkYZAEhSLIAUMbGUlAcSQSEVu0VCAGPE4hEOpAASI=</HashCode>
       <FileName>API\CommandManager.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Robotics.API.ConnectionManager" BaseTypeListCollapsed="true">
     <Position X="0.5" Y="3.5" Width="7.75" />
     <TypeIdentifier>
-      <HashCode>QQSgQhZqxOJARIlgEECFQQRAIVqIQBICLGAgKiAjIAQ=</HashCode>
+      <HashCode>QUSgQhZqxOJARIlgEECFQQRAIVqIQBICLGAgKiAjIAQ=</HashCode>
       <FileName>API\ConnectionManager.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Robotics.API.SyncCommandExecuter">
     <Position X="21.25" Y="11.25" Width="5" />
     <TypeIdentifier>
-      <HashCode>AAAkAAAABAAAACQAAAABQAAAAAgABAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAkAAAABAAAACQEAAABQAAAAAgABAIAAAAAAAAAAAA=</HashCode>
       <FileName>API\SyncCommandExecuter.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Robotics.API.AsyncCommandExecuter">
     <Position X="15.5" Y="11.25" Width="5.5" />
     <TypeIdentifier>
-      <HashCode>AACEAAAABACAACQAAQBAQAAgAAiABAAAAAAAAAAKAAA=</HashCode>
+      <HashCode>AACEAAAABACAACQEAQBAQAAgAAiABAIAAAAAAAAKAAA=</HashCode>
       <FileName>API\AsyncCommandExecuter.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Robotics.API.CommandExecuter">
     <Position X="15.5" Y="3.5" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>AACAARAgBSAAACRIAAGBQUhAAAAABhQACAAAAAAAAAE=</HashCode>
+      <HashCode>AACAARAgBSAAACRMAAGBQUhAAAAABhYACAAAAAAAAAE=</HashCode>
       <FileName>API\CommandExecuter.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -71,10 +71,10 @@
   <Class Name="Robotics.API.CommandExecuterCollection" BaseTypeListCollapsed="true">
     <Position X="20.75" Y="3.5" Width="4.25" />
     <TypeIdentifier>
-      <HashCode>ACIAAAAgAAAAABAQCAgABAQIAAAAAAAAAAAAAABQIAA=</HashCode>
+      <HashCode>ACIAAAAgAAAAABAQCCAABAQAAAAAAAAAAAgAAABQIAA=</HashCode>
       <FileName>API\CommandExecuterCollection.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Robotics.API.SharedVariable">
     <Position X="26.75" Y="3.5" Width="8.5" />

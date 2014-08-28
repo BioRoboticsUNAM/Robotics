@@ -69,9 +69,10 @@
     <Compile Include="API\BinaryResponse.cs" />
     <Compile Include="API\IConnector.cs" />
     <Compile Include="API\IConnectionManager.cs" />
+    <Compile Include="API\Interop\Module.cs" />
     <Compile Include="API\ISharedVariableSubscriptionInfo.cs" />
     <Compile Include="API\ISharedVariableInfo.cs" />
-    <Compile Include="API\COMInterfaces.cs" />
+    <Compile Include="API\Interop\COMInterfaces.cs" />
     <Compile Include="API\Command.cs" />
     <Compile Include="API\CommandExecuter.cs" />
     <Compile Include="API\CommandExecuterCollection.cs" />
@@ -90,7 +91,7 @@
     <Compile Include="API\SyncFunctionCE.cs" />
     <Compile Include="API\IMessageSource.cs" />
     <Compile Include="API\AsyncCommandExecuter.cs" />
-    <Compile Include="API\IModule.cs" />
+    <Compile Include="API\Interop\IModule.cs" />
     <Compile Include="API\MiscSharedVariables\DetectedHumanFaces.cs" />
     <Compile Include="API\MiscSharedVariables\RecognizedSpeechSharedVariable.cs" />
     <Compile Include="API\Module.cs" />
@@ -109,9 +110,12 @@
     <Compile Include="API\SharedVariableList.cs" />
     <Compile Include="API\SharedVariableSubscriptionReport.cs" />
     <Compile Include="API\TcpPacketParser.cs" />
+    <Compile Include="API\Xml\XmlMessage.cs" />
     <Compile Include="Controls\IdBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\RichTextBoxStreamWriter.cs" />
+    <Compile Include="Controls\RichTextBoxStreamWriterBase.cs" />
     <Compile Include="Controls\TextBoxStreamWriter.cs" />
     <Compile Include="Controls\TextBoxStreamWriterBase.cs" />
     <Compile Include="Controls\XmlTextBoxStreamWriter.cs" />

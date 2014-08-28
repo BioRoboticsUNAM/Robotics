@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace Robotics.API
+namespace Robotics.API.Interop
 {
 	/// <summary>
 	/// Represents a Module object for COM Interop

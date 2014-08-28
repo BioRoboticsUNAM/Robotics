@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Threading;
 using System.Text;
@@ -12,9 +13,14 @@ namespace Robotics.Controls
 	/// <summary>
 	/// Implements a TextWriter that dumps its contents to both a System.Windows.Forms.TexBox and a file
 	/// </summary>
-	public abstract class TextBoxStreamWriterBase : TextWriter, IDisposable
+	public abstract class RichTextBoxStreamWriterBase : TextWriter, IDisposable
 	{
 		#region Variables
+
+		/// <summary>
+		/// The verbosity threshold for the log file console. Only messages with a priority equal or higher than the threshold will be shown
+		/// </summary>
+		protected int logFileVerbosityThreshold;
 
 		private StreamWriter logFile;
 
@@ -22,9 +28,9 @@ namespace Robotics.Controls
 
 		private int maxLines;
 
-		private TextBox output = null;
+		private RichTextBox output = null;
 
-		private StringEventHandler AppendStringEH;
+		private AppendTokenMethod appendTokenMethod;
 
 		private Thread writerThread;
 
@@ -43,19 +49,19 @@ namespace Robotics.Controls
 		private int defaultPriority;
 
 		/// <summary>
-		/// The verbosity treshold for the TextBox console. Only messages with a priority equal or higher than the treshold will be shown
+		/// The verbosity threshold for the TextBox console. Only messages with a priority equal or higher than the threshold will be shown
 		/// </summary>
 		private int verbosityThreshold;
-		
-        /// <summary>
-        /// Gets a value indicating whether the component is being disposed
-        /// </summary>
-        private bool disposing;
 
-        /// <summary>
-        /// Gets a value indicating whether the component is disposed
-        /// </summary>
-        private bool disposed;
+		/// <summary>
+		/// Gets a value indicating whether the component is being disposed
+		/// </summary>
+		private bool disposing;
+
+		/// <summary>
+		/// Gets a value indicating whether the component is disposed
+		/// </summary>
+		private bool disposed;
 
 		#endregion
 
@@ -67,7 +73,7 @@ namespace Robotics.Controls
 		/// <param name="output">The TextBox object to dump the contents to</param>
 		/// <param name="logFile">The path of the file to which dump the contents to</param>
 		/// <param name="maxLines">The maximum number of lines the output TextBox object will display</param>
-		public TextBoxStreamWriterBase(TextBox output, string logFile, int maxLines)
+		public RichTextBoxStreamWriterBase(RichTextBox output, string logFile, int maxLines)
 		{
 			this.maxLines = maxLines;
 			if (output != null)
@@ -79,15 +85,15 @@ namespace Robotics.Controls
 			}
 			pending = new ProducerConsumer<StringToken>(100);
 			waitingHadle = new StringBuilder(1024);
-			AppendStringEH = new StringEventHandler(AppendString);
+			appendTokenMethod = new AppendTokenMethod(AppendToken);
 			OpenLogFileStream(logFile, out this.logFile);
 
 			appendDate = false;
 			this.verbosityThreshold = 5;
 			this.defaultPriority = 5;
-            this.disposed = false;
-            this.disposing = false;
-            SetupThread();
+			this.disposed = false;
+			this.disposing = false;
+			SetupThread();
 		}
 
 		/// <summary>
@@ -95,13 +101,13 @@ namespace Robotics.Controls
 		/// </summary>
 		/// <param name="output">The TextBox object to dump the contents to</param>
 		/// <param name="maxLines">The maximum number of lines the output TextBox object will display</param>
-		public TextBoxStreamWriterBase(TextBox output, int maxLines) : this(output, "", maxLines) { }
+		public RichTextBoxStreamWriterBase(RichTextBox output, int maxLines) : this(output, "", maxLines) { }
 
 		/// <summary>
 		/// Initializes a new instance of the TextBoxStreamWriter class
 		/// </summary>
 		/// <param name="output">The TextBox object to dump the contents to</param>
-		public TextBoxStreamWriterBase(TextBox output) : this(output, 512) { }
+		public RichTextBoxStreamWriterBase(RichTextBox output) : this(output, 512) { }
 
 		#endregion
 
@@ -110,7 +116,7 @@ namespace Robotics.Controls
 		/// <summary>
 		/// Releases all resources used by the TextBoxStreamWriter object
 		/// </summary>
-		~TextBoxStreamWriterBase()
+		~RichTextBoxStreamWriterBase()
 		{
 			this.running = false;
 			Dispose(false);
@@ -126,10 +132,20 @@ namespace Robotics.Controls
 
 		#endregion
 
+		#region Delegates
+
+		/// <summary>
+		/// Represents a function that receives a method as parameter
+		/// </summary>
+		/// <param name="token">The token</param>
+		private delegate void AppendTokenMethod(StringToken token);
+
+		#endregion
+
 		#region Properties
 
 		/// <summary>
-		/// Gets or sets a value indicating if the date and time of write operation must be appended to the writed data
+		/// Gets or sets a value indicating if the date and time of write operation must be appended to the written data
 		/// </summary>
 		public bool AppendDate
 		{
@@ -151,9 +167,9 @@ namespace Robotics.Controls
 			}
 		}
 
-        /// <summary>
-        /// Gets a value indicating whether the component is being disposed
-        /// </summary>
+		/// <summary>
+		/// Gets a value indicating whether the component is being disposed
+		/// </summary>
 		public bool Disposing
 		{
 			get { return disposing; }
@@ -173,9 +189,9 @@ namespace Robotics.Controls
 			get { return System.Text.Encoding.UTF8; }
 		}
 
-        /// <summary>
-        /// Gets a value indicating whether the component is disposed
-        /// </summary>
+		/// <summary>
+		/// Gets a value indicating whether the component is disposed
+		/// </summary>
 		public bool IsDisposed
 		{
 			get { return disposed; }
@@ -189,7 +205,7 @@ namespace Robotics.Controls
 		/// <summary>
 		/// Gets the TexBox object where the log is dumped
 		/// </summary>
-		protected TextBox Output { get { return this.output; } }
+		protected RichTextBox Output { get { return this.output; } }
 
 		/// <summary>
 		/// Gets the stream used to write to the file where the log is dumped
@@ -197,7 +213,7 @@ namespace Robotics.Controls
 		protected StreamWriter LogFile { get { return this.logFile; } }
 
 		/// <summary>
-		/// Gets or sets the verbosity treshold for the TextBox console. Only messages with a priority equal or higher than the treshold will be shown
+		/// Gets or sets the verbosity threshold for the TextBox console. Only messages with a priority equal or higher than the threshold will be shown
 		/// </summary>
 		public int VerbosityThreshold
 		{
@@ -330,6 +346,52 @@ namespace Robotics.Controls
 		public virtual void Write(int priority, string value)
 		{
 			pending.Produce(new StringToken(priority, value));
+		}
+
+		/// <summary>
+		/// Writes a string to the text stream
+		/// </summary>
+		/// <param name="priority">The priority of the value to write</param>
+		/// <param name="color">The color to write the string</param>
+		/// <param name="value">The string value to write</param>
+		public virtual void Write(int priority, Color color, string value)
+		{
+			pending.Produce(new StringToken(priority, value, color));
+		}
+
+		/// <summary>
+		/// Writes a string to the text stream
+		/// </summary>
+		/// <param name="priority">The priority of the value to write</param>
+		/// <param name="fontStyle">The style of the font used to write the string</param>
+		/// <param name="value">The string value to write</param>
+		public virtual void Write(int priority, FontStyle fontStyle, string value)
+		{
+			pending.Produce(new StringToken(priority, value, fontStyle));
+		}
+
+		/// <summary>
+		/// Writes a string to the text stream
+		/// </summary>
+		/// <param name="priority">The priority of the value to write</param>
+		/// <param name="color">The color to write the string</param>
+		/// <param name="fontStyle">The style of the font used to write the string</param>
+		/// <param name="value">The string value to write</param>
+		public virtual void Write(int priority, FontStyle fontStyle, Color color, string value)
+		{
+			pending.Produce(new StringToken(priority, value, fontStyle, color));
+		}
+
+		/// <summary>
+		/// Writes a string to the text stream
+		/// </summary>
+		/// <param name="priority">The priority of the value to write</param>
+		/// <param name="color">The color to write the string</param>
+		/// <param name="font">The font to write the string</param>
+		/// <param name="value">The string value to write</param>
+		public virtual void Write(int priority, Color color, Font font, string value)
+		{
+			pending.Produce(new StringToken(priority, value, color, font));
 		}
 
 		/// <summary>
@@ -467,7 +529,53 @@ namespace Robotics.Controls
 		{
 			pending.Produce(new StringToken(priority, value + base.NewLine));
 		}
-		
+
+		/// <summary>
+		/// Writes a string followed by a line terminator to the text stream.
+		/// </summary>
+		/// <param name="priority">The priority of the value to write</param>
+		/// <param name="color">The color to write the string</param>
+		/// <param name="font">The font used to write the string</param>
+		/// <param name="value">The string value to write</param>
+		public virtual void WriteLine(int priority, Color color, Font font, string value)
+		{
+			pending.Produce(new StringToken(priority, value + base.NewLine, color, font));
+		}
+
+		/// <summary>
+		/// Writes a string followed by a line terminator to the text stream.
+		/// </summary>
+		/// <param name="priority">The priority of the value to write</param>
+		/// <param name="color">The color to write the string</param>
+		/// <param name="value">The string value to write</param>
+		public virtual void WriteLine(int priority, Color color, string value)
+		{
+			pending.Produce(new StringToken(priority, value + base.NewLine, color));
+		}
+
+		/// <summary>
+		/// Writes a string followed by a line terminator to the text stream.
+		/// </summary>
+		/// <param name="priority">The priority of the value to write</param>
+		/// <param name="fontStyle">The style of the font used to write the string</param>
+		/// <param name="value">The string value to write</param>
+		public virtual void WriteLine(int priority, FontStyle fontStyle, string value)
+		{
+			pending.Produce(new StringToken(priority, value + base.NewLine, fontStyle));
+		}
+
+		/// <summary>
+		/// Writes a string followed by a line terminator to the text stream.
+		/// </summary>
+		/// <param name="priority">The priority of the value to write</param>
+		/// <param name="fontStyle">The style of the font used to write the string</param>
+		/// <param name="color">The color to write the string</param>
+		/// <param name="value">The string value to write</param>
+		public virtual void WriteLine(int priority, FontStyle fontStyle, Color color, string value)
+		{
+			pending.Produce(new StringToken(priority, value + base.NewLine, fontStyle, color));
+		}
+
 
 		/// <summary>
 		/// Writes the text representation of a 4-byte unsigned integer followed by a line terminator to the text stream.
@@ -803,38 +911,55 @@ namespace Robotics.Controls
 			base.Dispose(disposing);
 
 			this.disposing = false;
-            this.disposed = true;
+			this.disposed = true;
 		}
 
-		private void AppendString(string s)
+		private void AppendToken(StringToken token)
 		{
-			if ((String.IsNullOrEmpty(s)) || (Output == null))
-				return;
-			try
+			string s;
+			if (appendDate)
+				s = String.Format("{0} {1}",
+					token.CreationTime.ToString("yyyy/MM/dd HH:mm:ss.fff"),
+					token.Value);
+			s = token.Value;
+
+			lock (Output)
 			{
 				if (((s.Length + Output.Text.Length) > Output.MaxLength) || (Output.Lines.Length > maxLines)) Output.Clear();
+				
+				if (!Output.IsHandleCreated || Output.Disposing || Output.IsDisposed)
+					return;
+				Font oldFont = Output.Font;
+				Color oldColor = Output.ForeColor;
+				FontStyle oldFontStyle = Output.Font.Style;
+				Output.ForeColor = token.Color;
+				if (token.Font != null)
+					Output.Font = token.Font;
+				else
+					Output.Font = new Font(Output.Font, token.FontStyle);
 				Output.AppendText(s);
+				Output.ForeColor = oldColor;
+				Output.Font = oldFont;
 			}
-			catch { }
 		}
 
 		/// <summary>
-		/// When overriden in a derived class, it allows to perform actions where the thread is aborted
+		/// When overridden in a derived class, it allows to perform actions where the thread is aborted
 		/// </summary>
 		protected virtual void OnThreadAborted() { }
 
 		/// <summary>
-		/// When overriden in a derived class, it allows to perform actions where the thread is started
+		/// When overridden in a derived class, it allows to perform actions where the thread is started
 		/// </summary>
 		protected virtual void OnThreadStarted() { }
 
 		/// <summary>
-		/// When overriden in a derived class, it allows to perform actions where the thread finish its execution
+		/// When overridden in a derived class, it allows to perform actions where the thread finish its execution
 		/// </summary>
 		protected virtual void OnThreadStopped() { }
 
 		/// <summary>
-		/// When overriden in a derived class, opens a stream for the log file
+		/// When overridden in a derived class, opens a stream for the log file
 		/// </summary>
 		/// <param name="filePath">The path to the log file to create/open</param>
 		/// <param name="stream">When this method returns contains a StreamWriter which allows to write in the specified file,
@@ -844,42 +969,41 @@ namespace Robotics.Controls
 		/// <summary>
 		/// Initializes the thread for asynchronous write in the file and TextBox logs
 		/// </summary>
-        protected virtual void SetupThread()
-        {
-            if(writerThread != null)
-                return;
-            writerThread = new Thread(new ThreadStart(WriterThread_Task));
+		protected virtual void SetupThread()
+		{
+			if (writerThread != null)
+				return;
+			writerThread = new Thread(new ThreadStart(WriterThread_Task));
 			writerThread.IsBackground = true;
 			writerThread.Priority = ThreadPriority.BelowNormal;
-            this.running = true;
+			this.running = true;
 			writerThread.Start();
 		}
 
 		private void WriterThread_Task()
 		{
-			//string stringToAppend;
-			// 8kB buffer
-			StringBuilder fileSb = new StringBuilder(8192);
-			StringBuilder textSb = new StringBuilder(8192);
-			// Stopwatch to masure time
-			System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+			StringToken token;
 
 			OnThreadStarted();
-			sw.Start();
 			while (this.running && !this.disposing && !this.disposed)
 			{
-
 				try
 				{
-					BufferizeTokens(fileSb, textSb, sw);
-
-					if (!running || (sw.ElapsedMilliseconds > 1000) || (fileSb.Length > fileSb.MaxCapacity / 2) || (textSb.Length > textSb.MaxCapacity / 2))
+					token = pending.Consume(100);
+					if ((token == null) || String.IsNullOrEmpty(token.Value))
 					{
-						Flush(fileSb, textSb);
-						sw.Reset();
-						sw.Start();
+						Thread.Sleep(0);
+						continue;
 					}
-
+					
+					WriteTokenToFile(token);
+					WriteTokenToTextBox(token);
+				}
+				catch (ThreadInterruptedException)
+				{
+					running = false;
+					OnThreadStopped();
+					return;
 				}
 				catch (ThreadAbortException)
 				{
@@ -895,85 +1019,41 @@ namespace Robotics.Controls
 				}
 			}
 			OnThreadStopped();
-
-			/*
-			int elapsed = 0;
-			StringBuilder sb;
-			string s;
-
-			this.running = true;
-
-			while (this.running)
-			{
-				if (doFlush || (elapsed >= 100))
-				{
-					sb = new StringBuilder(4096);
-					doFlush = false;
-					while (pending.Count > 0)
-					{
-						sb.Append(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss "));
-						sb.Append(pending.Dequeue());
-					}
-					s = sb.ToString();
-					try
-					{
-						if (logFile != null) logFile.Write(s);
-						if (this.running && output.IsHandleCreated && !output.Disposing && !output.IsDisposed)
-							output.BeginInvoke(AppendStringEH, s);
-					}
-					catch { }
-				}
-				Thread.Sleep(10);
-				elapsed += 10;
-			}
-			*/
-		}
-
-		private void BufferizeTokens(StringBuilder fileSb, StringBuilder textSb, System.Diagnostics.Stopwatch sw)
-		{
-			StringToken token;
-			do
-			{
-				token = pending.Consume(100);
-				if ((token == null) || String.IsNullOrEmpty(token.Value))
-					continue;
-				if (LogFile != null)
-					fileSb.Append(TokenToFile(token));
-
-				if (Output != null)
-					textSb.Append(TokenToTextBox(token));
-			} while (this.running && (pending.Count > 0) && (sw.ElapsedMilliseconds < 1000));
-		}
-
-		private void Flush(StringBuilder fileSb, StringBuilder textSb)
-		{
-			if (LogFile != null)
-			{
-				if (LogFile.BaseStream.CanWrite)
-					LogFile.Write(fileSb.ToString());
-				fileSb.Length = 0;
-			}
-			if (Output != null)
-			{
-				if (Output.IsHandleCreated && !Output.Disposing && !Output.IsDisposed)
-					Output.Invoke(AppendStringEH, textSb.ToString());
-				textSb.Length = 0;
-			}
 		}
 
 		/// <summary>
-		/// When overriden in a derived class returns a string to be appended to the TextBox log
+		/// When overridden in a derived class returns a string to be appended to the TextBox log
 		/// </summary>
 		/// <param name="token">The token object used to generate the string to append</param>
 		/// <returns>A string to be appended to the TextBox log</returns>
-		protected abstract string TokenToTextBox(StringToken token);
+		protected virtual void WriteTokenToTextBox(StringToken token)
+		{
+			try
+			{
+				if ((Output == null) || (token.Priority > VerbosityThreshold))
+					return;
+				Output.Invoke(appendTokenMethod, token);
+			}
+			catch { }
+		}
 
 		/// <summary>
-		/// When overriden in a derived class returns a string to be appended to the log file
+		/// When overridden in a derived class returns a string to be appended to the log file
 		/// </summary>
 		/// <param name="token">The token object used to generate the string to append</param>
 		/// <returns>A string to be appended to the log file</returns>
-		protected abstract string TokenToFile(StringToken token);
+		protected virtual void WriteTokenToFile(StringToken token)
+		{
+			string s;
+			if ((LogFile == null) || !LogFile.BaseStream.CanWrite || (token.Priority > logFileVerbosityThreshold))
+				return;
+			if (appendDate)
+				s = String.Format("{0} {1}",
+					token.CreationTime.ToString("yyyy/MM/dd HH:mm:ss.fff"),
+					token.Value);
+			s = token.Value;
+			logFile.Write(s);
+		}
 
 		private void output_Disposed(object sender, EventArgs e)
 		{
@@ -987,7 +1067,7 @@ namespace Robotics.Controls
 				lock (Output)
 				{
 					if (this.running && Output.IsHandleCreated && !Output.Disposing && !Output.IsDisposed)
-						Output.Invoke(AppendStringEH, waitingHadle.ToString());
+						Output.Invoke(appendTokenMethod, waitingHadle.ToString());
 				}
 			}
 			waitingHadle = new StringBuilder(1024);
@@ -1021,11 +1101,11 @@ namespace Robotics.Controls
 		}
 
 		#endregion
-		 
+
 		/// <summary>
 		/// Encapsulates log messages with its priority and the creation time
 		/// </summary>
-		protected struct StringToken
+		protected class StringToken
 		{
 			/// <summary>
 			/// The message string to write to the log
@@ -1039,18 +1119,93 @@ namespace Robotics.Controls
 			/// The priority of the message
 			/// </summary>
 			private int priority;
+			/// <summary>
+			/// The font used to write the string
+			/// </summary>
+			private Font font;
+			/// <summary>
+			/// The color used to write the text
+			/// </summary>
+			private Color color;
+			/// <summary>
+			/// The color used to write the text
+			/// </summary>
+			private FontStyle fontStyle;
 
 			/// <summary>
 			/// Initializes a new instance of StringToken
 			/// </summary>
 			/// <param name="priority">The priority of the message</param>
 			/// <param name="value">The message string to write to the log</param>
-			public StringToken(int priority, string value)
+			public StringToken(int priority, string value) : 
+				this(priority, value, FontStyle.Regular, Color.Black) { }
+
+			/// <summary>
+			/// Initializes a new instance of StringToken
+			/// </summary>
+			/// <param name="priority">The priority of the message</param>
+			/// <param name="value">The message string to write to the log</param>
+			/// <param name="color">The color which will be used to write the text in the RichTextBox Control</param>
+			/// <param name="font">The font used to write the text in the RichTextBox Control</param>
+			public StringToken(int priority, string value, Color color, Font font) : 
+				this(priority, value, FontStyle.Regular, color)
 			{
 				this.value = value;
 				this.ct = DateTime.Now;
 				this.priority = priority;
+				if ((this.font = font) != null)
+					this.fontStyle = font.Style;
 			}
+
+			/// <summary>
+			/// Initializes a new instance of StringToken
+			/// </summary>
+			/// <param name="priority">The priority of the message</param>
+			/// <param name="value">The message string to write to the log</param>
+			/// <param name="color">The color which will be used to write the text in the RichTextBox Control</param>
+			public StringToken(int priority, string value, Color color) :
+				this(priority, value, FontStyle.Regular, color) { }
+
+			/// <summary>
+			/// Initializes a new instance of StringToken
+			/// </summary>
+			/// <param name="priority">The priority of the message</param>
+			/// <param name="value">The message string to write to the log</param>
+			/// <param name="fontStyle">The style of the font used to write the text in the RichTextBox Control</param>
+			public StringToken(int priority, string value, FontStyle fontStyle) : 
+				this(priority, value, fontStyle, Color.Black) { }
+
+			/// <summary>
+			/// Initializes a new instance of StringToken
+			/// </summary>
+			/// <param name="priority">The priority of the message</param>
+			/// <param name="value">The message string to write to the log</param>
+			/// <param name="color">The style of the font used to write the text in the RichTextBox Control</param>
+			/// <param name="fontStyle">The color which will be used to write the text in the RichTextBox Control</param>
+			public StringToken(int priority, string value, FontStyle fontStyle, Color color)
+			{
+				this.value = value;
+				this.ct = DateTime.Now;
+				this.priority = priority;
+				this.font = null;
+				this.fontStyle = FontStyle.Regular;
+				this.color = Color.Black;
+			}
+
+			/// <summary>
+			/// Gets or sets the font used to write the string
+			/// </summary>
+			public Font Font { get { return this.font; } }
+
+			/// <summary>
+			/// The color used to write the text
+			/// </summary>
+			public Color Color { get { return this.color; } }
+
+			/// <summary>
+			/// The color used to write the text
+			/// </summary>
+			public FontStyle FontStyle { get { return this.fontStyle; } }
 
 			/// <summary>
 			/// Gets the message string to write to the log
@@ -1068,7 +1223,7 @@ namespace Robotics.Controls
 			public int Priority { get { return this.priority; } }
 
 			/// <summary>
-			/// Implicitely converts a StringToken object to a string
+			/// Implicitly converts a StringToken object to a string
 			/// </summary>
 			/// <param name="st">The StringToken object to convert</param>
 			/// <returns>The message string to write to the log stored in the StringToken object</returns>
@@ -1078,7 +1233,7 @@ namespace Robotics.Controls
 			}
 
 			/// <summary>
-			/// Implicitely converts a string to a StringToken object with a priority of 5
+			/// Implicitly converts a string to a StringToken object with a priority of 5
 			/// </summary>
 			/// <param name="s">The message string to write to the log</param>
 			/// <returns>A StringToken object with a priority of 5 with the input string as value</returns>

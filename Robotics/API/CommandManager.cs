@@ -31,7 +31,7 @@ namespace Robotics.API
 	[ComVisible(true)]
 	[Guid("E4DE45D7-8E79-4c5e-877C-3F65D2CE17F5")]
 	[ClassInterface(ClassInterfaceType.None)]
-	public partial class CommandManager : ICommandManager
+	public partial class CommandManager : IService, ICommandManager
 	{
 
 		#region Variables
@@ -398,6 +398,45 @@ namespace Robotics.API
 		#endregion
 
 		#region Methodos
+
+		/// <summary>
+		/// Adds a SharedVariable to the CommandManager.
+		/// If the shared variable is already registered, the reference is updated, otherwise a new shared variable of the type is created
+		/// </summary>
+		/// <param name="sharedVariable">A shared variable object used to create the new SharedVariable or update the reference</param>
+		public void AddSharedVariable<T>(ref T sharedVariable) where T : SharedVariable
+		{
+			if (sharedVariable == null)
+				throw new ArgumentNullException();
+			if (this.sharedVariables.Contains(sharedVariable.Name))
+			{
+				sharedVariable = (T)this.sharedVariables[sharedVariable.Name];
+				return;
+			}
+			this.sharedVariables.Add(sharedVariable);
+		}
+
+		/// <summary>
+		/// Adds a SharedVariable to the CommandManager.
+		/// If the shared variable is already registered, the reference is updated, otherwise a new shared variable of the type is created
+		/// </summary>
+		/// <param name="sharedVariable">A shared variable object used to create the new SharedVariable or update the reference</param>
+		/// <param name="reportType">The type of report required for subscription</param>
+		/// <param name="subscriptionType">The type of subscription</param>
+		/// <param name="updateEventHandler">A delegate that represents the method that will handle the Updated event of the shared variable</param>
+		public void AddSharedVariable<T>(ref T sharedVariable, SharedVariableReportType reportType, SharedVariableSubscriptionType subscriptionType, SharedVariableUpdatedEventHadler updateEventHandler) where T : SharedVariable
+		{
+			if (sharedVariable == null)
+				throw new ArgumentNullException();
+			if (this.sharedVariables.Contains(sharedVariable.Name))
+			{
+				sharedVariable = (T)this.sharedVariables[sharedVariable.Name];
+				return;
+			}
+			this.sharedVariables.Add(sharedVariable);
+			sharedVariable.Subscribe(reportType, subscriptionType);
+			sharedVariable.Updated+= updateEventHandler;
+		}
 
 		/// <summary>
 		/// Prepares the async command executer to perform multiple send-and-wait operations in parallel
