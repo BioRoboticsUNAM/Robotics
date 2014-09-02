@@ -101,9 +101,10 @@ namespace Robotics.Controls
 			if (token.Priority > VerbosityThreshold)
 				return s;
 			if (appendDate)
-				s = token.CreationTime.ToString("yyyy/MM/dd HH:mm:ss.fff ");
-			s+= token.Value;
-			return s;
+				return String.Format("{0} {1}",
+					token.CreationTime.ToString("yyyy/MM/dd HH:mm:ss.fff"),
+					token.Value);
+			return token.Value;
 		}
 
 		/// <summary>
@@ -117,9 +118,22 @@ namespace Robotics.Controls
 			if (token.Priority > logFileVerbosityThreshold)
 				return s;
 			if (appendDate)
-				s = token.CreationTime.ToString("yyyy/MM/dd HH:mm:ss.fff ");
-			s += token.Value;
-			return s;
+				return String.Format("{0} {1}",
+					token.CreationTime.ToString("yyyy/MM/dd HH:mm:ss.fff"),
+					token.Value);
+			return token.Value;
+		}
+
+		#endregion
+
+		#region Static Constructors
+
+		/// <summary>
+		/// Initializes all static variables
+		/// </summary>
+		static TextBoxStreamWriter()
+		{
+			TextBoxStreamWriter.defaultLog = new TextBoxStreamWriter(new TextBox(), Application.ExecutablePath + ".log", 1);
 		}
 
 		#endregion
@@ -141,11 +155,13 @@ namespace Robotics.Controls
 		{
 			get
 			{
-				if (defaultLog == null)
-					defaultLog = new TextBoxStreamWriter(new TextBox(), Application.ExecutablePath + ".log", 1);
 				return defaultLog;
 			}
-			set { if (value != null)defaultLog = value; }
+			set
+			{
+				if (value == null)
+					throw new ArgumentNullException();
+				defaultLog = value; }
 		}
 
 		#endregion

@@ -139,7 +139,7 @@ namespace Robotics.API.PrimitiveSharedVariables
 			int start;
 			int end;
 
-			if (String.IsNullOrEmpty(serializedData) || (String.Compare("null", serializedData, true) == 0))
+			if (String.IsNullOrEmpty(serializedData) || (String.Compare("null", serializedData.Trim(), true) == 0))
 			{
 				value = null;
 				return true;

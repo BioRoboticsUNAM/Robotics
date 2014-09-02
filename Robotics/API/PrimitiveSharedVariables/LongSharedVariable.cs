@@ -106,7 +106,7 @@ namespace Robotics.API.PrimitiveSharedVariables
 		protected override bool Serialize(long value, out string serializedData)
 		{
 			serializedData = value.ToString();
-			return false;
+			return true;
 		}
 
 		#endregion

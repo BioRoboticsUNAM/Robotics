@@ -107,6 +107,19 @@ namespace Robotics.API
 			get {return parametersRequired;}
 		}
 
+		/// <summary>
+		/// Gets the priority of this command. Valid values are between 0 (higest) and 255 (lowest)
+		/// This value is used by the blackboard and has no effect on the execution of this CommandExecuter object
+		/// </summary>
+		public override int Priority { get { return 1; } }
+
+		/// <summary>
+		/// Gets the maxium amount of time the blackboard will wait for the execution of this command.
+		/// Valid values are positive integers and given in milliseconds, it is advised to use values greater than 100
+		/// This value is used by the blackboard and has no effect on the execution of this CommandExecuter object
+		/// </summary>
+		public override int Timeout { get { return 5000; } }
+
 		#endregion
 
 		#region Methodos

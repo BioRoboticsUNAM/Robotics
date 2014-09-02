@@ -26,7 +26,7 @@ namespace Robotics.API
 	/// <summary>
 	/// Represents an object that manages TCP connections.
 	/// </summary>
-	public interface IConnectionManager : IMessageSource
+	public interface IConnectionManager : IService, IMessageSource
 	{
 		#region Properties
 
@@ -61,11 +61,6 @@ namespace Robotics.API
 		/// Gets a value indicating if TCP Server has been started and is running
 		/// </summary>
 		bool IsServerStarted { get; }
-
-		/// <summary>
-		/// Gets a value indicating if this instance of IConnectionManager has been started
-		/// </summary>
-		bool IsRunning { get; }
 
 		/// <summary>
 		/// Gets a value indicating the mode of the current IConnectionManager instance
@@ -146,16 +141,6 @@ namespace Robotics.API
 		#endregion
 
 		#region Methods
-
-		/// <summary>
-		/// Starts the Connection Manager
-		/// </summary>
-		void Start();
-
-		/// <summary>
-		/// Stops the Connection Manager
-		/// </summary>
-		void Stop();
 
 		#region Socket Methods
 

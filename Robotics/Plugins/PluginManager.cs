@@ -133,7 +133,7 @@ namespace Robotics.Plugins
 					this.rwPluginsLock.ReleaseReaderLock();
 					throw new ArgumentOutOfRangeException("Index was outside the boundaries of the collection.");
 				}
-				return this.plugins.Values[index];
+				p = this.plugins.Values[index];
 				this.rwPluginsLock.ReleaseReaderLock();
 				return p;
 			}
@@ -376,15 +376,18 @@ namespace Robotics.Plugins
 				if (!pluginExtension.StartsWith("*."))
 					pluginExtension = "*." + pluginExtension;
 				files = Directory.GetFiles(pluginDirectoryPath, pluginExtension);
-
+				
 				for (int i = 0; i < files.Length; ++i)
 				{
 					try
 					{
 						Assembly assembly = Assembly.LoadFrom(files[i]);
 						dllInfo = DllInfo.GetDllInfo(files[i]);
-						if (IntPtr.Size != dllInfo.PointerSize)
-							continue;
+						//if (IntPtr.Size != dllInfo.PointerSize)
+						//{
+						//    message += "File: " + files[i] + ", Ptr: " + dllInfo.PointerSize + "\r\n";
+						//    continue;
+						//}
 						this.rwPluginsLock.AcquireWriterLock(-1);
 						if (dllInfo.IsManagedAssembly)
 							LoadPluginsFromManagedDll(dllInfo);
@@ -413,19 +416,20 @@ namespace Robotics.Plugins
 			Type[] types;
 			Plugin instance;
 
-			assembly = Assembly.LoadFrom(dll.FilePath);
+			assembly = Assembly.LoadFile(dll.FilePath);
+
 			if (assembly.ManifestModule.Name == "Robotics.dll")
 				return;
 			types = assembly.GetTypes();
 			
 			foreach (Type type in types)
 			{
-				if (type.GetInterface(pluginTypeName) == null)
+				if ((type.GetInterface(pluginTypeName) == null) || type.IsAbstract)
 					continue;
 
 				try
 				{
-					instance = (Plugin)Activator.CreateInstance(type);
+					instance = (Plugin)assembly.CreateInstance(type.FullName);
 
 					if (String.IsNullOrEmpty(instance.Name) || plugins.ContainsKey(instance.Name))
 						continue;

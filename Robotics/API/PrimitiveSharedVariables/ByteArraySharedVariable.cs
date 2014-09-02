@@ -100,40 +100,7 @@ namespace Robotics.API.PrimitiveSharedVariables
 		/// <returns>true if serializedData was deserialized successfully; otherwise, false</returns>
 		protected override bool Deserialize(string serializedData, out byte[] values)
 		{
-			int cc;
-			values = null;
-			byte data;
-			List<byte> bData;
-
-			// Eat white spaces
-			cc = 0;
-			while ((cc < serializedData.Length) && Char.IsWhiteSpace(serializedData[cc]))
-				++cc;
-
-			// No data. Return.
-			if ((serializedData.Length - cc) < 2)
-				return false;
-
-			// Skip prefix 0x and 0X
-			if ((serializedData[cc] == '0') && ((serializedData[cc+1] == 'X') || (serializedData[cc+1] == 'x')))
-				cc += 2;
-
-			// Parse data
-			// 0x 48 60 28 68 64 57 63 2a
-			bData = new List<byte>(serializedData.Length / 2);
-			while (cc < serializedData.Length - 1)
-			{
-				if (!Byte.TryParse(
-					serializedData.Substring(cc, 2),
-					System.Globalization.NumberStyles.HexNumber,
-					System.Globalization.CultureInfo.InvariantCulture,
-					out data))
-					return false;
-				bData.Add(data);
-				cc += 2;
-			}
-			values = bData.ToArray();
-			return true;
+			return PrimitiveSerializer.DeserializeHexByteArray(serializedData, out values);
 		}
 
 		/// <summary>
@@ -144,16 +111,7 @@ namespace Robotics.API.PrimitiveSharedVariables
 		/// <returns>true if value was serialized successfully; otherwise, false</returns>
 		protected override bool Serialize(byte[] values, out string serializedData)
 		{
-			StringBuilder sb;
-			if (values == null)
-				values = new byte[0];
-			sb = new StringBuilder(2 + values.Length * 3);
-			sb.Append("0x");
-			for (int i = 0; i < values.Length; ++i)
-				sb.Append(values[i].ToString("x2"));
-			serializedData = sb.ToString();
-
-			return true;
+			return PrimitiveSerializer.SerializeHexByteArray(values, out serializedData);
 		}
 
 		#endregion

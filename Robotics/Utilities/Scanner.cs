@@ -146,7 +146,7 @@ namespace Robotics.Utilities
 			while ((cc < input.Length) && IsNumeric(input[cc]))
 				++cc;
 			length = Math.Min(cc - bcc, input.Length - bcc);
-			if ((length < 1) || (length > 3))
+			if ((length < 1) || (length > 4))
 				return false;
 			sValue = input.Substring(bcc, length);
 			return SByte.TryParse(sValue, out value);

@@ -180,12 +180,12 @@ namespace SharedVariableTester
 			Console.WriteLine("Disconnected from blackboard");
 		}
 
-		private void connectionManager_Stopped(ConnectionManager connectionManager)
+		private void connectionManager_Stopped(IConnectionManager connectionManager)
 		{
 			Console.WriteLine("ConnectionManager stopped");
 		}
 
-		private void connectionManager_Started(ConnectionManager connectionManager)
+		private void connectionManager_Started(IConnectionManager connectionManager)
 		{
 			Console.WriteLine("ConnectionManager started");
 		}

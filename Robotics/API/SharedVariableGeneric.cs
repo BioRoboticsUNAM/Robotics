@@ -128,8 +128,8 @@ namespace Robotics.API
 			this.variableName = variableName;
 			this.lastUpdate = DateTime.MinValue;
 			this.defaultValue = value;
-			this.serializer = new SharedVariableStringSerializer<T>(Serialize);
-			this.deserializer = new SharedVariableStringDeserializer<T>(Deserialize);
+			this.serializer = null;
+			this.deserializer = null;
 			if ((commandManager != null) && initialize)
 				Initialize(value);
 		}
@@ -343,11 +343,9 @@ namespace Robotics.API
 		protected virtual bool Deserialize(string serializedData, out T value)
 		{
 			value = default(T);
-			if (String.IsNullOrEmpty(serializedData))
+			if ( (deserializer == null) || deserializer(serializedData, out value))
 				return false;
-			if (deserializer(serializedData, out value))
-				return true;
-			return false;
+			return true;
 		}
 
 		/// <summary>
@@ -646,7 +644,8 @@ namespace Robotics.API
 		/// <returns>true if value was serialized successfully; otherwise, false</returns>
 		protected virtual bool Serialize(T value, out string serializedData)
 		{
-			if (!serializer(value, out serializedData))
+			serializedData = null;
+			if ((serializer == null) || !serializer(value, out serializedData))
 				return false;
 			return true;
 		}

@@ -11,6 +11,16 @@ using Robotics.HAL.Sensors.Telemetric;
 
 namespace Test
 {
+	public class SuperType
+	{
+		public int X { get; set; }
+		public int Y { get; set; }
+		public double[] Z { get; set; }
+		public SubType ST { get; set; }
+		public SubType[] STA { get; set; }
+	}
+	public class SubType{ public int I { get; set; } public int[][] J { get; set; } }
+
 	class Program
 	{
 		public static int i = 0;
@@ -27,6 +37,11 @@ namespace Test
 			string variableData;
 			string data;
 			Response rsp;
+
+			Robotics.API.PrimitiveSharedVariables.SharedVariableBuilder.BuildClass(typeof(SuperType), "Z:\\SuperTypeSharedVar.cs");
+			Robotics.API.PrimitiveSharedVariables.SharedVariableBuilder.BuildClass(typeof(SuperType[]), "Z:\\SuperTypeArraySharedVar.cs");
+			return;
+
 
 			data = "{ RecognizedSpeech recognizedSpeech { 2 \"robot no\" 0.92161322 \"robot hello\" 0.91587275 } }";
 			data = "read_var \"{ string connected \\\"BLK OBJ-FNDT\\\" }\" 1";

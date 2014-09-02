@@ -148,6 +148,19 @@ namespace Robotics.API
 		}
 
 		/// <summary>
+		/// Gets the priority of this command. Valid values are between 0 (higest) and 255 (lowest)
+		/// This value is used by the blackboard and has no effect on the execution of this CommandExecuter object
+		/// </summary>
+		public abstract int Priority { get; }
+
+		/// <summary>
+		/// Gets the maxium amount of time the blackboard will wait for the execution of this command.
+		/// Valid values are positive integers and given in milliseconds, it is advised to use values greater than 100
+		/// This value is used by the blackboard and has no effect on the execution of this CommandExecuter object
+		/// </summary>
+		public abstract int Timeout { get; }
+
+		/// <summary>
 		/// Gets or sets the signature used to parse the command arguments
 		/// </summary>
 		protected Signature Signature

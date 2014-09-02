@@ -11,8 +11,7 @@ namespace Robotics.API
 	/// <summary>
 	/// Manages TCP connections.
 	/// </summary>
-	/// <remarks>This class is incomplete and should not be used</remarks>
-	public class ConnectionManager : IMessageSource
+	public class ConnectionManager : IService, IConnectionManager
 	{
 		private const string DEFAULT_MODULE_NAME = "MODULE";
 		/// <summary>
@@ -77,7 +76,7 @@ namespace Robotics.API
 		/// <summary>
 		/// Enables or disables the reception of data from the output socket
 		/// </summary>
-		public bool outputSocketReceptionEnabled;
+		protected bool outputSocketReceptionEnabled;
 
 		#endregion
 
@@ -348,6 +347,11 @@ namespace Robotics.API
 					tcpClient.ServerAddress = this.remoteServerAddress;
 			}
 		}
+
+		/// <summary>
+		/// Gets the TCP Server
+		/// </summary>
+		internal SocketTcpServer TcpServer { get { return this.tcpServer; } }
 
 		#endregion
 

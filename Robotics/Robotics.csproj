@@ -67,10 +67,12 @@
     <Compile Include="API\BinaryCommandResponseBase.cs" />
     <Compile Include="API\BinaryMessage.cs" />
     <Compile Include="API\BinaryResponse.cs" />
+    <Compile Include="API\IConnector.cs" />
     <Compile Include="API\IConnectionManager.cs" />
+    <Compile Include="API\Interop\Module.cs" />
     <Compile Include="API\ISharedVariableSubscriptionInfo.cs" />
     <Compile Include="API\ISharedVariableInfo.cs" />
-    <Compile Include="API\COMInterfaces.cs" />
+    <Compile Include="API\Interop\COMInterfaces.cs" />
     <Compile Include="API\Command.cs" />
     <Compile Include="API\CommandExecuter.cs" />
     <Compile Include="API\CommandExecuterCollection.cs" />
@@ -80,13 +82,16 @@
     <Compile Include="API\API.cs" />
     <Compile Include="API\AsyncFunctionCE.cs" />
     <Compile Include="API\ICommandManager.cs" />
+    <Compile Include="API\MessageParser.cs" />
     <Compile Include="API\MiscSharedVariables\KnownHumanFaces.cs" />
+    <Compile Include="API\PrimitiveSharedVariables\SharedVariableBuilder.cs" />
+    <Compile Include="API\PrimitiveSharedVariables\PrimitiveSerializer.cs" />
     <Compile Include="API\SharedVariableGeneric.cs" />
     <Compile Include="API\SharedVariableInfo.cs" />
     <Compile Include="API\SyncFunctionCE.cs" />
     <Compile Include="API\IMessageSource.cs" />
     <Compile Include="API\AsyncCommandExecuter.cs" />
-    <Compile Include="API\IModule.cs" />
+    <Compile Include="API\Interop\IModule.cs" />
     <Compile Include="API\MiscSharedVariables\DetectedHumanFaces.cs" />
     <Compile Include="API\MiscSharedVariables\RecognizedSpeechSharedVariable.cs" />
     <Compile Include="API\Module.cs" />
@@ -104,9 +109,13 @@
     <Compile Include="API\SharedVariable.cs" />
     <Compile Include="API\SharedVariableList.cs" />
     <Compile Include="API\SharedVariableSubscriptionReport.cs" />
+    <Compile Include="API\TcpPacketParser.cs" />
+    <Compile Include="API\Xml\XmlMessage.cs" />
     <Compile Include="Controls\IdBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\RichTextBoxStreamWriter.cs" />
+    <Compile Include="Controls\RichTextBoxStreamWriterBase.cs" />
     <Compile Include="Controls\TextBoxStreamWriter.cs" />
     <Compile Include="Controls\TextBoxStreamWriterBase.cs" />
     <Compile Include="Controls\XmlTextBoxStreamWriter.cs" />
@@ -191,7 +200,6 @@
     <Compile Include="API\SignatureBuilder.cs" />
     <Compile Include="API\SyncCommandExecuter.cs" />
     <Compile Include="DataStructures\BinarySearchTree.cs" />
-    <Compile Include="DataStructures\BinarySearchTreeNode.cs" />
     <Compile Include="DataStructures\BinaryTreeNode.cs" />
     <Compile Include="Controls\VideoControl.cs">
       <SubType>Component</SubType>

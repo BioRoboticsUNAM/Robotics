@@ -167,7 +167,7 @@ namespace Robotics.API
 				if (HasParams)
 				{
 					sb.Append(" \"");
-					sb.Append(parameters);
+					sb.Append(EscapedParameters);
 					sb.Append("\"");
 				}
 
@@ -213,7 +213,7 @@ namespace Robotics.API
 			if (HasParams)
 			{
 				sb.Append(" \"");
-				sb.Append(parameters);
+				sb.Append(EscapedParameters);
 				sb.Append("\"");
 			}
 
