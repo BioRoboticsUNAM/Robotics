@@ -55,10 +55,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Robotics.Mathematics.Precalculated\Robotics.Mathematics.Precalculated.csproj">
+      <Project>{5C0FC622-0CA5-441F-BF42-B2546B11455A}</Project>
+      <Name>Robotics.Mathematics.Precalculated</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Robotics\Robotics.csproj">
       <Project>{0E93A9B5-520D-4FD5-B73F-C2457F49B14E}</Project>
       <Name>Robotics</Name>

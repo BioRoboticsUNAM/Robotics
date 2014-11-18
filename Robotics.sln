@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedVariableTester", "Sha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedVariableInspector", "SharedVariableInspector\SharedVariableInspector.csproj", "{C0A7D9F4-22DC-4AD4-9C46-B656E94A7FE0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Robotics.Mathematics.Precalculated", "Robotics.Mathematics.Precalculated\Robotics.Mathematics.Precalculated.csproj", "{5C0FC622-0CA5-441F-BF42-B2546B11455A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,12 @@ Global
 		{C0A7D9F4-22DC-4AD4-9C46-B656E94A7FE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0A7D9F4-22DC-4AD4-9C46-B656E94A7FE0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C0A7D9F4-22DC-4AD4-9C46-B656E94A7FE0}.Release|x86.ActiveCfg = Release|Any CPU
+		{5C0FC622-0CA5-441F-BF42-B2546B11455A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C0FC622-0CA5-441F-BF42-B2546B11455A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C0FC622-0CA5-441F-BF42-B2546B11455A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5C0FC622-0CA5-441F-BF42-B2546B11455A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C0FC622-0CA5-441F-BF42-B2546B11455A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C0FC622-0CA5-441F-BF42-B2546B11455A}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

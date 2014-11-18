@@ -114,6 +114,40 @@ namespace Robotics.API.PrimitiveSharedVariables
 		}
 
 		/// <summary>
+		/// Deserializes the provided object from a string
+		/// </summary>
+		/// <param name="serializedData">String containing the serialized object</param>
+		/// <param name="value">When this method returns contains the value stored in serializedData if the deserialization succeeded, or null if the deserialization failed.</param>
+		/// <returns>true if serializedData was deserialized successfully; otherwise, false</returns>
+		public static bool Deserialize(string serializedData, out MimeFile value)
+		{
+			value = null;
+			if (String.IsNullOrEmpty(serializedData)) return true;
+
+			int bcc;
+			int cc = 0;
+			string base64;
+			string mimeType;
+
+			if (!Scanner.ReadString("MimeType=", serializedData, ref cc))
+				return false;
+			bcc = cc;
+			if (!Scanner.AdvanceToChar(' ', serializedData, ref cc))
+				return false;
+			mimeType = serializedData.Substring(bcc, cc - bcc);
+			++cc;
+			if (!Scanner.ReadString("Data=", serializedData, ref cc))
+				return false;
+			bcc = cc;
+			if (!Scanner.AdvanceToChar('=', serializedData, ref cc))
+				return false;
+			while (Scanner.ReadChar('=', serializedData, ref cc)) ;
+			base64 = serializedData.Substring(bcc, cc - bcc);
+			value = new MimeFile(mimeType, Convert.FromBase64String(base64));
+			return true;
+		}
+
+		/// <summary>
 		/// Deserializes the provided string
 		/// </summary>
 		/// <param name="serializedData">String containing the serialized object</param>
@@ -593,6 +627,42 @@ namespace Robotics.API.PrimitiveSharedVariables
 			if (sb == null)
 				throw new ArgumentNullException("The StringBuilder object is required to write serialized data");
 			sb.Append(SerializeString(value));
+			return true;
+		}
+
+		/// <summary>
+		/// Serializes the provided object to a string
+		/// </summary>
+		/// <param name="value">Object to be serialized</param>
+		/// <param name="serializedData">When this method returns contains value serialized if the serialization succeeded, or null if the serialization failed. The serialization fails if the serializedData parameter is a null reference (Nothing in Visual Basic) or outside the specification for the type. This parameter is passed uninitialized</param>
+		/// <returns>true if value was serialized successfully; otherwise, false</returns>
+		public static bool Serialize(MimeFile value, out string serializedData)
+		{
+			serializedData = String.Empty;
+			if (value == null)
+				return false;
+
+			string base64 = Convert.ToBase64String(value.RawData, Base64FormattingOptions.None);
+			serializedData = String.Format("MimeType={0} Data={1}", value.MimeType, base64);
+			return true;
+		}
+
+		/// <summary>
+		/// Serializes the provided object into a StringBuilder object
+		/// </summary>
+		/// <param name="value">Object to be serialized</param>
+		/// <param name="sb">A StringBuilder object where serialized data will be written</param>
+		/// <returns>true if value was serialized successfully; otherwise, false</returns>
+		public static bool Serialize(MimeFile value, StringBuilder sb)
+		{
+			if (value == null)
+				return false;
+
+			string base64 = Convert.ToBase64String(value.RawData, Base64FormattingOptions.None);
+			sb.Append("MimeType=");
+			sb.Append(value.MimeType);
+			sb.Append(" Data=");
+			sb.Append(base64);
 			return true;
 		}
 

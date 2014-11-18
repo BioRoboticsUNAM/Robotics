@@ -8,6 +8,7 @@ using Robotics;
 using Robotics.API;
 using Robotics.Mathematics;
 using Robotics.HAL.Sensors.Telemetric;
+using Robotics.Mathematics.Precalculated;
 
 namespace Test
 {
@@ -21,7 +22,7 @@ namespace Test
 	}
 	public class SubType{ public int I { get; set; } public int[][] J { get; set; } }
 
-	class Program
+	class Test
 	{
 		public static int i = 0;
 		public static Random rnd = new Random();
@@ -37,6 +38,42 @@ namespace Test
 			string variableData;
 			string data;
 			Response rsp;
+
+			Trigonometric precalculated;
+			long start;
+			long end;
+
+			start = System.GC.GetTotalMemory(true);
+			precalculated = new Trigonometric(0.01);
+			end = System.GC.GetTotalMemory(true);
+			Console.WriteLine("Size of precalculated trig with precision of {0}: {1}k = {2}M", precalculated.Precision, (end - start) / 1024, (end - start) / (1024 * 1024));
+
+			start = System.GC.GetTotalMemory(true);
+			precalculated = new Trigonometric(0.001);
+			end = System.GC.GetTotalMemory(true);
+			Console.WriteLine("Size of precalculated trig with precision of {0}: {1}k = {2}M", precalculated.Precision, (end - start) / 1024, (end - start) / (1024 * 1024));
+
+			start = System.GC.GetTotalMemory(true);
+			precalculated = new Trigonometric(0.0001);
+			end = System.GC.GetTotalMemory(true);
+			Console.WriteLine("Size of precalculated trig with precision of {0}: {1}k = {2}M", precalculated.Precision, (end - start) / 1024, (end - start) / (1024 * 1024));
+
+			start = System.GC.GetTotalMemory(true);
+			precalculated = new Trigonometric(0.00001);
+			end = System.GC.GetTotalMemory(true);
+			Console.WriteLine("Size of precalculated trig with precision of {0}: {1}k = {2}M", precalculated.Precision, (end - start) / 1024, (end - start) / (1024 * 1024));
+
+			start = System.GC.GetTotalMemory(true);
+			precalculated = new Trigonometric(0.000001);
+			end = System.GC.GetTotalMemory(true);
+			Console.WriteLine("Size of precalculated trig with precision of {0}: {1}k = {2}M", precalculated.Precision, (end - start) / 1024, (end - start) / (1024 * 1024));
+
+			start = System.GC.GetTotalMemory(true);
+			precalculated = new Trigonometric(0.0000001);
+			end = System.GC.GetTotalMemory(true);
+			Console.WriteLine("Size of precalculated trig with precision of {0}: {1}k = {2}M", precalculated.Precision, (end - start) / 1024, (end - start) / (1024 * 1024));
+
+			double result = precalculated.Sin(0.0001);
 
 			Robotics.API.PrimitiveSharedVariables.SharedVariableBuilder.BuildClass(typeof(SuperType), "Z:\\SuperTypeSharedVar.cs");
 			Robotics.API.PrimitiveSharedVariables.SharedVariableBuilder.BuildClass(typeof(SuperType[]), "Z:\\SuperTypeArraySharedVar.cs");

@@ -84,6 +84,8 @@
     <Compile Include="API\ICommandManager.cs" />
     <Compile Include="API\MessageParser.cs" />
     <Compile Include="API\MiscSharedVariables\KnownHumanFaces.cs" />
+    <Compile Include="API\PrimitiveSharedVariables\MimeFile.cs" />
+    <Compile Include="API\PrimitiveSharedVariables\MimeFileSharedVariable.cs" />
     <Compile Include="API\PrimitiveSharedVariables\SharedVariableBuilder.cs" />
     <Compile Include="API\PrimitiveSharedVariables\PrimitiveSerializer.cs" />
     <Compile Include="API\SharedVariableGeneric.cs" />
