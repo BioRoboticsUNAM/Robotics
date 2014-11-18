@@ -61,7 +61,7 @@ namespace Robotics.Mathematics.Precalculated
 		/// Returns the arc-sine of the specified value.
 		/// Values returned by this method are precalculated.
 		/// </summary>
-		/// <param name="rad">An angle, measured in radians. </param>
+		/// <param name="value">An angle, measured in radians. </param>
 		/// <returns>The sine of the provided angle. If a is equal to NaN, NegativeInfinity, or PositiveInfinity, this method returns NaN</returns>
 		public double Asin(double value)
 		{
@@ -70,6 +70,7 @@ namespace Robotics.Mathematics.Precalculated
 			Constants.Clamp(ref value, -1, 1);
 			if (value < 0) return -Asin(-value);
 			int index = (int)(value * this.factor);
+			if (index >= this.asin.Count) index = 0;
 			return this.asin[index];
 		}
 
@@ -77,7 +78,7 @@ namespace Robotics.Mathematics.Precalculated
 		/// Returns the cosine of the specified angle.
 		/// Values returned by this method are precalculated.
 		/// </summary>
-		/// <param name="rad">An angle, measured in radians. </param>
+		/// <param name="value">An angle, measured in radians. </param>
 		/// <returns>The cosine of  the provided angle. If a is equal to NaN, NegativeInfinity, or PositiveInfinity, this method returns NaN</returns>
 		public double Acos(double value)
 		{

@@ -58,7 +58,10 @@ namespace Test
 			end = System.GC.GetTotalMemory(true);
 			Console.WriteLine("Size of precalculated trig with precision of {0}: {1}k = {2}M", precalculated.Precision, (end - start) / 1024, (end - start) / (1024 * 1024));
 
-			start = System.GC.GetTotalMemory(true);
+			for (double d = -1.5708; d < 6; d += 0.0001)
+				precalculated.Cos(d);
+
+				start = System.GC.GetTotalMemory(true);
 			precalculated = new Trigonometric(0.00001);
 			end = System.GC.GetTotalMemory(true);
 			Console.WriteLine("Size of precalculated trig with precision of {0}: {1}k = {2}M", precalculated.Precision, (end - start) / 1024, (end - start) / (1024 * 1024));

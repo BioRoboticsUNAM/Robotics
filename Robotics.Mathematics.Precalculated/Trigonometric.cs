@@ -69,6 +69,7 @@ namespace Robotics.Mathematics.Precalculated
 
 			Constants.FixRadians(ref rad);
 			int index = (int)(rad * this.factor);
+			if (index >= this.sin.Count) index = 0;
 			return this.sin[index];
 		}
 
@@ -85,6 +86,7 @@ namespace Robotics.Mathematics.Precalculated
 			rad += Constants.PiOver2;
 			Constants.FixRadians(ref rad);
 			int index = (int)(rad * this.factor);
+			if (index >= this.sin.Count) index = 0;
 			return this.sin[index];
 		}
 

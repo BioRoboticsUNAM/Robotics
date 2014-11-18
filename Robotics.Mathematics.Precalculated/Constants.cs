@@ -102,6 +102,30 @@ namespace Robotics.Mathematics.Precalculated
 		/// Returns the equivalent angle in the range [0, 2pi)
 		/// </summary>
 		/// <param name="angle">The angle to fix in radians</param>
+		/// <param name="error">The precision factor when comparing with 2pi.
+		/// The angle and 2pi are considered equal when the difference between them is less than error</param>
+		/// <returns>The equivalent angle in the range [0, 2pi)</returns>
+		public static void FixRadians(ref double angle, double error)
+		{
+			int factor;
+			if (angle < 0)
+			{
+				factor = (int)(angle / Constants.TwoPi) - 1;
+				angle -= (factor * Constants.TwoPi);
+			}
+			else if (angle >= TwoPi)
+			{
+				factor = (int)(angle / Constants.TwoPi);
+				angle -= (factor * Constants.TwoPi);
+			}
+			if (Math.Abs(Constants.TwoPi - angle) < error)
+				angle = 0;
+		}
+
+		/// <summary>
+		/// Returns the equivalent angle in the range [0, 2pi)
+		/// </summary>
+		/// <param name="angle">The angle to fix in radians</param>
 		/// <returns>The equivalent angle in the range [0, 2pi)</returns>
 		public static double FixRadians(double angle)
 		{
