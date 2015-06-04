@@ -14,7 +14,7 @@ namespace System.Net.Sockets
 		private byte[] data;
 		private IPAddress senderAddress;
 		private bool truncated;
-		private static char[] charZero = new char[] { (char)0, (char)128 };
+		// private static char[] charZero = new char[] { (char)0, (char)128 };
 
 		#endregion
 

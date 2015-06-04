@@ -177,6 +177,11 @@ namespace Robotics.HAL.Sensors.Telemetric
 		}
 
 		/// <summary>
+		/// Gets the error code if any
+		/// </summary>
+		public int ErrorCode { get { return errorCode; } }
+
+		/// <summary>
 		/// Tells if the reading is mistaken
 		/// </summary>
 		public bool Mistaken
@@ -206,6 +211,13 @@ namespace Robotics.HAL.Sensors.Telemetric
 		ITelemetricSensor ISensorReading<ITelemetricSensor>.Sensor
 		{
 			get { return laser; }
+		}
+
+		/// <summary>
+		/// Gets the step at which reading was taken
+		/// </summary>
+		public int Step{
+			get { return this.step; }
 		}
 
 		/// <summary>

@@ -381,7 +381,7 @@ namespace Robotics.Plugins
 				{
 					try
 					{
-						Assembly assembly = Assembly.LoadFrom(files[i]);
+						// Assembly assembly = Assembly.LoadFrom(files[i]);
 						dllInfo = DllInfo.GetDllInfo(files[i]);
 						//if (IntPtr.Size != dllInfo.PointerSize)
 						//{

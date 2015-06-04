@@ -62852,6 +62852,9 @@ namespace Robotics.Mathematics
 		#endregion
 
 		#region Tan
+
+/*
+
 		private static readonly double[] TAN =
 		{
 			-16331778728383800.0000000,
@@ -72856,6 +72859,8 @@ namespace Robotics.Mathematics
 			3183.09875865118000000000,
 			16331778728383800.0000000
 		};
+
+		*/
 
 		#endregion
 

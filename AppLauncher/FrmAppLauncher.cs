@@ -28,7 +28,7 @@ namespace Robotics.AppLauncher
 		private bool running;
 		private bool paused;
 		private object oPause;
-		private ParameterizedThreadStart dlgExecute;
+		// private ParameterizedThreadStart dlgExecute;
 		private Regex rxAction;
 
 		#endregion
@@ -57,7 +57,7 @@ namespace Robotics.AppLauncher
 			cnnMan.Stopped += new ConnectionManagerStatusChangedEventHandler(cnnMan_Stopped);
 			cnnMan.DataReceived += new ConnectionManagerDataReceivedEH(cnnMan_DataReceived);
 			dataReceived = new ProducerConsumer<TcpPacket>(10);
-			dlgExecute = new ParameterizedThreadStart(Execute);
+			// dlgExecute = new ParameterizedThreadStart(Execute);
 			rxAction = new Regex(@"action\s*=\s*\""(?<action>[A-Za-z]+)\""", RegexOptions.Compiled);
 		}
 

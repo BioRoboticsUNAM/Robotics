@@ -273,10 +273,9 @@ namespace System.Net.Sockets
 		private void ConnectFast(Socket socket)
 		{
 			IAsyncResult cnnResult;
-			bool cnnSuccess;
 
 			cnnResult = socket.BeginConnect(endPoint, null, null);
-			cnnSuccess = cnnResult.AsyncWaitHandle.WaitOne(connectionTimeOut, true);
+			cnnResult.AsyncWaitHandle.WaitOne(connectionTimeOut, true);
 			if (!socket.Connected)
 			{
 				try { socket.Shutdown(SocketShutdown.Both); }

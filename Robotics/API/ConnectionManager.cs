@@ -787,15 +787,13 @@ namespace Robotics.API
 		/// <returns>true if data was sent successfully, false otherwise</returns>
 		protected bool serverSend(string s)
 		{
-			int count;
 			if (tcpServer.ClientsConnected < 1) return false;
 			if (tcpServer.Started)
 			{
 				lock (tcpServer)
 				{
-					count = tcpServer.SendToAll(s.Trim());
+					tcpServer.SendToAll(s.Trim());
 				}
-				//Console("Sent to " + count.ToString() + " clients on server: " + s);
 				return true;
 			}
 			else
@@ -1028,7 +1026,7 @@ namespace Robotics.API
 		private void socketTCPIn_DataReceived(TcpPacket p)
 		{
 			lastReceivedPacket = p;
-			string stringReceived = p.DataString.Trim();
+			// string stringReceived = p.DataString.Trim();
 			//Console("Rcv: " + "[" + p.SenderIP.ToString() + "] " + stringReceived);
 			try
 			{
@@ -1093,7 +1091,7 @@ namespace Robotics.API
 				return;
 
 			lastReceivedPacket = p;
-			string stringReceived = p.DataString.Trim();
+			// string stringReceived = p.DataString.Trim();
 			//Console("Rcv: " + "[" + p.SenderIP.ToString() + "] " + stringReceived);
 			try
 			{

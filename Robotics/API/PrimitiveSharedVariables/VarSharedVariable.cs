@@ -11,7 +11,7 @@ namespace Robotics.API.PrimitiveSharedVariables
 	{
 		#region Variables
 
-		private Regex rxSplitter = new Regex(@"(""(\\.|[^""])"")|\S+", RegexOptions.Compiled);
+		// private Regex rxSplitter = new Regex(@"(""(\\.|[^""])"")|\S+", RegexOptions.Compiled);
 
 		#endregion
 

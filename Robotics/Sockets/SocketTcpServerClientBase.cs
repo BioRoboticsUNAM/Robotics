@@ -214,7 +214,6 @@ namespace System.Net.Sockets
 		protected virtual void dataReceived(IAsyncResult result)
 		{
 			int received;
-			byte[] cnnBuff = new byte[1];
 			AsyncStateObject aso = (AsyncStateObject)result.AsyncState;
 			Socket socket = aso.Socket;
 

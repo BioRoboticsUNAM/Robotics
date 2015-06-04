@@ -12,10 +12,12 @@ namespace Robotics.API.PrimitiveSharedVariables
 	{
 		#region Variables
 
+		/*
 		/// <summary>
 		/// Chars used to split strings
 		/// </summary>
 		private static char[] SplitChars = { ' ', '\t', '\r', '\n' };
+		*/
 
 		#endregion
 

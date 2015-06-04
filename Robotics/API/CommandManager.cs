@@ -1107,7 +1107,6 @@ namespace Robotics.API
 			{
 				string[] varNames = response.Parameters.Split(' ');
 				List<string> unknownVars = new List<string>(varNames.Length);
-				StringBuilder sb = new StringBuilder(response.Parameters.Length);
 				for (int i = 0; i < varNames.Length; ++i)
 				{
 					if (String.IsNullOrEmpty(varNames[i]) || sharedVariables.Contains(varNames[i]))

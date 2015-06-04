@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -43,6 +44,8 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -52,6 +55,7 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -121,7 +125,6 @@
     <Compile Include="Controls\TextBoxStreamWriter.cs" />
     <Compile Include="Controls\TextBoxStreamWriterBase.cs" />
     <Compile Include="Controls\XmlTextBoxStreamWriter.cs" />
-    <Compile Include="Foo.cs" />
     <Compile Include="HAL\IIntersectable.cs" />
     <Compile Include="HAL\Intersectable.cs" />
     <Compile Include="HAL\IPolarDevice.cs" />
@@ -175,34 +178,12 @@
     <Compile Include="Mathematics\IStateSpaceModel.cs" />
     <Compile Include="Mathematics\StateSpaceModel.cs" />
     <Compile Include="Mathematics\Vector.cs" />
-    <Compile Include="PacIto\PacItoArmManager.cs" />
-    <Compile Include="PacIto\PacItoBaseManager.cs" />
-    <Compile Include="PacIto\PacItoCommandManager.cs" />
-    <Compile Include="PacIto\PacItoKinectTrackerManager.cs" />
-    <Compile Include="PacIto\PacItoManipulatorManager.cs" />
-    <Compile Include="PacIto\PacItoPersonFinderManager.cs" />
-    <Compile Include="PacIto\PacItoObjectFinderManager.cs" />
-    <Compile Include="PacIto\PacItoSpeechGenerator.cs" />
-    <Compile Include="PacIto\PacItoSpeechRecognizer.cs" />
-    <Compile Include="Paralelism\AsynchronousPipe.cs" />
-    <Compile Include="Paralelism\Filter.cs" />
-    <Compile Include="Paralelism\IFilter.cs" />
-    <Compile Include="Paralelism\ManagerWorkers.cs" />
-    <Compile Include="Paralelism\Paralelism.cs" />
-    <Compile Include="Paralelism\ParallelPipesAndFilters.cs" />
-    <Compile Include="Paralelism\IPipe.cs" />
-    <Compile Include="Paralelism\SynchronousPipe.cs" />
-    <Compile Include="Paralelism\Worker.cs" />
-    <Compile Include="Paralelism\WorkerTaskObject.cs" />
     <Compile Include="ProducerConsumer.cs" />
-    <Compile Include="Paralelism\SharedResource.cs" />
     <Compile Include="API\SignatureAnalysisResult.cs" />
     <Compile Include="API\Response.cs" />
     <Compile Include="API\Signature.cs" />
     <Compile Include="API\SignatureBuilder.cs" />
     <Compile Include="API\SyncCommandExecuter.cs" />
-    <Compile Include="DataStructures\BinarySearchTree.cs" />
-    <Compile Include="DataStructures\BinaryTreeNode.cs" />
     <Compile Include="Controls\VideoControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -210,20 +191,17 @@
     <Compile Include="HAL\IManipulator.cs" />
     <Compile Include="HAL\IPositionable.cs" />
     <Compile Include="HAL\IArm.cs" />
-    <Compile Include="DataStructures\ITree.cs" />
     <Compile Include="Mathematics\MathUtil.cs" />
     <Compile Include="Mathematics\MathUtil.Tables.cs" />
     <Compile Include="Mathematics\Matrix.cs" />
     <Compile Include="Mathematics\Matrix4.cs" />
     <Compile Include="CircularBuffer.cs" />
-    <Compile Include="PacIto\PacItoHeadManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="HAL\DiferentialPairMobileBase.cs" />
     <Compile Include="Robotics.cs" />
     <Compile Include="Mathematics\Vector2.cs" />
     <Compile Include="Mathematics\Vector3.cs" />
     <Compile Include="Mathematics\Vector4.cs" />
-    <Compile Include="DataStructures\SelfBalancedBST.cs" />
     <Compile Include="Runnable.cs" />
     <Compile Include="ServiceBase.cs" />
     <Compile Include="Sockets\AsyncStateObject.cs" />
@@ -236,7 +214,6 @@
     <Compile Include="Sockets\TcpPacket.cs" />
     <Compile Include="Sockets\UdpDataReceivedEventArgs.cs" />
     <Compile Include="Sockets\UdpPacket.cs" />
-    <Compile Include="Trash.cs" />
     <Compile Include="API\Parser.cs" />
     <Compile Include="Utilities\Scanner.cs" />
   </ItemGroup>
@@ -249,7 +226,6 @@
     <None Include="HAL\HALClassDiagram.cd" />
     <None Include="HAL\Sensors\Sensors.cd" />
     <None Include="Mathematics\MathematicsClassDiagram.cd" />
-    <None Include="PacIto\PacIto.cd" />
     <None Include="Sockets\SocketClassDiagram.cd" />
     <None Include="StateMachines\StateMachines.cd" />
   </ItemGroup>

@@ -233,7 +233,6 @@ namespace Robotics.Utilities
 		public static bool XtractDouble(string input, ref int cc, out double value)
 		{
 			int bcc = cc;
-			int dot;
 			int length;
 			string sValue;
 
@@ -247,7 +246,6 @@ namespace Robotics.Utilities
 			// Decimal part
 			if ((cc < input.Length) && (input[cc] == '.'))
 			{
-				dot = cc;
 				++cc;
 				if ((cc >= input.Length) || !IsNumeric(input[cc]))
 					return false;

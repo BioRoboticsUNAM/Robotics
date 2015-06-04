@@ -120,7 +120,7 @@ namespace Robotics.Plugins
 		/// </summary>
 		public ushort OptionalHeaderSize
 		{
-			get { return this.OptionalHeaderSize; }
+			get { return this.optionalHeaderSize; }
 		}
 
 		/// <summary>
@@ -237,7 +237,6 @@ namespace Robotics.Plugins
 			// http://stackoverflow.com/questions/8593264/determining-if-a-dll-is-a-valid-clr-dll-by-reading-the-pe-directly-64bit-issue
 
 			uint peHeader;
-			uint peHeaderSignature;
 			ushort dataDictionaryStart;
 			int dataDirectoriesOffset;
 
@@ -252,7 +251,8 @@ namespace Robotics.Plugins
 
 			//Moving to PE Header start location...
 			fs.Position = peHeader;
-			peHeaderSignature = reader.ReadUInt32();
+			//uint peHeaderSignature = reader.ReadUInt32();
+			reader.ReadUInt32();
 
 			// Number identifying type of target machine.
 			// Section 3.3.1 of the PE format specification.

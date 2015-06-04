@@ -394,14 +394,13 @@ namespace Robotics.Mathematics
 				}
 
 				double det = 0;
-				double minor;
 				for (int col = 0; col < cols; ++col)
 				{
-					minor = Minor(0, col);
+					double minor = Minor(0, col);
 					if ((col % 2) == 0)
-						det += m[0, col] * Minor(0, col);
+						det += m[0, col] * minor;
 					else
-						det -= m[0, col] * Minor(0, col);
+						det -= m[0, col] * minor;
 				}
 				return det;
 			}

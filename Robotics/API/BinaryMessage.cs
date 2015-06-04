@@ -339,7 +339,7 @@ namespace Robotics.API
 			long packetStartPosition;
 			long packetSizePosition;
 
-			uint checksum;
+			// uint checksum;
 
 			ex = null;
 
@@ -386,7 +386,7 @@ namespace Robotics.API
 			SerializePacketSize(stream, message, packetStartPosition, packetSizePosition);
 
 			// Calculate and write checksum
-			checksum = CalculateChecksum(stream, packetStartPosition);
+			// checksum = CalculateChecksum(stream, packetStartPosition);
 			buffer = BitConverter.GetBytes((uint)0x00000000);
 			stream.Write(buffer, 0, buffer.Length);
 
