@@ -200,7 +200,9 @@ namespace System.Net.Sockets
 				if (destination == (IPEndPoint)clients[i].RemoteEndPoint)
 				{
 					++j;
-					clients[i].Send(buffer, offset, count, SocketFlags.None);
+					// clients[i].Send(buffer, offset, count, SocketFlags.None);
+					IAsyncResult result = clients[i].BeginSend(buffer, offset, count, SocketFlags.None, null, null);
+					result.AsyncWaitHandle.WaitOne();
 					return;
 				}
 			}
@@ -250,7 +252,9 @@ namespace System.Net.Sockets
 				if (destination == ((IPEndPoint)clients[i].RemoteEndPoint).Address)
 				{
 					++j;
-					clients[i].Send(buffer, offset, count, SocketFlags.None);
+					// clients[i].Send(buffer, offset, count, SocketFlags.None);
+					IAsyncResult result = clients[i].BeginSend(buffer, offset, count, SocketFlags.None, null, null);
+					result.AsyncWaitHandle.WaitOne();
 				}
 			}
 			return j;
@@ -296,7 +300,9 @@ namespace System.Net.Sockets
 			{
 				try
 				{
-					clients[i].Send(buffer, offset, count, SocketFlags.None);
+					// clients[i].Send(buffer, offset, count, SocketFlags.None);
+					IAsyncResult result = clients[i].BeginSend(buffer, offset, count, SocketFlags.None, null, null);
+					result.AsyncWaitHandle.WaitOne();
 					++cnt;
 				}
 				catch { }
