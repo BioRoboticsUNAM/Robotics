@@ -1,0 +1,29 @@
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.suo
+*.rar
+*.zip
+*.ncb
+*.pdb
+*.user
+*.userpref*
+# Ignore itself
+#.gitignore
+# Ignore directories
+**/CMakeFiles/
+**/bin/
+**/obj/
+**/Unused/
+**/Release/
+**/Debug/
+**/incomplete/
+**/lib/
+CMakeFiles/
+bin/
+obj/
+Unused/
+Release/
+Debug/
+incomplete/
+lib/
