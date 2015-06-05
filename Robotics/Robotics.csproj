@@ -67,10 +67,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\BaseMessage.cs" />
-    <Compile Include="API\BinaryCommand.cs" />
-    <Compile Include="API\BinaryCommandResponseBase.cs" />
-    <Compile Include="API\BinaryMessage.cs" />
-    <Compile Include="API\BinaryResponse.cs" />
     <Compile Include="API\IConnector.cs" />
     <Compile Include="API\IConnectionManager.cs" />
     <Compile Include="API\Interop\Module.cs" />
@@ -116,7 +112,6 @@
     <Compile Include="API\SharedVariableList.cs" />
     <Compile Include="API\SharedVariableSubscriptionReport.cs" />
     <Compile Include="API\TcpPacketParser.cs" />
-    <Compile Include="API\Xml\XmlMessage.cs" />
     <Compile Include="Controls\IdBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -125,19 +120,12 @@
     <Compile Include="Controls\TextBoxStreamWriter.cs" />
     <Compile Include="Controls\TextBoxStreamWriterBase.cs" />
     <Compile Include="Controls\XmlTextBoxStreamWriter.cs" />
-    <Compile Include="HAL\IIntersectable.cs" />
-    <Compile Include="HAL\Intersectable.cs" />
     <Compile Include="HAL\IPolarDevice.cs" />
     <Compile Include="HAL\Sensors\KnownHumanFace.cs" />
-    <Compile Include="HAL\LinearDevice.cs" />
     <Compile Include="HAL\Sensors\HumanFace.cs" />
     <Compile Include="HAL\Sensors\ISensor.cs" />
     <Compile Include="HAL\Sensors\ISensorReading.cs" />
-    <Compile Include="HAL\MobileBase.cs" />
-    <Compile Include="HAL\OrientedBoundingBox.cs" />
     <Compile Include="HAL\Sensors\ISensorError.cs" />
-    <Compile Include="HAL\Ray.cs" />
-    <Compile Include="HAL\RectSegment.cs" />
     <Compile Include="HAL\Sensors\Telemetric\HokuyoLaser.cs" />
     <Compile Include="HAL\Sensors\Telemetric\HokuyoLaserError.cs" />
     <Compile Include="HAL\Sensors\Telemetric\HokuyoLaserException.cs" />
@@ -155,12 +143,6 @@
     <Compile Include="IService.cs" />
     <Compile Include="API\SharedVariableReport.cs" />
     <Compile Include="API\ParameterList.cs" />
-    <Compile Include="Plugins\IPlugin.cs" />
-    <Compile Include="Plugins\DllInfo.cs" />
-    <Compile Include="Plugins\IPluginManager.cs" />
-    <Compile Include="Plugins\Kernell32.cs" />
-    <Compile Include="Plugins\PluginManager.cs" />
-    <Compile Include="Plugins\Plugins.cs" />
     <Compile Include="StateMachines\EnumeratedFunctionState.cs" />
     <Compile Include="StateMachines\EnumeratedFunctionStateMachine.cs" />
     <Compile Include="StateMachines\FunctionBasedStateMachine.cs" />
@@ -187,17 +169,12 @@
     <Compile Include="Controls\VideoControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="HAL\IAnthropomorphicArm.cs" />
-    <Compile Include="HAL\IManipulator.cs" />
-    <Compile Include="HAL\IPositionable.cs" />
-    <Compile Include="HAL\IArm.cs" />
     <Compile Include="Mathematics\MathUtil.cs" />
     <Compile Include="Mathematics\MathUtil.Tables.cs" />
     <Compile Include="Mathematics\Matrix.cs" />
     <Compile Include="Mathematics\Matrix4.cs" />
     <Compile Include="CircularBuffer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="HAL\DiferentialPairMobileBase.cs" />
     <Compile Include="Robotics.cs" />
     <Compile Include="Mathematics\Vector2.cs" />
     <Compile Include="Mathematics\Vector3.cs" />
@@ -218,19 +195,12 @@
     <Compile Include="Utilities\Scanner.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Regions.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="API\ApiClassDiagram.cd" />
     <None Include="ClassDiagram.cd" />
-    <None Include="HAL\HALClassDiagram.cd" />
     <None Include="HAL\Sensors\Sensors.cd" />
     <None Include="Mathematics\MathematicsClassDiagram.cd" />
     <None Include="Sockets\SocketClassDiagram.cd" />
     <None Include="StateMachines\StateMachines.cd" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Types\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
