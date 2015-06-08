@@ -181,16 +181,16 @@
     <Compile Include="Mathematics\Vector4.cs" />
     <Compile Include="Runnable.cs" />
     <Compile Include="ServiceBase.cs" />
-    <Compile Include="Sockets\AsyncStateObject.cs" />
-    <Compile Include="Sockets\Sockets.cs" />
-    <Compile Include="Sockets\SocketTcpClient.cs" />
-    <Compile Include="Sockets\SocketTcpServer.cs" />
-    <Compile Include="Sockets\SocketTcpServerClientBase.cs" />
-    <Compile Include="Sockets\SocketUDP.cs" />
-    <Compile Include="Sockets\SocketUdpClient.cs" />
-    <Compile Include="Sockets\TcpPacket.cs" />
-    <Compile Include="Sockets\UdpDataReceivedEventArgs.cs" />
-    <Compile Include="Sockets\UdpPacket.cs" />
+    <Compile Include="System.Net.Sockets\AsyncStateObject.cs" />
+    <Compile Include="System.Net.Sockets\Sockets.cs" />
+    <Compile Include="System.Net.Sockets\SocketTcpClient.cs" />
+    <Compile Include="System.Net.Sockets\SocketTcpServer.cs" />
+    <Compile Include="System.Net.Sockets\SocketTcpServerClientBase.cs" />
+    <Compile Include="System.Net.Sockets\SocketUDP.cs" />
+    <Compile Include="System.Net.Sockets\SocketUdpClient.cs" />
+    <Compile Include="System.Net.Sockets\TcpPacket.cs" />
+    <Compile Include="System.Net.Sockets\UdpDataReceivedEventArgs.cs" />
+    <Compile Include="System.Net.Sockets\UdpPacket.cs" />
     <Compile Include="API\Parser.cs" />
     <Compile Include="Utilities\Scanner.cs" />
   </ItemGroup>
@@ -199,8 +199,11 @@
     <None Include="ClassDiagram.cd" />
     <None Include="HAL\Sensors\Sensors.cd" />
     <None Include="Mathematics\MathematicsClassDiagram.cd" />
-    <None Include="Sockets\SocketClassDiagram.cd" />
+    <None Include="System.Net.Sockets\SocketClassDiagram.cd" />
     <None Include="StateMachines\StateMachines.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Sockets\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -7,6 +7,7 @@ namespace System.Net.Sockets
 	/// <summary>
 	/// Represents an object used to receive data asynchronously
 	/// </summary>
+	[Obsolete("Class AsyncStateObject is deprecated. Use Robotics.AsyncStateObject instead")]
 	internal class AsyncStateObject
 	{
 
@@ -41,6 +42,7 @@ namespace System.Net.Sockets
 		/// </summary>
 		/// <param name="socket">The data source Socket object</param>
 		/// <param name="bufferSize">The size of the buffer</param>
+		[Obsolete("Class AsyncStateObject is deprecated. Use Robotics.AsyncStateObject instead")]
 		public AsyncStateObject(Socket socket, int bufferSize)
 		{
 			this.socket = socket;
@@ -65,6 +67,7 @@ namespace System.Net.Sockets
 		/// <summary>
 		/// Gets the buffer to store temporary data
 		/// </summary>
+		[Obsolete("Class AsyncStateObject is deprecated. Use Robotics.AsyncStateObject instead")]
 		public byte[] Buffer
 		{
 			get
@@ -76,6 +79,7 @@ namespace System.Net.Sockets
 		/// <summary>
 		/// Stores the size of the buffer
 		/// </summary>
+		[Obsolete("Class AsyncStateObject is deprecated. Use Robotics.AsyncStateObject instead")]
 		public int BufferSize
 		{
 			get { return bufferSize; }
@@ -84,6 +88,7 @@ namespace System.Net.Sockets
 		/// <summary>
 		/// Gets the data received
 		/// </summary>
+		[Obsolete("Class AsyncStateObject is deprecated. Use Robotics.AsyncStateObject instead")]
 		public byte[] DataReceived
 		{
 			get
@@ -98,6 +103,7 @@ namespace System.Net.Sockets
 		/// <summary>
 		/// Gets the length of received data
 		/// </summary>
+		[Obsolete("Class AsyncStateObject is deprecated. Use Robotics.AsyncStateObject instead")]
 		public int Length
 		{
 			get { return (int)dataReceived.Length; }
@@ -106,6 +112,7 @@ namespace System.Net.Sockets
 		/// <summary>
 		/// Gets the data source Socket object
 		/// </summary>
+		[Obsolete("Class AsyncStateObject is deprecated. Use Robotics.AsyncStateObject instead")]
 		public Socket Socket
 		{
 			get { return this.socket; }
@@ -119,6 +126,7 @@ namespace System.Net.Sockets
 		/// Flushes out the buffer to the DataReceived data storage to allow receive more data 
 		/// </summary>
 		/// <param name="count">Number of bytes in the temporary buffer to flush out</param>
+		[Obsolete("Class AsyncStateObject is deprecated. Use Robotics.AsyncStateObject instead")]
 		public void Flush(int count)
 		{
 			dataReceived.Write(buffer, 0, count);

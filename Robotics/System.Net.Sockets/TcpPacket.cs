@@ -8,6 +8,7 @@ namespace System.Net.Sockets
 	/// <summary>
 	/// Implementa un paquete TCP con la informacion relevante recibida
 	/// </summary>
+	[Obsolete]
 	public class TcpPacket
 	{
 		#region Variables
@@ -23,9 +24,11 @@ namespace System.Net.Sockets
 
 		#region Constructores
 
+		[Obsolete]
 		internal TcpPacket(Socket socket, byte[] data)
 			: this(socket, data, 0, data.Length) { }
 
+		[Obsolete]
 		internal TcpPacket(Socket socket, byte[] data, int offset, int count)
 		{
 			int i;
@@ -61,6 +64,7 @@ namespace System.Net.Sockets
 		/// <summary>
 		/// Gets the data received in raw format
 		/// </summary>
+		[Obsolete]
 		public byte[] Data
 		{
 			get { return data; }
@@ -69,6 +73,7 @@ namespace System.Net.Sockets
 		/// <summary>
 		/// Gets the data formatted as string
 		/// </summary>
+		[Obsolete]
 		public string DataString
 		{
 			get
@@ -81,6 +86,7 @@ namespace System.Net.Sockets
 		/// <summary>
 		/// Gets the all strings stored in the data
 		/// </summary>
+		[Obsolete]
 		public string[] DataStrings
 		{
 			get
@@ -92,6 +98,7 @@ namespace System.Net.Sockets
 		/// <summary>
 		/// Gets a value indicating where the Tcp packet contains only characters between 0 and 127
 		/// </summary>
+		[Obsolete]
 		public bool IsAnsi
 		{
 			get { return isAnsi; }
@@ -100,6 +107,7 @@ namespace System.Net.Sockets
 		/// <summary>
 		/// Gets the socket local endpoint 
 		/// </summary>
+		[Obsolete]
 		public IPEndPoint LocalEndPoint
 		{
 			get { return localEndPoint; }
@@ -108,6 +116,7 @@ namespace System.Net.Sockets
 		/// <summary>
 		/// Gets the socket remote endpoint 
 		/// </summary>
+		[Obsolete]
 		public IPEndPoint RemoteEndPoint
 		{
 			get { return remoteEndPoint; }
@@ -116,6 +125,7 @@ namespace System.Net.Sockets
 		/// <summary>
 		/// Gets the port where the sender sent the packet
 		/// </summary>
+		[Obsolete]
 		public int Port
 		{
 			get { return ((IPEndPoint)socket.RemoteEndPoint).Port; }
@@ -124,6 +134,7 @@ namespace System.Net.Sockets
 		/// <summary>
 		/// Gets the IP Address of the sender of the packet
 		/// </summary>
+		[Obsolete]
 		public IPAddress SenderIP
 		{
 			get { return ((IPEndPoint)socket.RemoteEndPoint).Address; }
@@ -138,6 +149,7 @@ namespace System.Net.Sockets
 		/// </summary>
 		/// <param name="ix">Zero-based index of the data to get</param>
 		/// <returns>The i-th byte contained in the TcpPacket</returns>
+		[Obsolete]
 		public byte this[int ix]
 		{
 			get
@@ -154,6 +166,7 @@ namespace System.Net.Sockets
 		/// Returns a String that represents the current Object
 		/// </summary>
 		/// <returns>A String that represents the current Object</returns>
+		[Obsolete]
 		public override string ToString()
 		{
 			return "["+ SenderIP.ToString() +"]:" + DataString;
@@ -167,6 +180,7 @@ namespace System.Net.Sockets
 		/// </summary>
 		/// <param name="p">TcpPacket to convert</param>
 		/// <returns>String representation of data contained in the TcpPacket</returns>
+		[Obsolete]
 		public static explicit operator string(TcpPacket p)
 		{
 			return p.DataString;
@@ -177,6 +191,7 @@ namespace System.Net.Sockets
 		/// </summary>
 		/// <param name="p">TcpPacket to convert</param>
 		/// <returns>Array of bytes with the data contained in the TcpPacket</returns>
+		[Obsolete]
 		public static explicit operator byte[](TcpPacket p)
 		{
 			return p.data;
