@@ -143,6 +143,11 @@
     <Compile Include="IService.cs" />
     <Compile Include="API\SharedVariableReport.cs" />
     <Compile Include="API\ParameterList.cs" />
+    <Compile Include="Sockets\AsyncStateObject.cs" />
+    <Compile Include="Sockets\Sockets.cs" />
+    <Compile Include="Sockets\TcpClient.cs" />
+    <Compile Include="Sockets\TcpPacket.cs" />
+    <Compile Include="Sockets\TcpServer.cs" />
     <Compile Include="StateMachines\EnumeratedFunctionState.cs" />
     <Compile Include="StateMachines\EnumeratedFunctionStateMachine.cs" />
     <Compile Include="StateMachines\FunctionBasedStateMachine.cs" />
@@ -201,9 +206,6 @@
     <None Include="Mathematics\MathematicsClassDiagram.cd" />
     <None Include="System.Net.Sockets\SocketClassDiagram.cd" />
     <None Include="StateMachines\StateMachines.cd" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Sockets\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

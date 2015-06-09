@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Net.Sockets;
+using System.Net;
 using System.Threading;
+using Robotics.Sockets;
 
 namespace Robotics.API
 {
@@ -14,11 +15,11 @@ namespace Robotics.API
 		/// <summary>
 		/// Represents the ClientConnected method
 		/// </summary>
-		private readonly TcpClientConnectedEventHandler dlgClientConnected;
+		private readonly EventHandler<IConnectionManager, IPEndPoint> dlgClientConnected;
 		/// <summary>
 		/// Represents the ClientDisconnected method
 		/// </summary>
-		private readonly TcpClientDisconnectedEventHandler dlgClientDisconnected;
+		private readonly EventHandler<IConnectionManager, IPEndPoint> dlgClientDisconnected;
 		/// <summary>
 		/// Represents the DataReceived method
 		/// </summary>
@@ -43,9 +44,9 @@ namespace Robotics.API
 				throw new ArgumentNullException();
 
 			this.cnnMan = cnnMan;
-			
-			this.dlgClientConnected = new TcpClientConnectedEventHandler(ClientConnected);
-			this.dlgClientDisconnected = new TcpClientDisconnectedEventHandler(ClientDisconnected);
+
+			this.dlgClientConnected = new EventHandler<IConnectionManager, IPEndPoint>(ClientConnected);
+			this.dlgClientDisconnected = new EventHandler<IConnectionManager, IPEndPoint>(ClientDisconnected);
 			this.dlgDataReceived = new ConnectionManagerDataReceivedEH(DataReceived);
 
 			this.cnnMan.DataReceived += dlgDataReceived;
@@ -90,7 +91,7 @@ namespace Robotics.API
 		/// <summary>
 		/// Manages connections
 		/// </summary>
-		protected void ClientConnected(Socket socket)
+		protected void ClientConnected(IConnectionManager cnnMan, IPEndPoint socket)
 		{
 			//if (blackboardEndpoint == null)
 			//	UpdateSharedVariableList();
@@ -100,7 +101,7 @@ namespace Robotics.API
 		/// <summary>
 		/// Manages disconnections
 		/// </summary>
-		protected void ClientDisconnected(System.Net.EndPoint endpoint)
+		protected void ClientDisconnected(IConnectionManager cnnMan, IPEndPoint endpoint)
 		{
 			//if ((blackboardEndpoint != null) && (blackboardEndpoint == endpoint))
 			//{
@@ -129,6 +130,7 @@ namespace Robotics.API
 		/// <param name="packet">String received</param>
 		protected override void Parse(TcpPacket packet)
 		{
+			/*
 			Command command;
 			Response response;
 			if ((packet.Data.Length > 1) && (packet.Data[0] == 0x7E))
@@ -158,6 +160,7 @@ namespace Robotics.API
 					continue;
 				}
 			}
+			*/
 		}
 
 		/// <summary>

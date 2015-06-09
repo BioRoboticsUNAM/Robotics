@@ -89,24 +89,24 @@ namespace Robotics.API
 		/// <summary>
 		/// Occurs when a remote client gets connected to local TCP Server
 		/// </summary>
-		event TcpClientConnectedEventHandler ClientConnected;
+		event EventHandler<IConnectionManager, IPEndPoint> ClientConnected;
 		
 		/// <summary>
 		/// Occurs when a remote client disconnects from local TCP Server
 		/// </summary>
-		event TcpClientDisconnectedEventHandler ClientDisconnected;
+		event EventHandler<IConnectionManager, IPEndPoint> ClientDisconnected;
 		
 		/// <summary>
 		/// Occurs when the local client connects to remote server.
 		/// This event is rised only when the IConnectionManager works in Unidirectional mode.
 		/// </summary>
-		event TcpClientConnectedEventHandler Connected;
+		event EventHandler<IConnectionManager, IPEndPoint> Connected;
 		
 		/// <summary>
 		/// Occurs when the local client connects to remote server.
 		/// This event is rised only when the IConnectionManager works in Unidirectional mode.
 		/// </summary>
-		event TcpClientDisconnectedEventHandler Disconnected;
+		event EventHandler<IConnectionManager, IPEndPoint> Disconnected;
 		
 		/// <summary>
 		/// Occurs when data is received

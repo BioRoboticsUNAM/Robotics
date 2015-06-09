@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Robotics;
+using Robotics.Sockets;
 
 namespace Robotics.API
 {
@@ -17,18 +17,18 @@ namespace Robotics.API
 		/// <summary>
 		/// The default buffer size for sockets
 		/// </summary>
-		public const int DEFAULT_BUFFER_SIZE = 16384;
+		public const int DEFAULT_BUFFER_SIZE = 8192;
 
 		#region Variables
 
 		/// <summary>
 		/// Tcp Socket Server for input data
 		/// </summary>
-		protected SocketTcpServer tcpServer;
+		protected TcpServer tcpServer;
 		/// <summary>
 		/// Tcp Socket client for output data
 		/// </summary>
-		protected SocketTcpClient tcpClient;
+		protected TcpClient tcpClient;
 		/// <summary>
 		/// IP Address of the remote computer to connect using the socket client
 		/// </summary>
@@ -213,7 +213,7 @@ namespace Robotics.API
 				//if() throw new Exception();
 				//if() throw new ArgumentNullException();
 				cmdMan = value;
-				if((cmdMan!= null) && (cmdMan.ConnectionManager != this))
+				if ((cmdMan != null) && (cmdMan.ConnectionManager != this))
 					cmdMan.ConnectionManager = this;
 			}
 		}
@@ -238,7 +238,8 @@ namespace Robotics.API
 		/// <remarks>When working on bidirectional mode always return false</remarks>
 		public bool IsConnected
 		{
-			get {
+			get
+			{
 				if ((tcpClient == null) || Bidirectional)
 					return false;
 				else
@@ -251,7 +252,8 @@ namespace Robotics.API
 		/// </summary>
 		public bool IsServerStarted
 		{
-			get {
+			get
+			{
 				return tcpServer.Started;
 			}
 		}
@@ -309,7 +311,7 @@ namespace Robotics.API
 				if ((value < 1) || (value > 65535))
 					throw new ArgumentOutOfRangeException("value");
 				this.portIn = value;
-				if(tcpServer != null)
+				if (tcpServer != null)
 					tcpServer.Port = this.portIn;
 			}
 		}
@@ -342,7 +344,7 @@ namespace Robotics.API
 			{
 				if (remoteServerAddress == value) return;
 				if (running) throw new Exception("Can not change the TcpServerAddress while the ConnectionManager is running");
-				this.remoteServerAddress= value;
+				this.remoteServerAddress = value;
 				if (tcpClient != null)
 					tcpClient.ServerAddress = this.remoteServerAddress;
 			}
@@ -351,7 +353,7 @@ namespace Robotics.API
 		/// <summary>
 		/// Gets the TCP Server
 		/// </summary>
-		internal SocketTcpServer TcpServer { get { return this.tcpServer; } }
+		internal TcpServer TcpServer { get { return this.tcpServer; } }
 
 		#endregion
 
@@ -359,21 +361,21 @@ namespace Robotics.API
 		/// <summary>
 		/// Occurs when a remote client gets connected to local TCP Server
 		/// </summary>
-		public event TcpClientConnectedEventHandler ClientConnected;
+		public event EventHandler<IConnectionManager, IPEndPoint> ClientConnected;
 		/// <summary>
 		/// Occurs when a remote client disconnects from local TCP Server
 		/// </summary>
-		public event TcpClientDisconnectedEventHandler ClientDisconnected;
+		public event EventHandler<IConnectionManager, IPEndPoint> ClientDisconnected;
 		/// <summary>
 		/// Occurs when the local client connects to remote server.
 		/// This event is rised only when the ConnectionManager works in Unidirectional mode.
 		/// </summary>
-		public event TcpClientConnectedEventHandler Connected;
+		public event EventHandler<IConnectionManager, IPEndPoint> Connected;
 		/// <summary>
 		/// Occurs when the local client connects to remote server.
 		/// This event is rised only when the ConnectionManager works in Unidirectional mode.
 		/// </summary>
-		public event TcpClientDisconnectedEventHandler Disconnected;
+		public event EventHandler<IConnectionManager, IPEndPoint> Disconnected;
 		/// <summary>
 		/// Occurs when data is received
 		/// </summary>
@@ -410,15 +412,19 @@ namespace Robotics.API
 		/// <summary>
 		/// Raises the ClientConnected event
 		/// </summary>
-		/// <param name="s">Socket used for connection</param>
+		/// <param name="ep">Socket used for connection</param>
 		/// <remarks>The OnClientConnected method also allows derived classes to handle the event without attaching a delegate.
 		/// This is the preferred technique for handling the event in a derived class.
 		/// When overriding OnClientConnected in a derived class, be sure to call the base class's OnClientConnected method so that registered
 		/// delegates receive the event</remarks>
-		protected virtual void OnClientConnected(Socket s)
+		protected virtual void OnClientConnected(IPEndPoint ep)
 		{
-			if (this.ClientConnected != null)
-				ClientConnected(s);
+			try
+			{
+				if (this.ClientConnected != null)
+					ClientConnected(this, ep);
+			}
+			catch { }
 		}
 
 		/// <summary>
@@ -429,24 +435,32 @@ namespace Robotics.API
 		/// This is the preferred technique for handling the event in a derived class.
 		/// When overriding OnClientDisconnected in a derived class, be sure to call the base class's OnClientDisconnected method so that registered
 		/// delegates receive the event</remarks>
-		protected virtual void OnClientDisconnected(EndPoint ep)
+		protected virtual void OnClientDisconnected(IPEndPoint ep)
 		{
-			if (this.ClientDisconnected != null)
-				ClientDisconnected(ep);
+			try
+			{
+				if (this.ClientDisconnected != null)
+					ClientDisconnected(this, ep);
+			}
+			catch { }
 		}
 
 		/// <summary>
 		/// Raises the Connected event
 		/// </summary>
-		/// <param name="s">Socket used for connection</param>
+		/// <param name="ep">Socket used for connection</param>
 		/// <remarks>The OnConnected method also allows derived classes to handle the event without attaching a delegate.
 		/// This is the preferred technique for handling the event in a derived class.
 		/// When overriding OnConnected in a derived class, be sure to call the base class's OnConnected method so that registered
 		/// delegates receive the event</remarks>
-		protected virtual void OnConnected(Socket s)
+		protected virtual void OnConnected(IPEndPoint ep)
 		{
-			if (Connected != null)
-				Connected(s);
+			try
+			{
+				if (Connected != null)
+					Connected(this, ep);
+			}
+			catch { }
 		}
 
 		/// <summary>
@@ -455,8 +469,12 @@ namespace Robotics.API
 		/// <param name="command">The sent command</param>
 		protected virtual void OnCommandSent(Command command)
 		{
-			if (CommandSent != null)
-				CommandSent(this, command);
+			try
+			{
+				if (CommandSent != null)
+					CommandSent(this, command);
+			}
+			catch { }
 		}
 
 		/// <summary>
@@ -465,8 +483,12 @@ namespace Robotics.API
 		/// <param name="response">The sent response</param>
 		protected virtual void OnResponseSent(Response response)
 		{
-			if (ResponseSent != null)
-				ResponseSent(this, response);
+			try
+			{
+				if (ResponseSent != null)
+					ResponseSent(this, response);
+			}
+			catch { }
 		}
 
 		/// <summary>
@@ -477,10 +499,14 @@ namespace Robotics.API
 		/// This is the preferred technique for handling the event in a derived class.
 		/// When overriding OnDisconnected in a derived class, be sure to call the base class's OnDisconnected method so that registered
 		/// delegates receive the event</remarks>
-		protected virtual void OnDisconnected(EndPoint ep)
+		protected virtual void OnDisconnected(IPEndPoint ep)
 		{
-			if (Disconnected != null)
-				Disconnected(ep);
+			try
+			{
+				if (Disconnected != null)
+					Disconnected(this, ep);
+			}
+			catch { }
 		}
 
 		/// <summary>
@@ -493,8 +519,12 @@ namespace Robotics.API
 		/// delegates receive the event</remarks>
 		protected virtual void OnDataReceived(TcpPacket p)
 		{
-			if (DataReceived != null)
-				DataReceived(this, p);
+			try
+			{
+				if (DataReceived != null)
+					DataReceived(this, p);
+			}
+			catch { }
 		}
 
 		/// <summary>
@@ -506,8 +536,12 @@ namespace Robotics.API
 		/// delegates receive the event</remarks>
 		protected virtual void OnStatusChanged()
 		{
-			if (StatusChanged != null)
-				StatusChanged(this);
+			try
+			{
+				if (StatusChanged != null)
+					StatusChanged(this);
+			}
+			catch { }
 		}
 
 		/// <summary>
@@ -519,8 +553,12 @@ namespace Robotics.API
 		/// delegates receive the event</remarks>
 		protected virtual void OnStart()
 		{
-			if (Started != null)
-				Started(this);
+			try
+			{
+				if (Started != null)
+					Started(this);
+			}
+			catch { }
 		}
 
 		/// <summary>
@@ -532,8 +570,12 @@ namespace Robotics.API
 		/// delegates receive the event</remarks>
 		protected virtual void OnStop()
 		{
-			if (Stopped != null)
-				Stopped(this);
+			try
+			{
+				if (Stopped != null)
+					Stopped(this);
+			}
+			catch { }
 		}
 
 		/// <summary>
@@ -571,7 +613,7 @@ namespace Robotics.API
 		/// </summary>
 		private void ConfigureConnectionThread()
 		{
-			if(Bidirectional)
+			if (Bidirectional)
 				connectionThread = new Thread(new ThreadStart(dlgBidirectionalConnectionTask));
 			else
 				connectionThread = new Thread(new ThreadStart(dlgUnidirectionalConnectionTask));
@@ -584,7 +626,7 @@ namespace Robotics.API
 		/// </summary>
 		private void StartConnectionThread()
 		{
-			if((connectionThread != null) && connectionThread.IsAlive) 
+			if ((connectionThread != null) && connectionThread.IsAlive)
 				return;
 
 			if ((connectionThread == null) || (connectionThread.ThreadState != ThreadState.Unstarted))
@@ -642,7 +684,7 @@ namespace Robotics.API
 				if (!tcpServer.Started)
 				{
 					try
-						{
+					{
 						tcpServer.Port = portIn;
 						tcpServer.BufferSize = DEFAULT_BUFFER_SIZE;
 						tcpServer.Start();
@@ -688,22 +730,22 @@ namespace Robotics.API
 
 			if ((tcpServer != null) && (tcpServer.Started))
 				tcpServer.Stop();
-			tcpServer = new SocketTcpServer(portIn);
+			tcpServer = new TcpServer(portIn);
 			tcpServer.BufferSize = DEFAULT_BUFFER_SIZE;
-			tcpServer.DataReceived += new TcpDataReceivedEventHandler(socketTCPIn_DataReceived);
-			tcpServer.ClientConnected += new TcpClientConnectedEventHandler(socketTCPIn_ClientConnected);
-			tcpServer.ClientDisconnected += new TcpClientDisconnectedEventHandler(socketTCPIn_ClientDisconnected);
+			tcpServer.DataReceived += new EventHandler<TcpServer, TcpPacket>(socketTCPIn_DataReceived);
+			tcpServer.ClientConnected += new EventHandler<TcpServer, IPEndPoint>(socketTCPIn_ClientConnected);
+			tcpServer.ClientDisconnected += new EventHandler<TcpServer, IPEndPoint>(socketTCPIn_ClientDisconnected);
 
 			if ((tcpClient != null) && (tcpClient.IsConnected))
 				tcpClient.Disconnect();
 			if (portIn != portOut)
 			{
-				tcpClient = new SocketTcpClient(remoteServerAddress, portOut);
+				tcpClient = new TcpClient(remoteServerAddress, portOut);
 				tcpClient.BufferSize = DEFAULT_BUFFER_SIZE;
 
-				tcpClient.Connected += new TcpClientConnectedEventHandler(socketTCPOut_Connected);
-				tcpClient.DataReceived += new TcpDataReceivedEventHandler(socketTCPOut_DataReceived);
-				tcpClient.Disconnected += new TcpClientDisconnectedEventHandler(socketTCPOut_Disconnected);
+				tcpClient.Connected += new EventHandler<TcpClient, IPEndPoint>(socketTCPOut_Connected);
+				tcpClient.DataReceived += new EventHandler<TcpClient, TcpPacket>(socketTCPOut_DataReceived);
+				tcpClient.Disconnected += new EventHandler<TcpClient, IPEndPoint>(socketTCPOut_Disconnected);
 			}
 
 			//mainThread.Start();
@@ -755,7 +797,7 @@ namespace Robotics.API
 					return serverSend(response.StringToSend);
 			}
 			result = tcpSend(response.StringToSend);
-			if(result)
+			if (result)
 				OnResponseSent(response);
 			return result;
 		}
@@ -819,7 +861,7 @@ namespace Robotics.API
 			tcpServer.SendTo(endPoint, s);
 			//Console("Sent to " + endPoint.ToString() + " clients on server: " + s);
 			return true;
-			
+
 		}
 
 		/// <summary>
@@ -980,63 +1022,45 @@ namespace Robotics.API
 		/// <summary>
 		/// Manages the ClientConnected event of the input socket
 		/// </summary>
-		/// <param name="s">Socket used for connection</param>
-		private void socketTCPIn_ClientConnected(Socket s)
+		/// <param name="s">The TcpServer object which rises the event</param>
+		/// <param name="ep">The Remote endpoint of the client</param>
+		private void socketTCPIn_ClientConnected(TcpServer s, IPEndPoint ep)
 		{
-			//Console(s.RemoteEndPoint.ToString() + " connected to local server");
 			try
 			{
-				OnClientConnected(s);
+				OnClientConnected(ep);
 			}
-			//catch (Exception ex)
-			//{
-			//	Console("Exception wile managing ConnectionManager.ClientConnected event: [" + ex.ToString() + "]");
-			//}
 			catch { }
-			
+
 		}
 
 		/// <summary>
 		/// Manages the ClientDisconnected event of the input socket
 		/// </summary>
+		/// <param name="s">The TcpServer object which rises the event</param>
 		/// <param name="ep">Disconnection endpoint</param>
-		private void socketTCPIn_ClientDisconnected(EndPoint ep)
+		private void socketTCPIn_ClientDisconnected(TcpServer s, IPEndPoint ep)
 		{
-			//try
-			//{
-			//	Console("Client " + ep.ToString() + " disconnected from local server");
-			//}
-			//catch { Console("Client 0.0.0.0:0 disconnected from local server"); }
 			try
 			{
 				OnClientDisconnected(ep);
 			}
-			//catch (Exception ex)
-			//{
-			//	Console("Exception wile managing ConnectionManager.ClientDisconnected event: [" + ex.ToString() + "]");
-			//}
 			catch { }
-			
+
 		}
 
 		/// <summary>
 		/// Manages the DataReceived event of the input socket
 		/// </summary>
+		/// <param name="s">The TcpServer object which rises the event</param>
 		/// <param name="p">Received data</param>
-		private void socketTCPIn_DataReceived(TcpPacket p)
+		private void socketTCPIn_DataReceived(TcpServer s, TcpPacket p)
 		{
-			lastReceivedPacket = p;
-			// string stringReceived = p.DataString.Trim();
-			//Console("Rcv: " + "[" + p.SenderIP.ToString() + "] " + stringReceived);
 			try
 			{
 				OnDataReceived(p);
 			}
-			//catch (Exception ex)
-			//{
-			//	//Console("Exception wile managing ConnectionManager.DataReceived event: [" + ex.ToString() + "]");
-			//}
-			catch{}
+			catch { }
 		}
 
 		#endregion
@@ -1046,65 +1070,51 @@ namespace Robotics.API
 		/// <summary>
 		/// Manages the Connected event of the output socket
 		/// </summary>
-		/// <param name="s">Socket used for connection</param>
-		private void socketTCPOut_Connected(Socket s)
+		/// <param name="client">The TcpClient object which rises the event</param>
+		/// <param name="ep">Endpoint used for connection</param>
+		private void socketTCPOut_Connected(TcpClient client, IPEndPoint ep)
 		{
-			//Console("Client connected to " + s.RemoteEndPoint.ToString());
 			try
 			{
-				OnConnected(s);
+				OnConnected(ep);
 			}
-			//catch (Exception ex)
-			//{
-			//	Console("Exception wile managing ConnectionManager.Connected event: [" + ex.ToString() + "]");
-			//}
 			catch { }
 		}
 
 		/// <summary>
 		/// Manages the Disconnected event of the output socket
 		/// </summary>
+		/// <param name="client">The TcpClient object which rises the event</param>
 		/// <param name="ep">Disconnection endpoint</param>
-		private void socketTCPOut_Disconnected(EndPoint ep)
+		private void socketTCPOut_Disconnected(TcpClient client, IPEndPoint ep)
 		{
-			//Console("Client disconnected");
 			if (autoReconnect)
 				StartConnectionThread();
 			try
 			{
 				OnDisconnected(ep);
 			}
-			//catch (Exception ex)
-			//{
-			//	Console("Exception wile managing ConnectionManager.Disconnected event: ["+ex.ToString()+"]");
-			//}
 			catch { }
 		}
 
 		/// <summary>
 		/// Manages the DataReceived event of the output socket
 		/// </summary>
+		/// <param name="client">The TcpClient object which rises the event</param>
 		/// <param name="p">Received data</param>
-		private void socketTCPOut_DataReceived(TcpPacket p)
+		private void socketTCPOut_DataReceived(TcpClient client, TcpPacket p)
 		{
 			if (!outputSocketReceptionEnabled)
 				return;
 
-			lastReceivedPacket = p;
-			// string stringReceived = p.DataString.Trim();
-			//Console("Rcv: " + "[" + p.SenderIP.ToString() + "] " + stringReceived);
 			try
 			{
 				OnDataReceived(p);
 			}
-			//catch (Exception ex)
-			//{
-			//	//Console("Exception wile managing ConnectionManager.DataReceived event: [" + ex.ToString() + "]");
-			//}
 			catch { }
 		}
 
-		#endregion		
+		#endregion
 
 		#endregion
 

@@ -1,8 +1,9 @@
 using System;
+using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Net.Sockets
+namespace System.Net.Sockets.Obsolete
 {
 	/// <summary>
 	/// Base class for SocketTcpClient and SocketTcpServer implementations

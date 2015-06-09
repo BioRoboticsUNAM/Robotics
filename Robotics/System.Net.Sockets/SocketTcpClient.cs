@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace System.Net.Sockets
+namespace System.Net.Sockets.Obsolete
 {
 	/// <summary>
 	/// Implements a simple TCP client

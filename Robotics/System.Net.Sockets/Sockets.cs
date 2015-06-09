@@ -1,4 +1,5 @@
-namespace System.Net.Sockets
+using System.Net.Sockets;
+namespace System.Net.Sockets.Obsolete
 {
 	#region Enumerations
 

@@ -6,6 +6,15 @@ namespace Robotics
 	#region General Delegates
 
 	/// <summary>
+	/// Represents a method that will handle an event
+	/// </summary>
+	/// <typeparam name="S">The type of the caller of the event</typeparam>
+	/// <typeparam name="E">The parameters sent to the event</typeparam>
+	/// <param name="sender">The object which rises the event</param>
+	/// <param name="eventArgs">The parameters pased to the event handler method</param>
+	public delegate void EventHandler<S, E>(S sender, E eventArgs);
+
+	/// <summary>
 	/// Represents the method that will handle an event that receives a string as parameter
 	/// </summary>
 	/// <param name="str">String to pass</param>

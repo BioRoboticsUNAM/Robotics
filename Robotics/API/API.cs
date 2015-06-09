@@ -90,7 +90,7 @@ namespace Robotics.API
 	/// </summary>
 	/// <param name="connectionManager">The IConnectionManager object which rises the event</param>
 	/// <param name="packet">The Tcp Packet with the data received</param>
-	public delegate void ConnectionManagerDataReceivedEH(ConnectionManager connectionManager, System.Net.Sockets.TcpPacket packet);
+	public delegate void ConnectionManagerDataReceivedEH(ConnectionManager connectionManager, Robotics.Sockets.TcpPacket packet);
 
 	/// <summary>
 	/// Represents the method that will handle the StatusChanged, Started and Stopped events of a ConnectionManager

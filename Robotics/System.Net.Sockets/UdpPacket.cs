@@ -3,7 +3,7 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 
-namespace System.Net.Sockets
+namespace System.Net.Sockets.Obsolete
 {
 	/// <summary>
 	/// Implementa un paquete TCP con la informacion relevante recibida

@@ -3,7 +3,7 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 
-namespace System.Net.Sockets
+namespace System.Net.Sockets.Obsolete
 {
 	/// <summary>
 	/// Implementa un paquete TCP con la informacion relevante recibida
@@ -166,7 +166,6 @@ namespace System.Net.Sockets
 		/// Returns a String that represents the current Object
 		/// </summary>
 		/// <returns>A String that represents the current Object</returns>
-		[Obsolete]
 		public override string ToString()
 		{
 			return "["+ SenderIP.ToString() +"]:" + DataString;

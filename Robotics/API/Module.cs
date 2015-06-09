@@ -68,7 +68,7 @@ namespace Robotics.API
 			this.cmdMan = commandManager;
 			this.cnnMan = connectionManager;
 			this.cnnMan.CommandManager = commandManager;
-			this.cnnMan.ClientConnected += new System.Net.Sockets.TcpClientConnectedEventHandler(OnClientConnected);
+			this.cnnMan.ClientConnected += new EventHandler<IConnectionManager, System.Net.IPEndPoint>(OnClientConnected);
 			this.cmdMan.SharedVariablesLoaded += new SharedVariablesLoadedEventHandler(OnSharedVariablesLoaded);
 			this.cmdMan.Started+=new CommandManagerStatusChangedEventHandler(OnCommandManagerStarted);
 			this.cmdMan.Stopped += new CommandManagerStatusChangedEventHandler(OnCommandManagerStopped);
@@ -144,8 +144,9 @@ namespace Robotics.API
 		/// <summary>
 		/// Handles the ClientConnected event of the connection manager to unlock the WaitForClientToConnect() method
 		/// </summary>
-		/// <param name="s">The connection socket. Unused.</param>
-		protected virtual void OnClientConnected(System.Net.Sockets.Socket s)
+		/// <param name="cnnMan">the IConnectionManager object which rises this event. Unused</param>
+		/// <param name="ep">The connection endpoint. Unused.</param>
+		protected virtual void OnClientConnected(IConnectionManager cnnMan, System.Net.IPEndPoint ep)
 		{
 			if (this.cnnMan.ConnectedClientsCount > 0)
 				this.clientConnectedEvent.Set();

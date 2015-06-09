@@ -6,7 +6,7 @@ using System.Text;
 using System.Collections.Generic;
 
 
-namespace System.Net.Sockets
+namespace System.Net.Sockets.Obsolete
 {
 
 	/// <summary>

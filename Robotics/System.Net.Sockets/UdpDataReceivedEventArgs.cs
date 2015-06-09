@@ -1,8 +1,9 @@
 using System;
 using System.Text;
 using System.Net;
+using System.Net.Sockets;
 
-namespace System.Net.Sockets
+namespace System.Net.Sockets.Obsolete
 {
 	/// <summary>
 	/// Provides data for the System.Net.Sockets.UdpDataReceived event

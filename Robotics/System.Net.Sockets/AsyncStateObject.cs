@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 
-namespace System.Net.Sockets
+namespace System.Net.Sockets.Obsolete
 {
 	/// <summary>
 	/// Represents an object used to receive data asynchronously
