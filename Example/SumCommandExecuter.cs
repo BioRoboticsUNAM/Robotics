@@ -9,8 +9,25 @@ namespace Example
 	/// </summary>
 	public class SumCommandExecuter : SyncCommandExecuter
 	{
+		/// <summary>
+		/// Default constructor calls base constructor and names the command
+		/// </summary>
 		public SumCommandExecuter() : base("sum") { }
 
+		/// <summary>
+		/// By setting ParametersRequired to true we make mandatory the use of parameters
+		/// </summary>
+		public override bool ParametersRequired
+		{
+			get
+			{
+				return true;
+			}
+		}
+
+		/// <summary>
+		/// This is the method which executes the command.
+		/// </summary>
 		protected override Response SyncTask(Command command)
 		{
 			string[] parts = command.Parameters.Split(' ');

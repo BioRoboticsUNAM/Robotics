@@ -15,6 +15,7 @@ namespace Example
 			// STEP 1. Create a new Module object named EXAMPLE and running on port 2011
 			Module module = new Module("EXAMPLE", 2011);
 			// STEP 2. Register command executers
+			module.AddCommandExecuter(new SumCommandExecuter());
 			// STEP 3. Start the module
 			module.Start();
 			Console.WriteLine("Module {0} runing on port {1}", module.Name, module.ConnectionManager.Port);
