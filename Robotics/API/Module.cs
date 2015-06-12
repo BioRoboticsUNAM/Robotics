@@ -106,6 +106,11 @@ namespace Robotics.API
 		public bool IsRunning { get { return this.cnnMan.IsRunning && this.cmdMan.IsRunning; } }
 
 		/// <summary>
+		/// Gets the name of the module
+		/// </summary>
+		public virtual string Name { get { return this.CommandManager.Connector.ModuleName; } }
+
+		/// <summary>
 		/// Gets or sets the ready state of the command manager
 		/// </summary>
 		public virtual bool Ready

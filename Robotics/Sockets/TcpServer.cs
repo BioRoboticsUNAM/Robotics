@@ -44,6 +44,11 @@ namespace Robotics.Sockets
 		private readonly Dictionary<IPEndPoint, Socket> clients;
 
 		/// <summary>
+		/// Synchronization method for the clients dictionary
+		/// </summary>
+		private readonly ReaderWriterLock rwClients;
+
+		/// <summary>
 		/// Points at the SocketAccepted method
 		/// </summary>
 		private readonly AsyncCallback dlgSocketAccepted;
@@ -61,19 +66,20 @@ namespace Robotics.Sockets
 		/// Initializes a new instance of System.Net.Sockets.SocketTcpServer class
 		/// </summary>
 		public TcpServer()
-			: this(2000){ }
+			: this(2000) { }
 
 		/// <summary>
 		/// Initializes a new instance of System.Net.Sockets.SocketTcpServer class
 		/// </summary>
 		public TcpServer(int port)
 		{
-			bufferSize = DEFAULT_BUFFER_SIZE;
-			oListener = new Object();
-			Port = port;
-			dlgSocketAccepted = new AsyncCallback(SocketAccepted);
-			dlgDataReceived = new AsyncCallback(Socket_DataReceived);
-			clients = new Dictionary<IPEndPoint, Socket>(10);
+			this.bufferSize = DEFAULT_BUFFER_SIZE;
+			this.oListener = new Object();
+			this.Port = port;
+			this.dlgSocketAccepted = new AsyncCallback(SocketAccepted);
+			this.dlgDataReceived = new AsyncCallback(Socket_DataReceived);
+			this.clients = new Dictionary<IPEndPoint, Socket>(10);
+			this.rwClients = new ReaderWriterLock();
 		}
 
 
@@ -82,24 +88,23 @@ namespace Robotics.Sockets
 		/// </summary>
 		~TcpServer()
 		{
-			lock (clients)
+			this.rwClients.AcquireWriterLock(-1);
+			foreach (Socket s in clients.Values)
 			{
-				foreach (Socket s in clients.Values)
+				try
 				{
-					try
-					{
-						s.Shutdown(SocketShutdown.Both);
-						s.Close(0);
-					}
-					catch { }
+					s.Shutdown(SocketShutdown.Both);
+					s.Close(0);
 				}
-				clients.Clear();
+				catch { }
 			}
+			clients.Clear();
+			this.rwClients.ReleaseWriterLock();
 			try
 			{
 				lock (oListener)
 				{
-					if(listener != null)
+					if (listener != null)
 						listener.Stop();
 					listener = null;
 				}
@@ -136,10 +141,10 @@ namespace Robotics.Sockets
 		{
 			get
 			{
-				lock (clients)
-				{
-					return clients.Count;
-				}
+				this.rwClients.AcquireReaderLock(-1);
+				int count = clients.Count;
+				this.rwClients.ReleaseReaderLock();
+				return count;
 			}
 		}
 
@@ -213,7 +218,7 @@ namespace Robotics.Sockets
 			{
 				if (!aso.Socket.Connected)
 				{
-					DisconnectClient(aso.Socket);
+					DisconnectAndRemoveClient(aso.Socket);
 					return false;
 				}
 
@@ -229,7 +234,7 @@ namespace Robotics.Sockets
 				}
 				catch
 				{
-					DisconnectClient(aso.Socket);
+					DisconnectAndRemoveClient(aso.Socket);
 					return false;
 				}
 			} // end lock
@@ -237,24 +242,48 @@ namespace Robotics.Sockets
 		}
 
 		/// <summary>
+		/// Adds a client to the client list
+		/// </summary>
+		/// <param name="client">The client to add to the list</param>
+		private void AddClient(Socket client)
+		{
+			IPEndPoint ep = (IPEndPoint)client.RemoteEndPoint;
+			if (this.rwClients.IsReaderLockHeld)
+				this.rwClients.UpgradeToWriterLock(-1);
+			else
+				this.rwClients.AcquireWriterLock(-1);
+			if (!this.clients.ContainsKey(ep))
+				this.clients.Add(ep, client);
+			else
+			{
+				try
+				{
+					this.clients[ep].Close();
+				}
+				catch { }
+				this.clients[ep] = client;
+			}
+			this.rwClients.ReleaseWriterLock();
+		}
+
+		/// <summary>
 		/// Disconnects all clients and removes them from the client list
 		/// </summary>
-		private void DisconnectAll()
+		private void DisconnectAndRemoveAll()
 		{
 			Queue<Socket> sockets;
-			lock (clients)
-			{
-				sockets = new Queue<Socket>(clients.Count);
-				foreach (Socket client in clients.Values)
-					sockets.Enqueue(client);
-				clients.Clear();
-			} // lock(clients)
+			this.rwClients.AcquireWriterLock(-1);
+			sockets = new Queue<Socket>(clients.Count);
+			foreach (Socket client in clients.Values)
+				sockets.Enqueue(client);
+			clients.Clear();
+			this.rwClients.ReleaseWriterLock();
 			while (sockets.Count > 0)
 			{
 				IPEndPoint ep;
 				Socket s = sockets.Dequeue();
-				if((s == null) || !s.Connected) continue;
-				lock(s)
+				if ((s == null) || !s.Connected) continue;
+				lock (s)
 				{
 					try
 					{
@@ -271,14 +300,16 @@ namespace Robotics.Sockets
 		/// Disconnects the given socket (client) and removes it from the client list
 		/// </summary>
 		/// <param name="socket">The socket to disconnect</param>
-		private void DisconnectClient(Socket socket)
+		private void DisconnectAndRemoveClient(Socket socket)
 		{
 			if ((socket == null) || !socket.Connected) return;
 			IPEndPoint ep = (IPEndPoint)socket.RemoteEndPoint;
-			lock (clients)
-			{
-				clients.Remove(ep);
-			}
+			if (this.rwClients.IsReaderLockHeld)
+				this.rwClients.UpgradeToWriterLock(-1);
+			else
+				this.rwClients.AcquireWriterLock(-1);
+			clients.Remove(ep);
+			this.rwClients.ReleaseWriterLock();
 			lock (socket)
 			{
 				try
@@ -298,12 +329,12 @@ namespace Robotics.Sockets
 		public bool IsConnected(IPEndPoint ep)
 		{
 			if (!Started) return false;
-			lock (clients)
-			{
-				return this.clients.ContainsKey(ep);
-			}
+			this.rwClients.AcquireReaderLock(-1);
+			bool connected = this.clients.ContainsKey(ep);
+			this.rwClients.ReleaseReaderLock();
+			return connected;
 		}
-		
+
 		/// <summary>
 		/// Check if a client with the specified IP address is connected to the server
 		/// </summary>
@@ -312,15 +343,18 @@ namespace Robotics.Sockets
 		public bool IsConnected(IPAddress ip)
 		{
 			if (!Started) return false;
-			lock (clients)
+			bool connected = false;
+			this.rwClients.AcquireReaderLock(-1);
+			foreach (IPEndPoint ep in clients.Keys)
 			{
-				foreach (IPEndPoint ep in clients.Keys)
+				if (ep.Address == ip)
 				{
-					if (ep.Address == ip)
-						return true;
+					connected = true;
+					break;
 				}
 			}
-			return false;
+			this.rwClients.ReleaseReaderLock();
+			return connected;
 		}
 
 		/// <summary>
@@ -387,14 +421,14 @@ namespace Robotics.Sockets
 			Socket client = null;
 			// if (!Started) throw new Exception("Tcp Server is not runing");
 			if (!Started) return false;
-			lock (clients)
-			{
-				//if(!clients.ContainsKey(destination))
-				//	throw new Exception("Client is not connected");
-				if (!clients.ContainsKey(destination))
-					return false;
-				client = clients[destination];
-			}
+			this.rwClients.AcquireReaderLock(-1);
+			if (this.clients.ContainsKey(destination))
+				client = this.clients[destination];
+			this.rwClients.ReleaseReaderLock();
+			// if(client == null)
+			//	throw new Exception("Client is not connected");
+			if (client == null)
+				return false;
 			IAsyncResult result;
 			try
 			{
@@ -404,7 +438,7 @@ namespace Robotics.Sockets
 				}
 				result.AsyncWaitHandle.WaitOne();
 			}
-			catch { return false;  }
+			catch { return false; }
 			return true;
 		}
 
@@ -442,22 +476,21 @@ namespace Robotics.Sockets
 			if (!Started) throw new Exception("Tcp Server is not runing");
 			int cnt = 0;
 			Queue<WaitHandle> handles = new Queue<WaitHandle>();
-			lock (clients)
+			this.rwClients.AcquireReaderLock(-1);
+			foreach (Socket client in clients.Values)
 			{
-				foreach (Socket client in clients.Values)
+				lock (client)
 				{
-					lock (client)
+					try
 					{
-						try
-						{
-							IAsyncResult result = client.BeginSend(buffer, offset, count, SocketFlags.None, null, null);
-							handles.Enqueue(result.AsyncWaitHandle);
-						}
-						catch { continue; }
-						++cnt;
+						IAsyncResult result = client.BeginSend(buffer, offset, count, SocketFlags.None, null, null);
+						handles.Enqueue(result.AsyncWaitHandle);
 					}
+					catch { continue; }
+					++cnt;
 				}
 			}
+			this.rwClients.ReleaseReaderLock();
 			while (handles.Count > 0)
 				handles.Dequeue().WaitOne();
 			return cnt;
@@ -470,7 +503,7 @@ namespace Robotics.Sockets
 		/// <returns>The number of clients to which the packet was sent.  If server is not running returns -1</returns>
 		public int SendToAll(string s)
 		{
-			if(!s.EndsWith("\0")) s = s + "\0";
+			if (!s.EndsWith("\0")) s = s + "\0";
 			byte[] data = Encoding.UTF8.GetBytes(s);
 			return SendToAll(data, 0, data.Length);
 		}
@@ -485,10 +518,7 @@ namespace Robotics.Sockets
 			{
 				if (listener != null)
 					return;
-				lock (clients)
-				{
-					clients.Clear();
-				}
+				DisconnectAndRemoveAll();
 				listener = new TcpListener(IPAddress.Any, port);
 				listener.Server.ReceiveBufferSize = this.bufferSize;
 				listener.Server.SendBufferSize = this.bufferSize;
@@ -515,7 +545,7 @@ namespace Robotics.Sockets
 			lock (oListener)
 			{
 				if (listener == null) return;
-				DisconnectAll();
+				DisconnectAndRemoveAll();
 				TcpListener oldListener = listener;
 				listener = null;
 				oldListener.Stop();
@@ -548,20 +578,17 @@ namespace Robotics.Sockets
 			{
 				lock (s)
 				{
-					lock (clients)
-					{
-						clients.Add((IPEndPoint)s.RemoteEndPoint, s);
-					}
+					AddClient(s);
 					AsyncStateObject aso = new AsyncStateObject(s, bufferSize);
 					if (!BeginReceive(aso))
 					{
-						DisconnectClient(aso.Socket);
+						DisconnectAndRemoveClient(aso.Socket);
 						return;
 					}
 					OnClientConnected((IPEndPoint)s.RemoteEndPoint);
 				}
 			}
-			
+
 		}
 
 		/// <summary>
@@ -586,7 +613,7 @@ namespace Robotics.Sockets
 				catch (SocketException)
 				{
 					if (!BeginReceive(aso))
-						DisconnectClient(socket);
+						DisconnectAndRemoveClient(socket);
 					return;
 				}
 				catch (ObjectDisposedException)
@@ -600,9 +627,9 @@ namespace Robotics.Sockets
 					BeginReceive(aso);
 				}
 				else
-					DisconnectClient(socket);
+					DisconnectAndRemoveClient(socket);
 			} // end lock
-			if(packet != null)
+			if (packet != null)
 				OnDataReceived(packet);
 		}
 

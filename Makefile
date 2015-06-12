@@ -11,8 +11,8 @@ PREFIX = Robotics
 SOLUTION     = $(PREFIX).sln
 PATH_DEBUG   = bin/Debug
 PATH_RELEASE = bin/Release
-BIN_DEBUG    = $(PATH_DEBUG)/$(PREFIX).exe
-BIN_RELEASE  = $(PATH_RELEASE)/$(PREFIX).exe
+BIN_DEBUG    = Example/$(PATH_DEBUG)/Example.exe
+BIN_RELEASE  = Example/$(PATH_RELEASE)/Example.exe
 # XBUILDFLAGS  = /p:Platform="x86"
 XBUILDFLAGS  = /verbosity:minimal /p:Platform="Any CPU"
 DEBUG        = $(XBUILDFLAGS) /p:OutputPath="$(PATH_DEBUG)" /p:Configuration=Debug
