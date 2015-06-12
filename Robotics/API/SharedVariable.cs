@@ -207,7 +207,7 @@ namespace Robotics.API
 		public abstract T Read<T>();
 
 		/// <summary>
-		/// Rises the ReportReceived event
+		/// Raises the ReportReceived event
 		/// </summary>
 		/// <param name="report">The report data received from Blackboard</param>
 		protected virtual void OnReportReceived(SharedVariableReport report)
@@ -217,7 +217,7 @@ namespace Robotics.API
 		}
 
 		/// <summary>
-		/// Rises the Updated event
+		/// Raises the Updated event
 		/// </summary>
 		protected virtual void OnUpdated()
 		{

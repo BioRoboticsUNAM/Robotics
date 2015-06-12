@@ -82,7 +82,6 @@
     <Compile Include="API\API.cs" />
     <Compile Include="API\AsyncFunctionCE.cs" />
     <Compile Include="API\ICommandManager.cs" />
-    <Compile Include="API\MessageParser.cs" />
     <Compile Include="API\MiscSharedVariables\KnownHumanFaces.cs" />
     <Compile Include="API\PrimitiveSharedVariables\MimeFile.cs" />
     <Compile Include="API\PrimitiveSharedVariables\MimeFileSharedVariable.cs" />
@@ -111,7 +110,6 @@
     <Compile Include="API\SharedVariable.cs" />
     <Compile Include="API\SharedVariableList.cs" />
     <Compile Include="API\SharedVariableSubscriptionReport.cs" />
-    <Compile Include="API\TcpPacketParser.cs" />
     <Compile Include="Controls\IdBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -144,6 +142,7 @@
     <Compile Include="API\SharedVariableReport.cs" />
     <Compile Include="API\ParameterList.cs" />
     <Compile Include="Sockets\AsyncStateObject.cs" />
+    <Compile Include="Sockets\AsyncTcpPacketReader.cs" />
     <Compile Include="Sockets\Sockets.cs" />
     <Compile Include="Sockets\TcpClient.cs" />
     <Compile Include="Sockets\TcpPacket.cs" />
@@ -158,6 +157,7 @@
     <Compile Include="StateMachines\StateMachineBase.cs" />
     <Compile Include="StateMachines\StateMachines.cs" />
     <Compile Include="API\SubscriptionInfo.cs" />
+    <Compile Include="API\TcpPacketParser.cs" />
     <Compile Include="Utilities\Clamper.cs" />
     <Compile Include="Utilities\ILogWriter.cs" />
     <Compile Include="Utilities\LogWriter.cs" />
@@ -201,6 +201,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="API\ApiClassDiagram.cd" />
+    <Compile Include="API\TcpPacketParser.Task.cs" />
     <None Include="ClassDiagram.cd" />
     <None Include="HAL\Sensors\Sensors.cd" />
     <None Include="Mathematics\MathematicsClassDiagram.cd" />

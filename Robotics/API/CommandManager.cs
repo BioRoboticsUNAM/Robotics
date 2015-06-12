@@ -38,19 +38,19 @@ namespace Robotics.API
 		/// <summary>
 		/// Represents the Connector_CommandReceived method
 		/// </summary>
-		private readonly CommandReceivedEventHandler<IConnector> dlgCommandReceived;
+		private readonly EventHandler<IConnector, Command> dlgCommandReceived;
 		/// <summary>
 		/// Represents the Connector_ResponseReceived method
 		/// </summary>
-		private readonly ResponseReceivedEventHandler<IConnector> dlgResponseReceived;
+		private readonly EventHandler<IConnector, Response> dlgResponseReceived;
 		/// <summary>
 		/// Represents the Connector_Connected method
 		/// </summary>
-		private readonly StatusChangedEventHandler<IConnector> dlgConnectorConnected;
+		private readonly Action<IConnector> dlgConnectorConnected;
 		/// <summary>
 		/// Represents the Connector_Disconnected method
 		/// </summary>
-		private readonly StatusChangedEventHandler<IConnector> dlgConnectorDisconnected;
+		private readonly Action<IConnector> dlgConnectorDisconnected;
 		/// <summary>
 		/// Stores the reference to the ConnectionManager object
 		/// </summary>
@@ -189,10 +189,10 @@ namespace Robotics.API
 			sharedVariables = new SharedVariableList(this);
 			executers = new CommandExecuterCollection(this);
 
-			dlgCommandReceived = new CommandReceivedEventHandler<IConnector>(Connector_CommandReceived);
-			dlgResponseReceived = new ResponseReceivedEventHandler<IConnector>(Connector_ResponseReceived);
-			dlgConnectorConnected = new StatusChangedEventHandler<IConnector>(Connector_Connected);
-			dlgConnectorDisconnected = new StatusChangedEventHandler<IConnector>(Connector_Disconnected);
+			dlgCommandReceived = new EventHandler<IConnector, Command>(Connector_CommandReceived);
+			dlgResponseReceived = new EventHandler<IConnector, Response>(Connector_ResponseReceived);
+			dlgConnectorConnected = new Action<IConnector>(Connector_Connected);
+			dlgConnectorDisconnected = new Action<IConnector>(Connector_Disconnected);
 			dlgMainThreadTask = new ThreadStart(MainThreadTask);
 			dlgResponseParserThreadTask = new ThreadStart(ResponseParserThreadTask);
 			dlgUpdateSharedVariableListTask = new ThreadStart(UpdateSharedVariableListTask);
@@ -292,7 +292,7 @@ namespace Robotics.API
 				// Set new ConnectionManager
 				cnnMan = value;
 				cnnMan.CommandManager = this;
-				Connector = new TcpPacketParser(cnnMan);
+				Connector = cnnMan;
 			}
 		}
 
@@ -1071,7 +1071,7 @@ namespace Robotics.API
 		/// <summary>
 		/// Manages the Connected event of a IConnector source
 		/// </summary>
-		/// <param name="sender">The IConnector object which rises the event</param>
+		/// <param name="sender">The IConnector object which raises the event</param>
 		protected void Connector_Connected(IConnector sender)
 		{
 			if (!firstConnected)
@@ -1086,7 +1086,7 @@ namespace Robotics.API
 		/// <summary>
 		/// Manages the Connected event of a IConnector source
 		/// </summary>
-		/// <param name="sender">The IConnector object which rises the event</param>
+		/// <param name="sender">The IConnector object which raises the event</param>
 		protected void Connector_Disconnected(IConnector sender) 
 		{
 			initializationSyncEvent.Reset();

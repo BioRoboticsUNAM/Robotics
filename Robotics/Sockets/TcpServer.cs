@@ -29,15 +29,24 @@ namespace Robotics.Sockets
 		/// <summary>
 		/// Represents the dataReceived Method. Used for async callback
 		/// </summary>
-		protected AsyncCallback dlgDataReceived;
+		protected readonly AsyncCallback dlgDataReceived;
 
 		private TcpListener listener;
+
 		/// <summary>
 		/// Object used to perform a lock over the listener
 		/// </summary>
-		private Object oListener;
-		private Dictionary<IPEndPoint, Socket> clients;
-		private AsyncCallback dlgSocketAccepted;
+		private readonly Object oListener;
+
+		/// <summary>
+		/// Stores the Sockets for the clients, accessible by remote endpoint
+		/// </summary>
+		private readonly Dictionary<IPEndPoint, Socket> clients;
+
+		/// <summary>
+		/// Points at the SocketAccepted method
+		/// </summary>
+		private readonly AsyncCallback dlgSocketAccepted;
 
 		/// <summary>
 		/// Stores the connection port
@@ -315,7 +324,7 @@ namespace Robotics.Sockets
 		}
 
 		/// <summary>
-		/// Rises de ClientConnected event
+		/// Raises de ClientConnected event
 		/// </summary>
 		/// <param name="ep">Remote Endpoint of the connected client</param>
 		private void OnClientConnected(IPEndPoint ep)
@@ -329,7 +338,7 @@ namespace Robotics.Sockets
 		}
 
 		/// <summary>
-		/// Rises de ClientDisconnected event
+		/// Raises de ClientDisconnected event
 		/// </summary>
 		/// <param name="ep">Remote Endpoint of the disconnected client</param>
 		private void OnClientDisconnected(IPEndPoint ep)
@@ -343,7 +352,7 @@ namespace Robotics.Sockets
 		}
 
 		/// <summary>
-		/// Rises the DataReceived event
+		/// Raises the DataReceived event
 		/// </summary>
 		/// <param name="packet">TcpPacket containing the data received</param>
 		protected virtual void OnDataReceived(TcpPacket packet)
@@ -361,9 +370,9 @@ namespace Robotics.Sockets
 		/// </summary>
 		/// <param name="destination">The client's IP address</param>
 		/// <param name="buffer">The byte array to send</param>
-		public void SendTo(IPEndPoint destination, byte[] buffer)
+		public bool SendTo(IPEndPoint destination, byte[] buffer)
 		{
-			SendTo(destination, buffer, 0, buffer.Length);
+			return SendTo(destination, buffer, 0, buffer.Length);
 		}
 
 		/// <summary>
@@ -373,22 +382,30 @@ namespace Robotics.Sockets
 		/// <param name="buffer">The byte array to send</param>
 		/// <param name="offset">The offset in the buffer array to begin sending</param>
 		/// <param name="count">The number of bytes to send</param>
-		public void SendTo(IPEndPoint destination, byte[] buffer, int offset, int count)
+		public bool SendTo(IPEndPoint destination, byte[] buffer, int offset, int count)
 		{
 			Socket client = null;
-			if (!Started) throw new Exception("Tcp Server is not runing");
+			// if (!Started) throw new Exception("Tcp Server is not runing");
+			if (!Started) return false;
 			lock (clients)
 			{
-				if(!clients.ContainsKey(destination))
-					throw new Exception("Client is not connected");
+				//if(!clients.ContainsKey(destination))
+				//	throw new Exception("Client is not connected");
+				if (!clients.ContainsKey(destination))
+					return false;
 				client = clients[destination];
 			}
 			IAsyncResult result;
-			lock (client)
+			try
 			{
-				result = client.BeginSend(buffer, offset, count, SocketFlags.None, null, null);
+				lock (client)
+				{
+					result = client.BeginSend(buffer, offset, count, SocketFlags.None, null, null);
+				}
+				result.AsyncWaitHandle.WaitOne();
 			}
-			result.AsyncWaitHandle.WaitOne();
+			catch { return false;  }
+			return true;
 		}
 
 		/// <summary>
@@ -396,18 +413,18 @@ namespace Robotics.Sockets
 		/// </summary>
 		/// <param name="destination">The client's IP address</param>
 		/// <param name="s">The string to send to the output buffer</param>
-		public void SendTo(IPEndPoint destination, string s)
+		public bool SendTo(IPEndPoint destination, string s)
 		{
 			if (!s.EndsWith("\0")) s = s + "\0";
 			byte[] data = Encoding.UTF8.GetBytes(s);
-			SendTo(destination, data, 0, data.Length);
+			return SendTo(destination, data, 0, data.Length);
 		}
 
 		/// <summary>
 		/// Sends a specified number of bytes to all connected Clients
 		/// </summary>
 		/// <param name="buffer">The byte array to send</param>
-		/// <returns>The number of clients to which the packet was sent</returns>
+		/// <returns>The number of clients to which the packet was sent.  If server is not running returns -1</returns>
 		public int SendToAll(byte[] buffer)
 		{
 			return SendToAll(buffer, 0, buffer.Length);
@@ -419,7 +436,7 @@ namespace Robotics.Sockets
 		/// <param name="buffer">The byte array to send</param>
 		/// <param name="offset">The offset in the buffer array to begin sending</param>
 		/// <param name="count">The number of bytes to send</param>
-		/// <returns>The number of clients to which the packet was sent</returns>
+		/// <returns>The number of clients to which the packet was sent. If server is not running returns -1</returns>
 		public int SendToAll(byte[] buffer, int offset, int count)
 		{
 			if (!Started) throw new Exception("Tcp Server is not runing");
@@ -450,7 +467,7 @@ namespace Robotics.Sockets
 		/// Sends the specifiec string to all connected Clients
 		/// </summary>
 		/// <param name="s">The string to send to the output buffer</param>
-		/// <returns>The number of clients to which the packet was sent</returns>
+		/// <returns>The number of clients to which the packet was sent.  If server is not running returns -1</returns>
 		public int SendToAll(string s)
 		{
 			if(!s.EndsWith("\0")) s = s + "\0";

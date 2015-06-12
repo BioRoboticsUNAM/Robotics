@@ -23,22 +23,22 @@ namespace Robotics.API
 		/// <summary>
 		/// Occurs when a command is received
 		/// </summary>
-		event CommandReceivedEventHandler<IConnector> CommandReceived;
+		event EventHandler<IConnector, Command> CommandReceived;
 
 		/// <summary>
 		/// Occurs when the connector gets connected to the message source
 		/// </summary>
-		event StatusChangedEventHandler<IConnector> Connected;
+		event Action<IConnector> Connected;
 
 		/// <summary>
 		/// Occurs when the connector gets disconnected from the message source
 		/// </summary>
-		event StatusChangedEventHandler<IConnector> Disconnected;
+		event Action<IConnector> Disconnected;
 
 		/// <summary>
 		/// Occurs when a response is received
 		/// </summary>
-		event ResponseReceivedEventHandler<IConnector> ResponseReceived;
+		event EventHandler<IConnector, Response> ResponseReceived;
 
 		#endregion
 

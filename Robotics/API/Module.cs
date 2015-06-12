@@ -144,7 +144,7 @@ namespace Robotics.API
 		/// <summary>
 		/// Handles the ClientConnected event of the connection manager to unlock the WaitForClientToConnect() method
 		/// </summary>
-		/// <param name="cnnMan">the IConnectionManager object which rises this event. Unused</param>
+		/// <param name="cnnMan">the IConnectionManager object which raises this event. Unused</param>
 		/// <param name="ep">The connection endpoint. Unused.</param>
 		protected virtual void OnClientConnected(IConnectionManager cnnMan, System.Net.IPEndPoint ep)
 		{
@@ -155,7 +155,7 @@ namespace Robotics.API
 		/// <summary>
 		/// Handles the Started event of the command manager to lock/unlock the Run() method
 		/// </summary>
-		/// <param name="commandManager">The command manager which rises the event</param>
+		/// <param name="commandManager">The command manager which raises the event</param>
 		protected virtual void OnCommandManagerStarted(CommandManager commandManager)
 		{
 			if (commandManager != this.cmdMan) return;
@@ -165,7 +165,7 @@ namespace Robotics.API
 		/// <summary>
 		/// Handles the Stopped event of the command manager to lock/unlock the Run() method
 		/// </summary>
-		/// <param name="commandManager">The command manager which rises the event</param>
+		/// <param name="commandManager">The command manager which raises the event</param>
 		protected virtual void OnCommandManagerStopped(CommandManager commandManager)
 		{
 			if (commandManager != this.cmdMan) return;
@@ -175,7 +175,7 @@ namespace Robotics.API
 		/// <summary>
 		/// Handles the SharedVariablesLoaded event of the command manager to unlock the WaitSharedVariablesLoaded() method
 		/// </summary>
-		/// <param name="cmdMan">The command manager which rises the event</param>
+		/// <param name="cmdMan">The command manager which raises the event</param>
 		protected virtual void OnSharedVariablesLoaded(CommandManager cmdMan)
 		{
 			if (cmdMan != this.cmdMan) return;

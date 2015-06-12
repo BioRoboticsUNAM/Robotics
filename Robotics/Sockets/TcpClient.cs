@@ -261,7 +261,7 @@ namespace Robotics.Sockets
 		}
 
 		/// <summary>
-		/// Rises the Connected event
+		/// Raises the Connected event
 		/// </summary>
 		protected void OnConnected()
 		{
@@ -274,7 +274,7 @@ namespace Robotics.Sockets
 		}
 
 		/// <summary>
-		/// Rises the DataReceived event
+		/// Raises the DataReceived event
 		/// </summary>
 		/// <param name="packet">TcpPacket containing the data received</param>
 		protected void OnDataReceived(TcpPacket packet)
@@ -288,7 +288,7 @@ namespace Robotics.Sockets
 		}
 
 		/// <summary>
-		/// Rises the Disconnected event
+		/// Raises the Disconnected event
 		/// </summary>
 		protected void OnDisconnected()
 		{
