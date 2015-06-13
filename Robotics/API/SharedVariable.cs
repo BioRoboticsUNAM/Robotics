@@ -4,6 +4,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using Robotics.API.Parsers;
 using Robotics.Utilities;
 
 namespace Robotics.API

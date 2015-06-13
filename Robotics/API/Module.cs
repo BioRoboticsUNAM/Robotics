@@ -158,7 +158,7 @@ namespace Robotics.API
 		/// <summary>
 		/// Adds a set of command executers to the module
 		/// </summary>
-		/// <param name="commandExecuter">The command executer to add</param>
+		/// <param name="commandExecuters">The command executer to add</param>
 		public virtual void AddCommandExecuter(params CommandExecuter[] commandExecuters)
 		{
 			foreach (CommandExecuter ce in commandExecuters)

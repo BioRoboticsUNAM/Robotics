@@ -4,6 +4,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Robotics;
+using Robotics.API.Parsers;
 using Robotics.Sockets;
 
 namespace Robotics.API

@@ -142,7 +142,7 @@
     <Compile Include="API\SharedVariableReport.cs" />
     <Compile Include="API\ParameterList.cs" />
     <Compile Include="Sockets\AsyncStateObject.cs" />
-    <Compile Include="Sockets\AsyncTcpPacketReader.cs" />
+    <Compile Include="API\Parsers\TcpPacketParserEngine.Queue.cs" />
     <Compile Include="Sockets\Sockets.cs" />
     <Compile Include="Sockets\TcpClient.cs" />
     <Compile Include="Sockets\TcpPacket.cs" />
@@ -157,7 +157,7 @@
     <Compile Include="StateMachines\StateMachineBase.cs" />
     <Compile Include="StateMachines\StateMachines.cs" />
     <Compile Include="API\SubscriptionInfo.cs" />
-    <Compile Include="API\TcpPacketParser.cs" />
+    <Compile Include="API\Parsers\TcpPacketParser.cs" />
     <Compile Include="Utilities\Clamper.cs" />
     <Compile Include="Utilities\ILogWriter.cs" />
     <Compile Include="Utilities\LogWriter.cs" />
@@ -196,12 +196,13 @@
     <Compile Include="System.Net.Sockets\TcpPacket.cs" />
     <Compile Include="System.Net.Sockets\UdpDataReceivedEventArgs.cs" />
     <Compile Include="System.Net.Sockets\UdpPacket.cs" />
-    <Compile Include="API\Parser.cs" />
+    <Compile Include="API\Parsers\Parser.cs" />
     <Compile Include="Utilities\Scanner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="API\ApiClassDiagram.cd" />
-    <Compile Include="API\TcpPacketParser.Task.cs" />
+    <Compile Include="API\Parsers\TcpPacketParserEngine.Task.cs" />
+    <Compile Include="API\Parsers\TcpPacketParserEngine.cs" />
     <None Include="ClassDiagram.cd" />
     <None Include="HAL\Sensors\Sensors.cd" />
     <None Include="Mathematics\MathematicsClassDiagram.cd" />
