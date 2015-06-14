@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading;
 
 
 namespace Robotics.Sockets
@@ -40,9 +40,9 @@ namespace Robotics.Sockets
 		private System.Net.Sockets.TcpClient client;
 
 		/// <summary>
-		/// Object used to lock the access to client
+		/// Used to lock the access to client
 		/// </summary>
-		private object oClient;
+		private ReaderWriterLock rwClientLock;
 
 		/// <summary>
 		/// Stores the ip address of the server
@@ -70,7 +70,7 @@ namespace Robotics.Sockets
 		/// <param name="port">The connection port for the socket</param>
 		public TcpClient(IPAddress serverAddress, int port)
 		{
-			oClient = new Object();
+			rwClientLock = new ReaderWriterLock();
 			ServerAddress = serverAddress;
 			Port = port;
 			bufferSize = DEFAULT_BUFFER_SIZE;
@@ -90,12 +90,11 @@ namespace Robotics.Sockets
 			set
 			{
 				if (value < 0) throw new ArgumentOutOfRangeException("Size of buffer must be greater than zero");
-				lock (oClient)
-				{
-					if (IsConnected)
-						throw new Exception("Cannot change the size of the buffer while the client is connected");
-					bufferSize = value;
-				}
+				if (IsConnected)
+					throw new Exception("Cannot change the size of the buffer while the client is connected");
+				rwClientLock.AcquireWriterLock(-1);
+				bufferSize = value;
+				rwClientLock.ReleaseWriterLock();
 			}
 		}
 
@@ -106,10 +105,10 @@ namespace Robotics.Sockets
 		{
 			get
 			{
-				lock (oClient)
-				{
-					return (client != null) && client.Connected;
-				}
+				rwClientLock.AcquireReaderLock(-1);
+				bool connected = (client != null) && client.Connected;
+				rwClientLock.ReleaseReaderLock();
+				return connected;
 			}
 		}
 
@@ -127,12 +126,11 @@ namespace Robotics.Sockets
 			set
 			{
 				if (value == null) throw new Exception("Parameter serverAddress cannot be null");
-				lock (oClient)
-				{
-					if (IsConnected)
-						throw new Exception("Cannot change Server IP Address while the client is connected");
-					serverIP = value;
-				}
+				if (IsConnected)
+					throw new Exception("Cannot change Server IP Address while the client is connected");
+				rwClientLock.AcquireWriterLock(-1);
+				serverIP = value;
+				rwClientLock.ReleaseWriterLock();
 			}
 		}
 
@@ -146,13 +144,12 @@ namespace Robotics.Sockets
 			{
 				if ((value < 1) || (value > 65535))
 					throw new Exception("Port must be between 1 and 65535");
+				if (IsConnected)
+					throw new Exception("Cannot change Port while the client is connected");
 
-				lock (oClient)
-				{
-					if (IsConnected)
-						throw new Exception("Cannot change Port while the client is connected");
-					port = value;
-				}
+				rwClientLock.AcquireWriterLock(-1);
+				port = value;
+				rwClientLock.ReleaseWriterLock();
 			}
 		}
 
@@ -188,30 +185,34 @@ namespace Robotics.Sockets
 			if (aso == null)
 				return;
 
-			lock (oClient)
+			rwClientLock.AcquireReaderLock(-1);
+			if (!client.Connected)
 			{
-				if (!client.Connected)
-				{
-					Disconnect();
-					return;
-				}
+				DisconnectClient();
+				rwClientLock.ReleaseReaderLock();
+				OnDisconnected();
+				return;
+			}
 
-				try
-				{
-					aso.Received = 0;
-					client.Client.BeginReceive(aso.Buffer,
-						0,
-						aso.BufferSize,
-						SocketFlags.None,
-						dlgDataReceived,
-						aso);
-				}
-				catch
-				{
-					Disconnect();
-					return;
-				}
-			} // end lock
+			try
+			{
+				aso.Received = 0;
+				client.Client.BeginReceive(aso.Buffer,
+					0,
+					aso.BufferSize,
+					SocketFlags.None,
+					dlgDataReceived,
+					aso);
+			}
+			catch
+			{
+				Disconnect();
+				return;
+			}
+			finally
+			{
+				rwClientLock.ReleaseReaderLock();
+			}
 		}
 
 		/// <summary>
@@ -241,23 +242,43 @@ namespace Robotics.Sockets
 		/// </summary>
 		public void Disconnect()
 		{
-			lock (oClient)
-			{
-				if (client == null) return;
-				System.Net.Sockets.TcpClient oldClient = client;
-				client = null;
-				try
-				{
-					if (oldClient.Connected)
-					{
-						oldClient.Client.Disconnect(true);
-						oldClient.Client.Close();
-						oldClient.Close();
-					}
-				}
-				catch (ObjectDisposedException){ return; }
-			} // end lock
+			if (!IsConnected) return;
+			DisconnectClient();
 			OnDisconnected();
+		}
+
+		private void DisconnectClient()
+		{
+			bool reader;
+			LockCookie coockie = new LockCookie();
+			System.Net.Sockets.TcpClient oldClient = null;
+			if (reader = rwClientLock.IsReaderLockHeld)
+				coockie = rwClientLock.UpgradeToWriterLock(-1);
+			else
+				rwClientLock.AcquireWriterLock(-1);
+
+			if (client != null)
+			{
+				oldClient = client;
+				client = null;
+			}
+
+			if (reader)
+				rwClientLock.DowngradeFromWriterLock(ref coockie);
+			else
+				rwClientLock.ReleaseWriterLock();
+
+
+			try
+			{
+				if ((oldClient != null) && oldClient.Connected)
+				{
+					oldClient.Client.Disconnect(true);
+					oldClient.Client.Close();
+					oldClient.Close();
+				}
+			}
+			catch (ObjectDisposedException) { return; }
 		}
 
 		/// <summary>
@@ -310,12 +331,10 @@ namespace Robotics.Sockets
 		{
 			// client.Send(buffer, offset, count, SocketFlags.None);
 			IAsyncResult result;
-			lock (oClient)
-			{
-				if (!IsConnected) throw new Exception("Client is not connected");
-				result = client.Client.BeginSend(buffer, offset, count, SocketFlags.None, null, null);
-			}
-			result.AsyncWaitHandle.WaitOne();
+			rwClientLock.AcquireReaderLock(-1);
+			if (!IsConnected) throw new Exception("Client is not connected");
+			result = client.Client.BeginSend(buffer, offset, count, SocketFlags.None, null, null);
+			rwClientLock.ReleaseReaderLock();
 		}
 
 		/// <summary>
@@ -334,7 +353,7 @@ namespace Robotics.Sockets
 		public void Send(string s)
 		{
 			if (!s.EndsWith("\0")) s = s + "\0";
-			byte[] data = Encoding.UTF8.GetBytes(s);
+			byte[] data = System.Text.UTF8Encoding.UTF8.GetBytes(s);
 			Send(data, 0, data.Length);
 		}
 
@@ -353,21 +372,26 @@ namespace Robotics.Sockets
 		private bool TryConnect(out Exception ex)
 		{
 			ex = null;
-			lock (oClient)
+			rwClientLock.AcquireWriterLock(-1);
+			if (client != null)
 			{
-				if (client != null) return true;
+				rwClientLock.ReleaseWriterLock(); return true;
+			}
 
-				if (port < 1)
-				{
-					ex = new Exception("Invalid port");
-					return false;
-				}
-				if (serverIP == null)
-				{
-					ex = new Exception("Set a server IP Address first");
-					return false;
-				}
-
+			if (port < 1)
+			{
+				ex = new Exception("Invalid port");
+				rwClientLock.ReleaseWriterLock();
+				return false;
+			}
+			if (serverIP == null)
+			{
+				ex = new Exception("Set a server IP Address first");
+				rwClientLock.ReleaseWriterLock();
+				return false;
+			}
+			try
+			{
 				SetupSocket();
 				IAsyncResult result = client.BeginConnect(serverIP, port, null, null);
 				result.AsyncWaitHandle.WaitOne(connectionTimeout);
@@ -376,11 +400,14 @@ namespace Robotics.Sockets
 					client.Close();
 					client = null;
 					ex = new TimeoutException("Connection timeout");
+					rwClientLock.ReleaseWriterLock();
 					return false;
 				}
 				client.EndConnect(result);
-				BeginReceive(new AsyncStateObject(client.Client, bufferSize));
-			} // end lock
+				rwClientLock.ReleaseWriterLock();
+			}
+			catch { rwClientLock.ReleaseWriterLock(); return false; }
+			BeginReceive(new AsyncStateObject(client.Client, bufferSize));
 			OnConnected();
 			return true;
 		}
@@ -421,32 +448,33 @@ namespace Robotics.Sockets
 			TcpPacket packet = null;
 			AsyncStateObject aso = (AsyncStateObject)result.AsyncState;
 
-			lock (oClient)
+			rwClientLock.AcquireReaderLock(-1);
+			if ((client == null) || !client.Client.Connected)
 			{
-				if ((client == null) || !client.Client.Connected)
-				{
-					Disconnect();
-					return;
-				}
+				Disconnect();
+				rwClientLock.ReleaseReaderLock();
+				return;
+			}
 
-				try
-				{
-					aso.Received = client.Client.EndReceive(result);
-				}
-				catch (SocketException)
-				{
-					BeginReceive(aso);
-					return;
-				}
-				
-				if (aso.Received > 0)
-				{
-					packet = new TcpPacket(aso.Socket, aso.Buffer, 0, aso.Received);
-					BeginReceive(aso);
-				}
-				else
-					Disconnect();
-			} // end lock
+			try
+			{
+				aso.Received = client.Client.EndReceive(result);
+			}
+			catch (SocketException)
+			{
+				BeginReceive(aso);
+				rwClientLock.ReleaseReaderLock();
+				return;
+			}
+			rwClientLock.ReleaseReaderLock();
+
+			if (aso.Received > 0)
+			{
+				packet = new TcpPacket(aso.Socket, aso.Buffer, 0, aso.Received);
+				BeginReceive(aso);
+			}
+			else
+				Disconnect();
 			if (packet != null)
 				OnDataReceived(packet);
 		}

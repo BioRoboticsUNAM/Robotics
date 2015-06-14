@@ -17,8 +17,10 @@ namespace Example
 			// STEP 2. Register command executers
 			module.AddCommandExecuter(new SumCommandExecuter());
 			// STEP 3. Start the module
+			Console.WriteLine("Module {0} runing on port {1}.", module.Name, module.ConnectionManager.Port);
+			Console.WriteLine("Waiting connection from Blackboard");
 			module.Start();
-			Console.WriteLine("Module {0} runing on port {1}", module.Name, module.ConnectionManager.Port);
+			Console.WriteLine("Connected.");
 			// STEP 4. Create the echo shared variable
 			StringSharedVariable echo = new StringSharedVariable("echo");
 			// STEP 5. Register the shared variable

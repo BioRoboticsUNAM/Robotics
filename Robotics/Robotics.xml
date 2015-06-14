@@ -11579,9 +11579,9 @@
             the socket used for connection
             </summary>
         </member>
-        <member name="F:Robotics.Sockets.TcpClient.oClient">
+        <member name="F:Robotics.Sockets.TcpClient.rwClientLock">
             <summary>
-            Object used to lock the access to client
+            Used to lock the access to client
             </summary>
         </member>
         <member name="F:Robotics.Sockets.TcpClient.serverIP">
