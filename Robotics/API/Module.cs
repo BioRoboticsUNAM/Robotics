@@ -68,7 +68,7 @@ namespace Robotics.API
 			this.cmdMan = commandManager;
 			this.cnnMan = connectionManager;
 			this.cnnMan.CommandManager = commandManager;
-			this.cnnMan.ClientConnected += new System.Net.Sockets.TcpClientConnectedEventHandler(OnClientConnected);
+			this.cnnMan.ClientConnected += new EventHandler<IConnectionManager, System.Net.IPEndPoint>(OnClientConnected);
 			this.cmdMan.SharedVariablesLoaded += new SharedVariablesLoadedEventHandler(OnSharedVariablesLoaded);
 			this.cmdMan.Started+=new CommandManagerStatusChangedEventHandler(OnCommandManagerStarted);
 			this.cmdMan.Stopped += new CommandManagerStatusChangedEventHandler(OnCommandManagerStopped);
@@ -106,6 +106,11 @@ namespace Robotics.API
 		public bool IsRunning { get { return this.cnnMan.IsRunning && this.cmdMan.IsRunning; } }
 
 		/// <summary>
+		/// Gets the name of the module
+		/// </summary>
+		public virtual string Name { get { return this.CommandManager.Connector.ModuleName; } }
+
+		/// <summary>
 		/// Gets or sets the ready state of the command manager
 		/// </summary>
 		public virtual bool Ready
@@ -123,7 +128,7 @@ namespace Robotics.API
 		/// If the shared variable is already registered, the reference is updated, otherwise a new shared variable of the type is created
 		/// </summary>
 		/// <param name="sharedVariable">A shared variable object used to create the new SharedVariable or update the reference</param>
-		public void AddSharedVariable<T>(ref T sharedVariable) where T: SharedVariable
+		public virtual void AddSharedVariable<T>(ref T sharedVariable) where T : SharedVariable
 		{
 			this.cmdMan.AddSharedVariable<T>(ref sharedVariable);
 		}
@@ -136,16 +141,36 @@ namespace Robotics.API
 		/// <param name="reportType">The type of report required for subscription</param>
 		/// <param name="subscriptionType">The type of subscription</param>
 		/// <param name="updateEventHandler">A delegate that represents the method that will handle the Updated event of the shared variable</param>
-		public void AddSharedVariable<T>(ref T sharedVariable, SharedVariableReportType reportType, SharedVariableSubscriptionType subscriptionType, SharedVariableUpdatedEventHadler updateEventHandler) where T : SharedVariable
+		public virtual void AddSharedVariable<T>(ref T sharedVariable, SharedVariableReportType reportType, SharedVariableSubscriptionType subscriptionType, SharedVariableUpdatedEventHadler updateEventHandler) where T : SharedVariable
 		{
 			this.cmdMan.AddSharedVariable(ref sharedVariable, reportType, subscriptionType, updateEventHandler);
 		}
 
 		/// <summary>
+		/// Adds a command executer to the module
+		/// </summary>
+		/// <param name="commandExecuter">The command executer to add</param>
+		public virtual void AddCommandExecuter(CommandExecuter commandExecuter)
+		{
+			this.CommandManager.CommandExecuters.Add(commandExecuter);
+		}
+
+		/// <summary>
+		/// Adds a set of command executers to the module
+		/// </summary>
+		/// <param name="commandExecuters">The command executer to add</param>
+		public virtual void AddCommandExecuter(params CommandExecuter[] commandExecuters)
+		{
+			foreach (CommandExecuter ce in commandExecuters)
+				this.CommandManager.CommandExecuters.Add(ce);
+		}
+
+		/// <summary>
 		/// Handles the ClientConnected event of the connection manager to unlock the WaitForClientToConnect() method
 		/// </summary>
-		/// <param name="s">The connection socket. Unused.</param>
-		protected virtual void OnClientConnected(System.Net.Sockets.Socket s)
+		/// <param name="cnnMan">the IConnectionManager object which raises this event. Unused</param>
+		/// <param name="ep">The connection endpoint. Unused.</param>
+		protected virtual void OnClientConnected(IConnectionManager cnnMan, System.Net.IPEndPoint ep)
 		{
 			if (this.cnnMan.ConnectedClientsCount > 0)
 				this.clientConnectedEvent.Set();
@@ -154,7 +179,7 @@ namespace Robotics.API
 		/// <summary>
 		/// Handles the Started event of the command manager to lock/unlock the Run() method
 		/// </summary>
-		/// <param name="commandManager">The command manager which rises the event</param>
+		/// <param name="commandManager">The command manager which raises the event</param>
 		protected virtual void OnCommandManagerStarted(CommandManager commandManager)
 		{
 			if (commandManager != this.cmdMan) return;
@@ -164,7 +189,7 @@ namespace Robotics.API
 		/// <summary>
 		/// Handles the Stopped event of the command manager to lock/unlock the Run() method
 		/// </summary>
-		/// <param name="commandManager">The command manager which rises the event</param>
+		/// <param name="commandManager">The command manager which raises the event</param>
 		protected virtual void OnCommandManagerStopped(CommandManager commandManager)
 		{
 			if (commandManager != this.cmdMan) return;
@@ -174,7 +199,7 @@ namespace Robotics.API
 		/// <summary>
 		/// Handles the SharedVariablesLoaded event of the command manager to unlock the WaitSharedVariablesLoaded() method
 		/// </summary>
-		/// <param name="cmdMan">The command manager which rises the event</param>
+		/// <param name="cmdMan">The command manager which raises the event</param>
 		protected virtual void OnSharedVariablesLoaded(CommandManager cmdMan)
 		{
 			if (cmdMan != this.cmdMan) return;
@@ -196,7 +221,7 @@ namespace Robotics.API
 		/// <param name="timeOut">The timeout for command execution</param>
 		/// <param name="response">The response received</param>
 		/// <returns>true if command was sent and its response received. false otherwise</returns>
-		public bool SendAndWait(Command command, int timeOut, out Response response)
+		public virtual bool SendAndWait(Command command, int timeOut, out Response response)
 		{
 			return this.cmdMan.SendAndWait(command, timeOut, out response);
 		}
@@ -213,7 +238,7 @@ namespace Robotics.API
 		/// Starts the module engine
 		/// </summary>
 		/// <returns>Zero if the method or function was started successfully, otherwise it returns the error number</returns>
-		public void Start()
+		public virtual void Start()
 		{
 			this.cnnMan.Start();
 			this.SetupCommandExecuters();
@@ -229,7 +254,7 @@ namespace Robotics.API
 		/// Stops the module engine
 		/// </summary>
 		/// <returns>Zero if the method or function was stopped successfully, otherwise it returns the error number</returns>
-		public void Stop()
+		public virtual void Stop()
 		{
 			this.cmdMan.Stop();
 			this.cnnMan.Stop();
@@ -238,7 +263,7 @@ namespace Robotics.API
 		/// <summary>
 		/// Waits until a client connects to the TCP Server of the ConnectionManager
 		/// </summary>
-		public void WaitForClientToConnect()
+		public virtual void WaitForClientToConnect()
 		{
 			if(cnnMan.ConnectedClientsCount < 1)
 				this.clientConnectedEvent.WaitOne();
@@ -249,7 +274,7 @@ namespace Robotics.API
 		/// </summary>
 		/// <param name="timeout">The maximum amount of time to wait for the first client to get connected</param>
 		/// <returns>true if a client connected before the timeout occurs, false otherwise</returns>
-		public bool WaitForClientToConnect(int timeout)
+		public virtual bool WaitForClientToConnect(int timeout)
 		{
 			if (cnnMan.ConnectedClientsCount < 1)
 				return this.clientConnectedEvent.WaitOne(timeout);
@@ -259,7 +284,7 @@ namespace Robotics.API
 		/// <summary>
 		/// Waits until the shared variables have been loaded by the Command Manager
 		/// </summary>
-		public void WaitSharedVariablesLoaded()
+		public virtual void WaitSharedVariablesLoaded()
 		{
 			this.sharedVarsLodadedEvent.WaitOne();
 		}
@@ -269,7 +294,7 @@ namespace Robotics.API
 		/// </summary>
 		/// <param name="timeout">The maximum amount of time to wait for the Shared Variables to be loaded</param>
 		/// <returns>true if the shared variables were loaded before the timeout occurs, false otherwise</returns>
-		public bool WaitSharedVariablesLoaded(int timeout)
+		public virtual bool WaitSharedVariablesLoaded(int timeout)
 		{
 			return this.sharedVarsLodadedEvent.WaitOne(timeout);
 		}

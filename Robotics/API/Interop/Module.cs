@@ -124,8 +124,7 @@ namespace Robotics.API.Interop
 			try
 			{
 				this.cnnMan.ModuleName = moduleName;
-				this.cnnMan.PortIn = port;
-				this.cnnMan.PortOut = port;
+				this.cnnMan.Port = port;
 				this.cnnMan.CommandManager = cmdMan;
 			}
 			catch (Exception ex)

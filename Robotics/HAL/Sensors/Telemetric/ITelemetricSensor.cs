@@ -7,7 +7,7 @@ namespace Robotics.HAL.Sensors.Telemetric
 	/// <summary>
 	/// Represents the method that will handle the ThresholdExceeded event of a TelemetricSensor object
 	/// </summary>
-	/// <param name="sensor">The TelemetricSensor object which rises the event</param>
+	/// <param name="sensor">The TelemetricSensor object which raises the event</param>
 	public delegate void TelemetricSensorThresholdExceededEventHandler<TSensor>(TSensor sensor)
 		where TSensor : ITelemetricSensor;
 

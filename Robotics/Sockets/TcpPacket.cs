@@ -3,35 +3,53 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 
-namespace System.Net.Sockets
+namespace Robotics.Sockets
 {
 	/// <summary>
-	/// Implementa un paquete TCP con la informacion relevante recibida
+	/// Encapsulates received data through a TCP socket
 	/// </summary>
 	public class TcpPacket
 	{
 		#region Variables
+		/// <summary>
+		/// The remote endpoint (where the data comes from)
+		/// </summary>
 		private IPEndPoint remoteEndPoint;
+		
+		/// /// <summary>
+		/// The local endpoint (where the data arrived)
+		/// </summary>
 		private IPEndPoint localEndPoint;
-		private Socket socket;
+
+		/// <summary>
+		/// The received data
+		/// </summary>
 		private byte[] data;
-		private string[] dataStrings;
-		private bool isAnsi;
-		private static char[] charZero = new char[] { (char)0 };
 
 		#endregion
 
 		#region Constructores
 
+		/// <summary>
+		/// Initalizes a new instance of TcpPacket
+		/// </summary>
+		/// <param name="socket">The socket where the data comes from</param>
+		/// <param name="data">The received data</param>
 		internal TcpPacket(Socket socket, byte[] data)
 			: this(socket, data, 0, data.Length) { }
 
+		/// <summary>
+		/// Initalizes a new instance of TcpPacket
+		/// </summary>
+		/// <param name="socket">The socket where the data comes from</param>
+		/// <param name="data">The received data</param>
+		/// <param name="offset">The offset where the received data starts within the buffer</param>
+		/// <param name="count">The number of bytes to copy within the buffer starting from the offset</param>
 		internal TcpPacket(Socket socket, byte[] data, int offset, int count)
 		{
-			int i;
-			bool zeroFound = false;
-
-			this.socket = socket;
+			if (count < 0) throw new Exception("Count must be equal or greater than zero");
+			if (offset < 0) throw new Exception("Offset must be equal or greater than zero");
+			if ((offset + count) > data.Length) throw new Exception("Offset/count out of range");
 			try
 			{
 				this.remoteEndPoint = (IPEndPoint)socket.RemoteEndPoint;
@@ -40,17 +58,9 @@ namespace System.Net.Sockets
 			catch { }
 			if ((data != null) && (data.Length >= 0))
 			{
-				if (offset > data.Length) throw new Exception("Offset out of range");
-				if ((offset + count) > data.Length) throw new Exception("Offset out of range");
 				this.data = new byte[count];
-				isAnsi = true;
-				for (i = 0; i < count; ++i)
-				{
+				for (int i = 0; i < count; ++i)
 					this.data[i] = data[offset + i];
-					if (this.data[i] == 0) zeroFound = true;
-					if (!zeroFound && (this.data[i] > 128)) isAnsi = false;
-				}
-				dataStrings = System.Text.ASCIIEncoding.Default.GetString(data).Split(charZero, StringSplitOptions.RemoveEmptyEntries);
 			}
 		}
 
@@ -59,7 +69,7 @@ namespace System.Net.Sockets
 		#region Propiedades
 
 		/// <summary>
-		/// Gets the data received in raw format
+		/// Gets the received data
 		/// </summary>
 		public byte[] Data
 		{
@@ -67,38 +77,7 @@ namespace System.Net.Sockets
 		}
 
 		/// <summary>
-		/// Gets the data formatted as string
-		/// </summary>
-		public string DataString
-		{
-			get
-			{
-				if (dataStrings.Length == 0) return "";
-				return dataStrings[0];
-			}
-		}
-
-		/// <summary>
-		/// Gets the all strings stored in the data
-		/// </summary>
-		public string[] DataStrings
-		{
-			get
-			{
-				return dataStrings;
-			}
-		}
-
-		/// <summary>
-		/// Gets a value indicating where the Tcp packet contains only characters between 0 and 127
-		/// </summary>
-		public bool IsAnsi
-		{
-			get { return isAnsi; }
-		}
-
-		/// <summary>
-		/// Gets the socket local endpoint 
+		/// Gets the local endpoint (where the data arrived)
 		/// </summary>
 		public IPEndPoint LocalEndPoint
 		{
@@ -106,27 +85,19 @@ namespace System.Net.Sockets
 		}
 
 		/// <summary>
-		/// Gets the socket remote endpoint 
+		/// Gets the remote endpoint (where the data comes from)
 		/// </summary>
 		public IPEndPoint RemoteEndPoint
 		{
 			get { return remoteEndPoint; }
 		}
-
-		/// <summary>
-		/// Gets the port where the sender sent the packet
-		/// </summary>
-		public int Port
-		{
-			get { return ((IPEndPoint)socket.RemoteEndPoint).Port; }
-		}
-
+		
 		/// <summary>
 		/// Gets the IP Address of the sender of the packet
 		/// </summary>
 		public IPAddress SenderIP
 		{
-			get { return ((IPEndPoint)socket.RemoteEndPoint).Address; }
+			get { return RemoteEndPoint.Address; }
 		}
 
 		#endregion
@@ -138,14 +109,7 @@ namespace System.Net.Sockets
 		/// </summary>
 		/// <param name="ix">Zero-based index of the data to get</param>
 		/// <returns>The i-th byte contained in the TcpPacket</returns>
-		public byte this[int ix]
-		{
-			get
-			{
-				if ((ix < 0) || (ix >= this.data.Length)) throw new IndexOutOfRangeException();
-				return this.data[ix];
-			}
-		}
+		public byte this[int ix] { get { return this.data[ix]; } }
 
 		#endregion
 
@@ -156,32 +120,19 @@ namespace System.Net.Sockets
 		/// <returns>A String that represents the current Object</returns>
 		public override string ToString()
 		{
-			return "["+ SenderIP.ToString() +"]:" + DataString;
+			string[] sizes = {"B", "k", "M", "G"};
+			double size = this.data.LongLength;
+			int ix;
+			for(ix = 0; (ix < 3) && (size > 1024); ++ix)
+				size/= 1024.0;
+			string cut = UTF8Encoding.UTF8.GetString(data, 0, (int)Math.Min(50, data.LongLength));
+			return String.Format("[{0}] {1}{2} Data={3}{4}",
+				remoteEndPoint.Address,
+				(int)size,
+				sizes[ix],
+				cut,
+				data.LongLength > cut.Length ? "..." : String.Empty);
 		}
-		#endregion
-
-		#region Operators
-
-		/// <summary>
-		/// Implicitly converts a TcpPacket into a String object
-		/// </summary>
-		/// <param name="p">TcpPacket to convert</param>
-		/// <returns>String representation of data contained in the TcpPacket</returns>
-		public static explicit operator string(TcpPacket p)
-		{
-			return p.DataString;
-		}
-
-		/// <summary>
-		/// Implicitly converts a TcpPacket into an array of bytes
-		/// </summary>
-		/// <param name="p">TcpPacket to convert</param>
-		/// <returns>Array of bytes with the data contained in the TcpPacket</returns>
-		public static explicit operator byte[](TcpPacket p)
-		{
-			return p.data;
-		}
-
 		#endregion
 	}
 }

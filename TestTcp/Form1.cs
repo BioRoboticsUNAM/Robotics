@@ -4,16 +4,17 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
 using System.Drawing;
-using System.Net.Sockets;
 using System.Windows.Forms;
 using System.Diagnostics;
+using Robotics;
+using Robotics.Sockets;
 
 namespace TestTcp
 {
 	public partial class Form1 : Form
 	{
-		SocketTcpServer server;
-		SocketTcpClient client;
+		TcpServer server;
+		TcpClient client;
 		EventHandler updateServerConsoleEH;
 		EventHandler updateClientConsoleEH;
 		string textForServerConsole;
@@ -23,19 +24,18 @@ namespace TestTcp
 		public Form1()
 		{
 			InitializeComponent();
-			server = new SocketTcpServer();
-			client = new SocketTcpClient();
-			client.ConnectionTimeOut = 1000;
+			server = new TcpServer();
+			client = new TcpClient();
 			updateServerConsoleEH = new EventHandler(updateServerConsole);
 			updateClientConsoleEH = new EventHandler(updateClientConsole);
 
-			server.ClientConnected += new TcpClientConnectedEventHandler(server_ClientConnected);
-			server.ClientDisconnected += new TcpClientDisconnectedEventHandler(server_ClientDisconnected);
-			server.DataReceived += new TcpDataReceivedEventHandler(server_DataReceived);
+			server.ClientConnected += new EventHandler<TcpServer, IPEndPoint>(server_ClientConnected);
+			server.ClientDisconnected += new EventHandler<TcpServer, IPEndPoint>(server_ClientDisconnected);
+			server.DataReceived += new EventHandler<TcpServer, TcpPacket>(server_DataReceived);
 
-			client.Connected += new TcpClientConnectedEventHandler(client_Connected);
-			client.DataReceived += new TcpDataReceivedEventHandler(client_DataReceived);
-			client.Disconnected += new TcpClientDisconnectedEventHandler(client_Disconnected);
+			client.Connected += new EventHandler<TcpClient, IPEndPoint>(client_Connected);
+			client.DataReceived += new EventHandler<TcpClient, TcpPacket>(client_DataReceived);
+			client.Disconnected += new EventHandler<TcpClient, IPEndPoint>(client_Disconnected);
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
@@ -89,19 +89,19 @@ namespace TestTcp
 
 		}
 
-		private void server_ClientDisconnected(EndPoint ep)
+		private void server_ClientDisconnected(TcpServer s, IPEndPoint ep)
 		{
 			textForServerConsole = "Disconnected client " + ep;
 			this.Invoke(updateServerConsoleEH);
 		}
 
-		private void server_ClientConnected(Socket s)
+		private void server_ClientConnected(TcpServer s, IPEndPoint ep)
 		{
-			textForServerConsole = "Connected client " + s.RemoteEndPoint;
+			textForServerConsole = "Connected client " + ep;
 			this.Invoke(updateServerConsoleEH);
 		}
 
-		private void server_DataReceived(TcpPacket p)
+		private void server_DataReceived(TcpServer s, TcpPacket p)
 		{
 			string text;
 #if BENCHMARK
@@ -109,7 +109,7 @@ namespace TestTcp
 			textForServerConsole = stopwatch.Elapsed.ToString();
 			this.Invoke(updateServerConsoleEH);
 #endif
-			if (!p.IsAnsi)
+			if (!p.IsAnsi())
 			{
 				System.Text.StringBuilder sb = new System.Text.StringBuilder(p.Data.Length + 10);
 				for (int i = 0; i < p.Data.Length; ++i)
@@ -125,9 +125,9 @@ namespace TestTcp
 			{
 				textForServerConsole = "[" + p.SenderIP.ToString() + "] (" + p.Data.Length + "bytes): ";
 				this.Invoke(updateServerConsoleEH);
-				for (int i = 0; i < p.DataStrings.Length; ++i)
+				for (int i = 0; i < p.DataStrings().Length; ++i)
 				{
-					text = p.DataStrings[i];
+					text = p.DataStrings()[i];
 					textForServerConsole = "\t[" + p.SenderIP.ToString() + "] (Part " + i + "): " + text;
 					this.Invoke(updateServerConsoleEH);
 				}
@@ -152,13 +152,13 @@ namespace TestTcp
 			*/
 		}
 
-		private void client_Disconnected(EndPoint ep)
+		private void client_Disconnected(TcpClient c, IPEndPoint ep)
 		{
 			if (this.InvokeRequired)
 			{
 				if (!this.IsHandleCreated || this.IsDisposed || this.Disposing)
 					return;
-				this.BeginInvoke(new TcpClientDisconnectedEventHandler(client_Disconnected), ep);
+				this.BeginInvoke(new EventHandler<TcpClient, IPEndPoint>(client_Disconnected), c, ep);
 				return;
 			}
 			textForClientConsole = "[Disconnected]";
@@ -171,7 +171,7 @@ namespace TestTcp
 			txtClientConsole.Enabled = false;
 		}
 
-		private void client_DataReceived(TcpPacket p)
+		private void client_DataReceived(TcpClient c, TcpPacket p)
 		{
 			string text;
 #if BENCHMARK
@@ -179,7 +179,7 @@ namespace TestTcp
 			textForClientConsole = stopwatch.Elapsed.ToString();
 			this.Invoke(updateClientConsoleEH);
 #endif
-			if (!p.IsAnsi)
+			if (!p.IsAnsi())
 			{
 				System.Text.StringBuilder sb = new System.Text.StringBuilder(p.Data.Length + 10);
 				for (int i = 0; i < p.Data.Length; ++i)
@@ -195,9 +195,9 @@ namespace TestTcp
 			{
 				textForClientConsole = "[" + p.SenderIP.ToString() + "] (" + p.Data.Length + "bytes): ";
 				this.Invoke(updateClientConsoleEH);
-				for (int i = 0; i < p.DataStrings.Length; ++i)
+				for (int i = 0; i < p.DataStrings().Length; ++i)
 				{
-					text = p.DataStrings[i];
+					text = p.DataStrings()[i];
 					textForClientConsole = "\t[" + p.SenderIP.ToString() + "] (Part " + i + "): " + text;
 					this.Invoke(updateClientConsoleEH);
 				}
@@ -222,7 +222,7 @@ namespace TestTcp
 			*/
 		}
 
-		private void client_Connected(Socket s)
+		private void client_Connected(TcpClient c, IPEndPoint ep)
 		{
 			textForClientConsole = "Connected";
 			this.Invoke(updateClientConsoleEH);

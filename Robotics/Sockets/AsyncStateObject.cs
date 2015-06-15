@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 
-namespace System.Net.Sockets
+namespace Robotics.Sockets
 {
 	/// <summary>
 	/// Represents an object used to receive data asynchronously
@@ -18,19 +18,14 @@ namespace System.Net.Sockets
 		protected readonly byte[] buffer;
 
 		/// <summary>
-		/// Stores the size of the buffer
-		/// </summary>
-		protected readonly int bufferSize;
-
-		/// <summary>
 		/// Stores the data source Socket object
 		/// </summary>
 		protected Socket socket = null;
-		
+
 		/// <summary>
-		/// Stores the received data
+		/// Stores the number of bytes received
 		/// </summary>
-		protected MemoryStream dataReceived;
+		protected int received;
 
 		#endregion
 
@@ -44,18 +39,7 @@ namespace System.Net.Sockets
 		public AsyncStateObject(Socket socket, int bufferSize)
 		{
 			this.socket = socket;
-			this.bufferSize = bufferSize;
 			buffer = new byte[bufferSize];
-			dataReceived = new MemoryStream(bufferSize);
-		}
-
-		/// <summary>
-		/// Destroy the object
-		/// </summary>
-		~AsyncStateObject()
-		{
-			this.socket = null;
-			dataReceived.Close();
 		}
 
 		#endregion
@@ -65,42 +49,25 @@ namespace System.Net.Sockets
 		/// <summary>
 		/// Gets the buffer to store temporary data
 		/// </summary>
-		public byte[] Buffer
+		public byte[] Buffer { get { return buffer; } }
+
+		/// <summary>
+		/// Gets the size of the buffer
+		/// </summary>
+		public int BufferSize { get { return buffer.Length; } }
+
+		/// <summary>
+		/// Gets or sets the number of bytes received
+		/// </summary>
+		public int Received
 		{
-			get
+			get { return received; }
+			set
 			{
-				return buffer;
+				if ((value < 0) || (value > buffer.Length))
+					throw new ArgumentOutOfRangeException();
+				received = value;
 			}
-		}
-
-		/// <summary>
-		/// Stores the size of the buffer
-		/// </summary>
-		public int BufferSize
-		{
-			get { return bufferSize; }
-		}
-
-		/// <summary>
-		/// Gets the data received
-		/// </summary>
-		public byte[] DataReceived
-		{
-			get
-			{
-				byte[] received = new byte[dataReceived.Length];
-				dataReceived.Position = 0;
-				dataReceived.Read(received, 0, (int)dataReceived.Length);
-				return received;
-			}
-		}
-
-		/// <summary>
-		/// Gets the length of received data
-		/// </summary>
-		public int Length
-		{
-			get { return (int)dataReceived.Length; }
 		}
 
 		/// <summary>
@@ -109,19 +76,6 @@ namespace System.Net.Sockets
 		public Socket Socket
 		{
 			get { return this.socket; }
-		}
-
-		#endregion
-
-		#region Methodos
-
-		/// <summary>
-		/// Flushes out the buffer to the DataReceived data storage to allow receive more data 
-		/// </summary>
-		/// <param name="count">Number of bytes in the temporary buffer to flush out</param>
-		public void Flush(int count)
-		{
-			dataReceived.Write(buffer, 0, count);
 		}
 
 		#endregion

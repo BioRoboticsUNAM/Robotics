@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Robotics.Utilities;
 
-namespace Robotics.API
+namespace Robotics.API.Parsers
 {
 	/// <summary>
 	/// Provides methods for data parsing

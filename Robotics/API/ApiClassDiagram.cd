@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
-  <Class Name="Robotics.API.Response">
+  <Class Name="Robotics.API.Response" Collapsed="true">
     <Position X="9.5" Y="28.75" Width="9.25" />
     <TypeIdentifier>
       <HashCode>AIAgIAAIAAAAAAAEAAAAAAAAAgAAAAIAAAAAQFAAQAA=</HashCode>
       <FileName>API\Response.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Robotics.API.BaseMessage">
+  <Class Name="Robotics.API.BaseMessage" Collapsed="true">
     <Position X="0.5" Y="21.75" Width="8.75" />
     <TypeIdentifier>
       <HashCode>AEACAABAAQABAAQEEAAAQAAAAAQAAIQAAIAIABDACgA=</HashCode>
@@ -15,14 +15,14 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Robotics.API.Command">
+  <Class Name="Robotics.API.Command" Collapsed="true">
     <Position X="0.5" Y="28.75" Width="8.5" />
     <TypeIdentifier>
       <HashCode>AIAiIAAAAABAAAAEAAgAAAAAAAAAAAAAAAAAQAAIAAA=</HashCode>
       <FileName>API\Command.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Robotics.API.CommandManager" BaseTypeListCollapsed="true">
+  <Class Name="Robotics.API.CommandManager" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="8.5" Y="3.5" Width="6.75" />
     <NestedTypes>
       <Class Name="Robotics.API.CommandManager.SharedVariableList" Collapsed="true">
@@ -38,29 +38,29 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Robotics.API.ConnectionManager" BaseTypeListCollapsed="true">
+  <Class Name="Robotics.API.ConnectionManager" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="0.5" Y="3.5" Width="7.75" />
     <TypeIdentifier>
-      <HashCode>QUSgQhZqxOJARIlgEECFQQRAIVqIQBICLGAgKiAjIAQ=</HashCode>
+      <HashCode>QUAAQhAggGIABIkgEEAEYQBAAFooABACJEAgKCAAIIA=</HashCode>
       <FileName>API\ConnectionManager.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Robotics.API.SyncCommandExecuter">
+  <Class Name="Robotics.API.SyncCommandExecuter" Collapsed="true">
     <Position X="21.25" Y="11.25" Width="5" />
     <TypeIdentifier>
       <HashCode>AAAkAAAABAAAACQEAAABQAAAAAgABAIAAAAAAAAAAAA=</HashCode>
       <FileName>API\SyncCommandExecuter.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Robotics.API.AsyncCommandExecuter">
+  <Class Name="Robotics.API.AsyncCommandExecuter" Collapsed="true">
     <Position X="15.5" Y="11.25" Width="5.5" />
     <TypeIdentifier>
       <HashCode>AACEAAAABACAACQEAQBAQAAgAAiABAIAAAAAAAAKAAA=</HashCode>
       <FileName>API\AsyncCommandExecuter.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Robotics.API.CommandExecuter">
+  <Class Name="Robotics.API.CommandExecuter" Collapsed="true">
     <Position X="15.5" Y="3.5" Width="4.75" />
     <TypeIdentifier>
       <HashCode>AACAARAgBSAAACRMAAGBQUhAAAAABhYACAAAAAAAAAE=</HashCode>
@@ -68,7 +68,7 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Robotics.API.CommandExecuterCollection" BaseTypeListCollapsed="true">
+  <Class Name="Robotics.API.CommandExecuterCollection" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="20.75" Y="3.5" Width="4.25" />
     <TypeIdentifier>
       <HashCode>ACIAAAAgAAAAABAQCCAABAQAAAAAAAAAAAgAAABQIAA=</HashCode>
@@ -76,7 +76,7 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Robotics.API.SharedVariable">
+  <Class Name="Robotics.API.SharedVariable" Collapsed="true">
     <Position X="26.75" Y="3.5" Width="8.5" />
     <TypeIdentifier>
       <HashCode>AAQIEAAkDEAAC4AEAAAAAAVgAAgCEDSBQQQEgEkAAAA=</HashCode>
@@ -84,35 +84,35 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Robotics.API.SharedVariable&lt;T&gt;">
+  <Class Name="Robotics.API.SharedVariable&lt;T&gt;" Collapsed="true">
     <Position X="26.75" Y="14.5" Width="8.5" />
     <TypeIdentifier>
       <HashCode>CGwAEAAkKFAACyCEAAIEAAVgAGhCEBEAQQQgSAkAQEU=</HashCode>
       <FileName>API\SharedVariableGeneric.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Robotics.API.SharedVariableSubscriptionReport&lt;T&gt;">
+  <Class Name="Robotics.API.SharedVariableSubscriptionReport&lt;T&gt;" Collapsed="true">
     <Position X="35.75" Y="3.5" Width="9.25" />
     <TypeIdentifier>
       <HashCode>CAAAAAAAAAABAAAEAAAAAAAQAAAAACAAAQQgAAkEAAA=</HashCode>
       <FileName>API\SharedVariableSubscriptionReport.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Robotics.API.Signature">
+  <Class Name="Robotics.API.Signature" Collapsed="true">
     <Position X="35.75" Y="17" Width="7.5" />
     <TypeIdentifier>
       <HashCode>BEECAAAAACIAAABAQAAgQQAAAAAAEAAAgAAAgAAAEAA=</HashCode>
       <FileName>API\Signature.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Robotics.API.SignatureAnalysisResult">
+  <Class Name="Robotics.API.SignatureAnalysisResult" Collapsed="true">
     <Position X="35.75" Y="7.5" Width="7.75" />
     <TypeIdentifier>
       <HashCode>AAQQgAEAAAAAAAQAAAAAAAACggAAAAKAAAAAIACAACA=</HashCode>
       <FileName>API\SignatureAnalysisResult.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Robotics.API.SignatureBuilder">
+  <Class Name="Robotics.API.SignatureBuilder" Collapsed="true">
     <Position X="43.75" Y="7.5" Width="4.5" />
     <TypeIdentifier>
       <HashCode>CEACAYQAAAoAQABDAKAGAABCAIIJBAABgaAAAANREIA=</HashCode>
@@ -126,13 +126,6 @@
       <FileName>API\IMessageSource.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Enum Name="Robotics.API.ConnectionManagerMode">
-    <Position X="6" Y="0.5" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>API\IConnectionManager.cs</FileName>
-    </TypeIdentifier>
-  </Enum>
   <Enum Name="Robotics.API.SharedVariableSubscriptionType">
     <Position X="8.25" Y="0.5" Width="2.25" />
     <TypeIdentifier>
@@ -158,13 +151,6 @@
     <Position X="18" Y="0.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
-      <FileName>API\API.cs</FileName>
-    </TypeIdentifier>
-  </Delegate>
-  <Delegate Name="Robotics.API.ConnectionManagerDataReceivedEH">
-    <Position X="11.25" Y="0.5" Width="2.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
       <FileName>API\API.cs</FileName>
     </TypeIdentifier>
   </Delegate>

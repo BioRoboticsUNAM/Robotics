@@ -9,20 +9,20 @@ namespace Robotics.API
 	/// <summary>
 	/// Represents methods that handle the change of status of an object
 	/// </summary>
-	/// <param name="sender">The object which rises the event</param>
+	/// <param name="sender">The object which raises the event</param>
 	public delegate void StatusChangedEventHandler<T>(T sender);
 
 	/// <summary>
 	/// Represents the method that will handle a command reception event
 	/// </summary>
-	/// <param name="sender">The object which rises the event</param>
+	/// <param name="sender">The object which raises the event</param>
 	/// <param name="command">The command received</param>
 	public delegate void CommandReceivedEventHandler<T>(T sender, Command command);
 
 	/// <summary>
 	/// Represents the method that will handle a response reception event
 	/// </summary>
-	/// <param name="sender">The object which rises the event</param>
+	/// <param name="sender">The object which raises the event</param>
 	/// <param name="response">The response received</param>
 	public delegate void ResponseReceivedEventHandler<T>(T sender, Response response);
 
@@ -40,25 +40,11 @@ namespace Robotics.API
 	/// <summary>
 	/// Represents the method that will handle the CommandExecuted event of a CommandManager object
 	/// </summary>
-	/// <param name="sender">The CommandManager object which rises the event</param>
+	/// <param name="sender">The CommandManager object which raises the event</param>
 	/// <param name="commandExecuter">The command executer used to execute the received command</param>
 	/// <param name="executedCommand">The command which was executed</param>
 	/// <param name="generatedResponse">The response generated due to command execution</param>
 	public delegate void CommandExecutedEventHandler(CommandManager sender, CommandExecuter commandExecuter, Command executedCommand, Response generatedResponse);
-
-	/// <summary>
-	/// Represents the method that will handle the CommandSent event of a ConnectionManager object
-	/// </summary>
-	/// <param name="sender">The connection manager object which sends the command</param>
-	/// <param name="command">The sent Command object</param>
-	public delegate void CnnManCommandSentEventHandler(ConnectionManager sender, Command command);
-
-	/// <summary>
-	/// Represents the method that will handle the ResponseSent event of a ConnectionManager object
-	/// </summary>
-	/// <param name="sender">The connection manager object which sends the response</param>
-	/// <param name="response">The sent Response object</param>
-	public delegate void CnnManResponseSentEventHandler(ConnectionManager sender, Response response);
 
 	/// <summary>
 	/// Represents the method that will handle a CommandReceived event
@@ -82,33 +68,20 @@ namespace Robotics.API
 	/// <summary>
 	/// Represents the method that will handle the StatusChanged, Started and Stopped events of a CommandManager
 	/// </summary>
-	/// <param name="commandManager">The CommandManager object which rises the event</param>
+	/// <param name="commandManager">The CommandManager object which raises the event</param>
 	public delegate void CommandManagerStatusChangedEventHandler(CommandManager commandManager);
-
-	/// <summary>
-	/// Represents the method that will handle the DataReceived event of a SocketTcpServer object
-	/// </summary>
-	/// <param name="connectionManager">The IConnectionManager object which rises the event</param>
-	/// <param name="packet">The Tcp Packet with the data received</param>
-	public delegate void ConnectionManagerDataReceivedEH(ConnectionManager connectionManager, System.Net.Sockets.TcpPacket packet);
-
-	/// <summary>
-	/// Represents the method that will handle the StatusChanged, Started and Stopped events of a ConnectionManager
-	/// </summary>
-	/// <param name="connectionManager">The IConnectionManager object which rises the event</param>
-	public delegate void ConnectionManagerStatusChangedEventHandler(ConnectionManager connectionManager);
 
 	/// <summary>
 	/// Represents the method that will handle the ExecutionStarted and ExecutionAborted of a CommandExecuter
 	/// </summary>
-	/// <param name="commandExecuter">The CommandExecuter object which rises the event</param>
+	/// <param name="commandExecuter">The CommandExecuter object which raises the event</param>
 	/// <param name="command">The Command object which execution status has changed</param>
 	public delegate void ExecutionStatusEventHandler(CommandExecuter commandExecuter, Command command);
 
 	/// <summary>
 	/// Represents the method that will handle the ExecutionFinished of a CommandExecuter
 	/// </summary>
-	/// <param name="commandExecuter">The CommandExecuter object which rises the event</param>
+	/// <param name="commandExecuter">The CommandExecuter object which raises the event</param>
 	/// <param name="command">The Command object which execution status has changed</param>
 	/// <param name="response">The Response object result of the command execution</param>
 	public delegate void ExecutionFinishedEventHandler(CommandExecuter commandExecuter, Command command, Response response);
