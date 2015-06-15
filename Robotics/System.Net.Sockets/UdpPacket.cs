@@ -8,6 +8,7 @@ namespace System.Net.Sockets.Obsolete
 	/// <summary>
 	/// Implementa un paquete TCP con la informacion relevante recibida
 	/// </summary>
+	[Obsolete]
 	public class UdpPacket
 	{
 		#region Variables

@@ -330,10 +330,9 @@ namespace Robotics.Sockets
 		public void Send(byte[] buffer, int offset, int count)
 		{
 			// client.Send(buffer, offset, count, SocketFlags.None);
-			IAsyncResult result;
 			rwClientLock.AcquireReaderLock(-1);
 			if (!IsConnected) throw new Exception("Client is not connected");
-			result = client.Client.BeginSend(buffer, offset, count, SocketFlags.None, null, null);
+			client.Client.BeginSend(buffer, offset, count, SocketFlags.None, null, null);
 			rwClientLock.ReleaseReaderLock();
 		}
 

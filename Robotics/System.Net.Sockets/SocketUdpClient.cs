@@ -10,6 +10,7 @@ namespace System.Net.Sockets.Obsolete
 	/// <summary>
 	/// Implements a simple UDP client
 	/// </summary>
+	[Obsolete]
 	public class SocketUdpClient
 	{
 		#region Variables

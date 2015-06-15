@@ -10,6 +10,7 @@ namespace System.Net.Sockets.Obsolete
 	/// Implementa un Socket UDP en modo Broadcast para 
 	/// manejarlo como si fuera puerto serie
 	/// </summary>
+	[Obsolete]
 	public class SocketUdp
 	{
 		#region Variables

@@ -42,15 +42,19 @@ namespace System.Net.Sockets.Obsolete
 	/// </summary>
 	/// <param name="p">The Tcp Packet with the data received</param>
 	[Obsolete]
+#pragma warning disable 618
 	public delegate void TcpDataReceivedEventHandler(TcpPacket p);
+#pragma warning restore 618
 
 	/// <summary>
 	/// Represents the method that will handle the DataReceived event of a SocketUdp object
 	/// </summary>
 	/// <param name="e">A UdpDataReceivedEventArgs object that contains the event data</param>
 	[Obsolete]
+#pragma warning disable 618
 	public delegate void UdpDataReceivedEventHandler(UdpDataReceivedEventArgs e);
-	
+#pragma warning restore 618
+
 	/// <summary>
 	/// Represents the method that will handle the ErrorReceived event of a SocketUdp object
 	/// </summary>

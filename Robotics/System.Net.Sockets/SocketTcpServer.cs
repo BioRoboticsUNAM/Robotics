@@ -12,6 +12,7 @@ namespace System.Net.Sockets.Obsolete
 	/// <summary>
 	/// Implementa un Servidor TCP con soporte para multiples clientes
 	/// </summary>
+	[Obsolete]
 	public class SocketTcpServer : SocketTcpServerClientBase
 	{
 		#region Variables

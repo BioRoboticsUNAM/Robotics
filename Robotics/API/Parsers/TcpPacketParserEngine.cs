@@ -70,6 +70,11 @@ namespace Robotics.API.Parsers
 			this.rwTasksLock.ReleaseReaderLock();
 		}
 
+		/// <summary>
+		/// Adds a new asynchronous task to the engine.
+		/// The task is obtained from the CreateTask method
+		/// </summary>
+		/// <param name="ep">The endpoint for the new task to add</param>
 		protected void AddNewTask(IPEndPoint ep)
 		{
 			bool reader;
