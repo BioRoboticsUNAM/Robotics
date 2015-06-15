@@ -31,7 +31,11 @@ namespace Example
 			Console.WriteLine("Shared variable echo successfully created");
 
 			// STEP 8 Write into echo the console input.
-			echo.TryWrite(Console.ReadLine());
+			do
+			{
+				Console.Write("Enter some text: ");
+				echo.TryWrite(Console.ReadLine());
+			} while (!String.IsNullOrEmpty(echo.BufferedData));
 
 			// STEP 8. Let the module to run
 			module.Run();

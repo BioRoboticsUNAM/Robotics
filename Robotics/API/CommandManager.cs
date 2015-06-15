@@ -772,9 +772,15 @@ namespace Robotics.API
 
 			while (running)
 			{
-				rsp = responsesReceived.Consume(100);
-				if (rsp != null)
-					ParseResponse(rsp);
+				try
+				{
+					rsp = responsesReceived.Consume();
+					if (rsp != null)
+						ParseResponse(rsp);
+				}
+				catch (ThreadInterruptedException) { continue; }
+				catch (ThreadAbortException) { return; }
+				catch { continue; }
 			}
 		}
 
@@ -1678,11 +1684,6 @@ namespace Robotics.API
 			swElapsed.Stop();
 			return null;
 		}
-
-		#endregion
-
-		#region Command Management
-
 
 		#endregion
 
