@@ -164,7 +164,7 @@ namespace Robotics.API
 			}
 
 			/// <summary>
-			/// Fills the list with all the variables from the blackboard
+			/// Fills the list with all the variables from the blackboard. Known vars are skipped.
 			/// </summary>
 			/// <returns>The number of loaded variables</returns>
 			public int LoadFromBlackboard()
@@ -174,41 +174,40 @@ namespace Robotics.API
 			}
 
 			/// <summary>
-			/// Fills the list with all the variables from the blackboard
+			/// Fills the list with all the variables from the blackboard. Known vars are skipped.
 			/// </summary>
 			/// <param name="timeout">Data request timeout</param>
 			/// <param name="message">When this method returns contains any error message produced</param>
 			/// <returns>The number of loaded variables</returns>
 			public int LoadFromBlackboard(int timeout, out string message)
 			{
-				//Regex rxVariableXtractor = SharedVariable.RxSharedVariableValidator;
-				Command cmdListVars = new Command("list_vars", "");
-				Command cmdReadVars;
-				Response rspListVars;
-				Response rspReadVars;
-				int count;
-
 				if (!Monitor.TryEnter(sharedVarLoadRequestLock, 100))
 				{
 					message = "Another load operation is being performed";
 					return 0;
 				}
-				message = String.Empty;
-				if (!Owner.SendAndWait(cmdListVars, timeout, out rspListVars))
-				{
-					message = "No response from blackboard while requesting variable list (timeout?)";
-					Monitor.PulseAll(sharedVarLoadRequestLock);
-					Monitor.Exit(sharedVarLoadRequestLock);
-					return 0;
-				}
-				if (!rspListVars.Success || !rspListVars.HasParams)
-				{
-					message = "Blackboard has not variables defined";
-					Monitor.PulseAll(sharedVarLoadRequestLock);
-					Monitor.Exit(sharedVarLoadRequestLock);
-					return 0;
-				}
-				cmdReadVars = new Command("read_vars", rspListVars.Parameters);
+
+				string missingVarNames = FetchMissingVarNames(timeout, out message);
+				if (String.IsNullOrEmpty(missingVarNames)) return 0;
+				return FetchMissingVars(missingVarNames, timeout, out message);
+			}
+
+			/// <summary>
+			/// Retrieves all shared variables whose names are in <paramref name="missingVarNames"/>
+			/// from the Blackboard.
+			/// </summary>
+			/// <param name="missingVarNames">A string containing the names, separated by spaces, of the
+			/// shared variables to retrieve from the Blackboard</param>
+			/// <param name="timeout">Data request timeout</param>
+			/// <param name="message">When this method returns contains an error message if any error occurred
+			/// while retrieving the shared variables.</param>
+			/// <returns>The number of shared variables readed from the Blackboard.</returns>
+			/// <remarks>To be called by <see cref="SharedVariableList.LoadFromBlackboard(int, out string)"/>
+			/// method only</remarks>
+			private int FetchMissingVars(string missingVarNames, int timeout, out string message)
+			{
+				Response rspReadVars;
+				Command cmdReadVars = new Command("read_vars", missingVarNames);
 				if (!Owner.SendAndWait(cmdReadVars, timeout, out rspReadVars))
 				{
 					message = "No response from blackboard while requesting variable list (timeout?)";
@@ -216,11 +215,100 @@ namespace Robotics.API
 					Monitor.Exit(sharedVarLoadRequestLock);
 					return 0;
 				}
-
-				count = UpdateFromBlackboard(rspReadVars);
+				message = String.Empty;
+				int count = UpdateFromBlackboard(rspReadVars);
 				Monitor.PulseAll(sharedVarLoadRequestLock);
 				Monitor.Exit(sharedVarLoadRequestLock);
 				return count;
+			}
+
+			/// <summary>
+			/// Gets a string containing the names of all the shared variables registered in the Blackboard
+			/// which are not referenced yet by this object
+			/// </summary>
+			/// <param name="timeout">Data request timeout</param>
+			/// <param name="message">When this method returns contains an error message if any error occurred
+			/// while retrieving the shared variable name list.</param>
+			/// <returns>A string containing the names of all the shared variables registered in the Blackboard,
+			/// separated by spaces, which are not referenced by this object; or null if an error occurs.</returns>
+			/// <remarks>To be called by <see cref="SharedVariableList.LoadFromBlackboard(int, out string)"/>
+			/// method only</remarks>
+			private string FetchMissingVarNames(int timeout, out string message)
+			{
+				string allVarsStr = FetchSharedVariableList(timeout, out message);
+				if (String.IsNullOrEmpty(allVarsStr)) return null;
+				StringBuilder missing = new StringBuilder(allVarsStr.Length+1);
+				string[] allVars = allVarsStr.Split(' ');
+				foreach (string varName in allVars)
+				{
+					if (!this.variables.ContainsKey(varName))
+					{
+						missing.Append(varName);
+						missing.Append(' ');
+					}
+				}
+				if (missing.Length > 1)
+					--missing.Length;
+				return missing.ToString();
+			}
+
+			/// <summary>
+			/// Gets a string containing the names of all the shared variables registered in the Blackboard.
+			/// </summary>
+			/// <param name="timeout">Data request timeout</param>
+			/// <param name="message">When this method returns contains an error message if any error occurred
+			/// while retrieving the shared variable name list.</param>
+			/// <returns>A string containing the names of all the shared variables registered in the Blackboard,
+			/// separated by spaces; or null if an error occurs.</returns>
+			/// <remarks>To be called by <see cref="FetchMissingVarNames"/> method only</remarks>
+			private string FetchSharedVariableList(int timeout, out string message)
+			{
+				Response rspListVars;
+				Command cmdListVars = new Command("list_vars", "");
+				message = String.Empty;
+				if (!Owner.SendAndWait(cmdListVars, timeout, out rspListVars))
+				{
+					message = "No response from blackboard while requesting variable list (timeout?)";
+					Monitor.PulseAll(sharedVarLoadRequestLock);
+					Monitor.Exit(sharedVarLoadRequestLock);
+					return null;
+				}
+				if (!rspListVars.Success || !rspListVars.HasParams)
+				{
+					message = "Blackboard has not variables defined";
+					Monitor.PulseAll(sharedVarLoadRequestLock);
+					Monitor.Exit(sharedVarLoadRequestLock);
+					return null;
+				}
+				return rspListVars.Parameters;
+			}
+
+			/// <summary>
+			/// Raises the SharedVariableAdded event
+			/// </summary>
+			/// <param name="item">The SharedVariable object which is being added to the collection</param>
+			private void OnSharedVariableAdded(SharedVariable item)
+			{
+				try
+				{
+					if (SharedVariableAdded != null)
+						SharedVariableAdded(this, item);
+				}
+				catch { }
+			}
+
+			/// <summary>
+			/// Raises the SharedVariableRemoved event
+			/// </summary>
+			/// <param name="item">The SharedVariable object which is being removed from the collection</param>
+			private void OnSharedVariableRemoved(SharedVariable item)
+			{
+				try
+				{
+					if (SharedVariableRemoved != null)
+						SharedVariableRemoved(this, item);
+				}
+				catch { }
 			}
 
 			/// <summary>
@@ -442,7 +530,7 @@ namespace Robotics.API
 					variables.Add(item.Name, item);
 					rwLock.ReleaseWriterLock();
 					item.Initialize();
-					if (SharedVariableAdded != null) SharedVariableAdded(this, item);
+					OnSharedVariableAdded(item);
 				}
 				else
 				{
@@ -457,17 +545,14 @@ namespace Robotics.API
 			public void Clear()
 			{
 				rwLock.AcquireWriterLock(-1);
-				if (SharedVariableRemoved != null)
-				{
 					SharedVariable item;
 
 					while (variables.Count > 0)
 					{
 						item = variables.Values[0];
 						variables.RemoveAt(0);
-						SharedVariableRemoved(this, item);
+						OnSharedVariableRemoved(item);
 					}
-				}
 				rwLock.ReleaseWriterLock();
 			}
 
@@ -582,8 +667,7 @@ namespace Robotics.API
 				item = variables[variableName];
 				variables.Remove(variableName);
 				rwLock.ReleaseWriterLock();
-				if (SharedVariableAdded != null)
-					SharedVariableRemoved(this, item);
+				OnSharedVariableRemoved(item);
 				return true;
 			}
 
@@ -598,8 +682,7 @@ namespace Robotics.API
 				rwLock.AcquireWriterLock(-1);
 				result = variables.Remove(item.Name);
 				rwLock.ReleaseWriterLock();
-				if (SharedVariableAdded != null)
-					SharedVariableRemoved(this, item);
+				OnSharedVariableRemoved(item);
 				return result;
 			}
 
