@@ -84,14 +84,6 @@ namespace Robotics.API
 		/// Stores an autoId for commands
 		/// </summary>
 		private int autoId = 0;
-		/// <summary>
-		/// Indicates that the Connector has just connected
-		/// </summary>
-		private bool firstConnected;
-		/// <summary>
-		/// Flag that indicates if the shared variable list has been retrieved
-		/// </summary>
-		private bool shvLoaded;
 
 		#region Control Variables
 
@@ -394,6 +386,11 @@ namespace Robotics.API
 		{
 			get { return this.sharedVariables; }
 		}
+
+		/// <summary>
+		/// Flag that indicates if the shared variable list has been retrieved
+		/// </summary>
+		private bool ShvLoaded { get { return this.sharedVariables.Count > 0; } }
 
 		#endregion
 
@@ -699,7 +696,7 @@ namespace Robotics.API
 		{
 			if (running) return;
 			CleanBuffers();
-			shvLoaded = false;
+			sharedVariables.Clear();
 			mainThread = new Thread(dlgMainThreadTask);
 			mainThread.IsBackground = true;
 			responseParserThread = new Thread(dlgResponseParserThreadTask);
@@ -851,66 +848,25 @@ namespace Robotics.API
 		/// </summary>
 		private void UpdateSharedVariableListTask()
 		{
-			Response response;
-			Command cmdListVars;
-			Command cmdReadVars;
-			string[] varNames;
-			List<string> unknownVars;
-			int count;
-			int tries = 0;
-
+			while(running)
+			{
+				if(initializationSyncEvent.WaitOne(100)) break;
+			}
+			if (ShvLoaded)
+			{
+				OnSharedVariablesLoaded();
+				return;
+			}
 			while (running)
 			{
-				if(initializationSyncEvent.WaitOne(100))
-					break;
-				if (tries > 100)
-					return;
-				++tries;
-			}
-
-			tries = 0;
-			do
-			{
-				if (tries++ > 5)
-					Thread.Sleep(1000);
-				else if (tries > 1)
-					Thread.Sleep(100);
-
-				// 1. Send the list_vars command and wait up to 300 milliseconds for a response arrival
-				cmdListVars = new Command("list_vars", "");
-				if (!SendAndWait(cmdListVars, 300, out response))
-					continue;
-
-				// 2. Get the unknown vars
-				// 2.1. Split the variable name array
-				varNames = response.Parameters.Split(' ');
-				unknownVars = new List<string>(varNames.Length);
-				// 2.3. Add to the list the unknown variables
-				for (int i = 0; i < varNames.Length; ++i)
+				sharedVariables.LoadFromBlackboard();
+				if (sharedVariables.Count > 0)
 				{
-					if (String.IsNullOrEmpty(varNames[i]) || sharedVariables.Contains(varNames[i]))
-						continue;
-					unknownVars.Add(varNames[i]);
-				}
-				// 2.4. If no variables ar unknown, quit.
-				if (unknownVars.Count == 0)
-					continue;
-
-				// 2.5. Create the command and send it
-				cmdReadVars = new Command("read_vars", String.Join(" ", unknownVars.ToArray()));
-				if (!SendAndWait(cmdReadVars, 500, out response))
-					continue;
-
-				// 3. Update the list of variables using the received response
-				// 3.1. Update
-				count = sharedVariables.UpdateFromBlackboard(response);
-				// 3.2. If new variables has been added, rise the event
-				if ((!shvLoaded) && (count > 0))
 					OnSharedVariablesLoaded();
-				// 3.3 Set the flag
-				shvLoaded = true;
-
-			} while (running && !shvLoaded);
+					return;
+				}
+				Thread.Sleep(300);
+			}
 		}
 
 		/// <summary>
@@ -1074,13 +1030,9 @@ namespace Robotics.API
 		/// <param name="sender">The IConnector object which rises the event</param>
 		protected void Connector_Connected(IConnector sender)
 		{
-			if (!firstConnected)
-			{
-				firstConnected = true;
-				UpdateSharedVariableList();
-				initializationSyncEvent.Set();
-			}
 			SendPrototypesList();
+			UpdateSharedVariableList();
+			initializationSyncEvent.Set();
 		}
 
 		/// <summary>
@@ -1090,7 +1042,7 @@ namespace Robotics.API
 		protected void Connector_Disconnected(IConnector sender) 
 		{
 			initializationSyncEvent.Reset();
-			shvLoaded = false;
+			sharedVariables.Clear();
 		}
 
 		/// <summary>
@@ -1279,11 +1231,6 @@ namespace Robotics.API
 					break;
 			}
 
-			if (this.firstConnected)
-			{
-				this.firstConnected = false;
-				initializationSyncEvent.Set();
-			}
 			return true;
 		}
 

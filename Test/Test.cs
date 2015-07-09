@@ -31,6 +31,7 @@ namespace Test
 
 		public static void Main(string[] args)
 		{
+			SvHangTest();
 			string variableType;
 			bool isArray;
 			int arrayLength;
@@ -108,6 +109,26 @@ namespace Test
 			//MainFill();
 			//MathTest1();
 			//Console.Read();
+		}
+
+		private static void SvHangTest()
+		{
+			Module m = new Module(2500);
+			// m.Start();
+
+			Console.WriteLine("Starting managers");
+			m.ConnectionManager.Start();
+			m.CommandManager.Start();
+			m.CommandManager.SharedVariablesLoaded += (o) => { Console.WriteLine("Shared variables loaded!"); };
+			Console.WriteLine("Waiting for blackboard to connect");
+			m.WaitForClientToConnect();
+			Console.WriteLine("Loading shared variables");
+			m.WaitSharedVariablesLoaded();
+			m.Ready = true;
+			Console.WriteLine("Ready!");
+			
+			m.Run();
+			Environment.Exit(0);
 		}
 
 		private static void foo(Vector4 v)
