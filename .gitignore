@@ -27,3 +27,5 @@ Release/
 Debug/
 incomplete/
 lib/
+# this one is updated every time the solution is built
+Robotics/Robotics.xml
