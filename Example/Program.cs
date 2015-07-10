@@ -19,8 +19,11 @@ namespace Example
 			// STEP 3. Start the module
 			Console.WriteLine("Module {0} runing on port {1}.", module.Name, module.ConnectionManager.Port);
 			Console.WriteLine("Waiting connection from Blackboard");
+			module.ConnectionManager.Connected += (o) => { Console.WriteLine("Connected!"); };
+			module.CommandManager.SharedVariablesLoaded += (o) => { Console.WriteLine("Shared variables loaded!"); };
 			module.Start();
-			Console.WriteLine("Connected.");
+			module.Ready = true;
+			Console.WriteLine("Ready!");
 			// STEP 4. Create the echo shared variable
 			StringSharedVariable echo = new StringSharedVariable("echo");
 			// STEP 5. Register the shared variable
